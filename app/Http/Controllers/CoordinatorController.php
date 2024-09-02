@@ -16,6 +16,7 @@ class CoordinatorController extends Controller
     // public function index(){
     //     return view('utility.coordinator');
     // }
+    // test test
 
     public function rubicPSM1(){
         return view('PSM1.coordinator.rubricPage');
