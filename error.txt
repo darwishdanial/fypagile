@@ -1,0 +1,5 @@
+composer require maatwebsite/excel:^3.* -W
+
+C:\xampp\php\php.ini, uncomment:
+extension=zip
+extension=gd
