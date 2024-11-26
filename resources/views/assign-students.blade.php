@@ -6,7 +6,7 @@
 @section('content')
 <html>
 
-<div class="container mt-5 mb-5">
+<div class="container mb-5">
     <h2>Assign Supervisor</h2>
 	<div class="card">
 		<div class="card-header">List of Supervisor</div>

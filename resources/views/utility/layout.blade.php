@@ -9,6 +9,7 @@
     <link href="{{ asset('assets/datatables/datatables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/sidebars.css') }}" rel="stylesheet">
     
+    
 </head>
 <body>
     <div class="">
