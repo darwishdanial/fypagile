@@ -1,14 +1,30 @@
 <?php
 
 namespace Database\Seeders;
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
+    /**
+     * Fetch panel names from the external service.
+     *
+     * @return array
+     */
+    public function fetchPanelNames(): array
+    {
+        $response = Http::get('http://web.fc.utm.my/~wmf12apps2/cgi-bin/webman/psm2/index_json-v2.cgi?entity=examiner');
+        
+        if ($response->ok()) {
+            return json_decode($response->body(), true);
+        }
+
+        throw new \Exception('Failed to fetch panel data');
+    }
+
     /**
      * Run the database seeds.
      *
@@ -16,97 +32,42 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-
-        $users = [
+        try {
+            // Fetch the panel data from the external service
+            $data = $this->fetchPanelNames();
             
-            [
-                'name' => 'Dr. Ahmad Safuan Bin Abd Rashid',
-                'username' => 'ahmadsafuan',
-                'email' => 'safuan@utm.my',
-                'role' => '1',
-                'isPanel' => '1',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ],
-            [
-                'name' => 'Dr. Afikah Binti Rahim',
-                'username' => 'afikahrahim',
-                'email' => 'afikah@utm.my',
-                'role' => '2',
-                'isPanel' => '1',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ],
-           
-            [
-                'name' => 'Dr. Muhammad Farhan Bin Zolkepli',
-                'username' => 'farhan',
-                'email' => 'farhan@utm.my',
-                'role' => '2',
-                'isPanel' => '1',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ],
-            [
-                'name' => 'Dr. Azman Bin Mohamed',
-                'username' => 'azman',
-                'email' => 'azman@utm.my',
-                'role' => '2',
-                'isPanel' => '1',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ],
-            [
-                'name' => 'Dr. Haryati Binti Yaacob',
-                'username' => 'haryati',
-                'email' => 'haryati@utm.my',
-                'role' => '2',
-                'isPanel' => '1',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ],
-            [
-                'name' => 'Dr. Khairul Idham Bin Satar',
-                'username' => 'khairulidham',
-                'email' => 'khairulidham@utm.my',
-                'role' => '2',
-                'isPanel' => '1',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ],
-            [
-                'name' => 'Dr. Radzuan Bin Saari',
-                'username' => 'radzuan',
-                'email' => 'radzuan@utm.my',
-                'role' => '2',
-                'isPanel' => '1',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ],
-            [
-                'name' => 'Dr. Abdul Rahman',
-                'username' => 'abdulrahman',
-                'email' => 'admin@utm.my',
-                'role' => '0',
-                'isPanel' => '0',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ],
-            [
-                'name' => 'Dr. Khairun Nissa bt Mat Said',
-                'username' => 'khairunnisa',
-                'email' => 'khairunnisa@utm.my',
-                'role' => '2',
-                'isPanel' => '1',
-                'email_verified_at' => now(),
-                'password' => hash::make(123456),
-            ]
+            // Extract lecturer names
+            $lecturerNames = array_column($data['list'], 'lecturer_name');
             
-        ];
+            // Remove duplicate names
+            $uniqueLecturerNames = array_unique($lecturerNames);
+    
+            // Sort the lecturer names
+            sort($uniqueLecturerNames);
+    
+            // Loop through the lecturer names and create users
+            foreach ($uniqueLecturerNames as $index => $name) {
+                // Determine if it's the first panel (role 1) or others (role 2)
+                $role = ($index === 0) ? 1 : 2;
+                $isPanel = 1;
+                $email = strtolower(str_replace(' ', '.', $name)) . '@utm.my'; // Generate email based on the name
+                
+                User::create([
+                    'name' => $name,
+                    'username' => strtolower(str_replace(' ', '', $name)), // Remove spaces for username
+                    'email' => $email,
+                    'role' => $role,
+                    'isPanel' => $isPanel,
+                    'email_verified_at' => now(),
+                    'password' => Hash::make(123456), // Default password
+                ]);
+            }
 
-        // Insert user data into database
-        foreach ($users as $user) {
-            User::create($user);
+            // Optionally, you can display a success message or log the process
+            $this->command->info('Users and panels have been successfully seeded.');
+
+        } catch (\Exception $e) {
+            $this->command->error('Error seeding users: ' . $e->getMessage());
         }
     }
 }
