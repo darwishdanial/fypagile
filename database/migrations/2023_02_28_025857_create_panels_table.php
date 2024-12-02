@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('panels', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('userId')->references('id')->on('users')->onDelete('cascade');
+            $table->string("panel_name");
             $table->timestamps();
         });
     }

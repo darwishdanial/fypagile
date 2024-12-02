@@ -11,7 +11,8 @@ class Panel extends Model
 
     protected $fillable = [
         'id',
-        'userId'
+        //'userId'
+        'panel_name'
     ];
 
     public function user()

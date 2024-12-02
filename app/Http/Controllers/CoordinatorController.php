@@ -6,9 +6,11 @@ use App\Models\Student;
 use App\Models\ResultPSM1;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
+use App\Models\Panel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Session;
 
 class CoordinatorController extends Controller
@@ -37,59 +39,59 @@ class CoordinatorController extends Controller
         return view('PSM2.liststudent',compact('students'));
     }
 
-    public function totalpsm()
-{
-    // Retrieve the data from the result_psm1 table
-    $results = DB::table('result_psm1')->get();
+    public function totalpsm(){
+        // Retrieve the data from the result_psm1 table
+        $results = DB::table('result_psm1')->get();
 
-    foreach ($results as $result) {
-        $studentId = $result->studentId;
-        $type = $result->type;
-        $total = round($result->total, 2);
+        foreach ($results as $result) {
+            $studentId = $result->studentId;
+            $type = $result->type;
+            $total = round($result->total, 2);
 
-        // Check if the student record already exists in the result_totalpsm1 table
-        $existingRecord = DB::table('result_totalpsm1')->where('studentId', $studentId)->first();
+            // Check if the student record already exists in the result_totalpsm1 table
+            $existingRecord = DB::table('result_totalpsm1')->where('studentId', $studentId)->first();
 
-        if ($existingRecord) {
-            // Update the existing record based on the type
-            if ($type === 'supervisor') {
-                DB::table('result_totalpsm1')->where('studentId', $studentId)->update(['sv' => $total]);
-            } elseif ($type === 'panel') {
-                if ($existingRecord->panel1) {
-                    DB::table('result_totalpsm1')->where('studentId', $studentId)->update(['panel2' => $total]);
-                } else {
-                    DB::table('result_totalpsm1')->where('studentId', $studentId)->update(['panel1' => $total]);
+            if ($existingRecord) {
+                // Update the existing record based on the type
+                if ($type === 'supervisor') {
+                    DB::table('result_totalpsm1')->where('studentId', $studentId)->update(['sv' => $total]);
+                } elseif ($type === 'panel') {
+                    if ($existingRecord->panel1) {
+                        DB::table('result_totalpsm1')->where('studentId', $studentId)->update(['panel2' => $total]);
+                    } else {
+                        DB::table('result_totalpsm1')->where('studentId', $studentId)->update(['panel1' => $total]);
+                    }
                 }
+            } else {
+                // Create a new record in the result_totalpsm1 table
+                $data = [
+                    'studentId' => $studentId,
+                    'sv' => $type === 'sv' ? $total : null,
+                    'panel1' => $type === 'panel' ? $total : null,
+                    'panel2' => $type === 'panel' ? $total : null,
+                ];
+
+                DB::table('result_totalpsm1')->insert($data);
             }
-        } else {
-            // Create a new record in the result_totalpsm1 table
-            $data = [
-                'studentId' => $studentId,
-                'sv' => $type === 'sv' ? $total : null,
-                'panel1' => $type === 'panel' ? $total : null,
-                'panel2' => $type === 'panel' ? $total : null,
-            ];
-
-            DB::table('result_totalpsm1')->insert($data);
+            
         }
+
+        // Calculate the total marks
+        $students = DB::table('result_totalpsm1')->get();
+
+        foreach ($students as $student) {
+            $studentId = $student->studentId;
+            $sv = $student->sv;
+            $panel1 = $student->panel1;
+            $panel2 = $student->panel2;
+
+            // Calculate the total marks and update the result_totalpsm1 table
+            $totalMarks = round($sv + $panel1 + $panel2, 2);
+            DB::table('result_totalpsm1')->where('studentId', $studentId)->update(['totalmarks' => $totalMarks]);
+        }
+
+        return "Data inserted and total marks calculated successfully.";
     }
-
-    // Calculate the total marks
-    $students = DB::table('result_totalpsm1')->get();
-
-    foreach ($students as $student) {
-        $studentId = $student->studentId;
-        $sv = $student->sv;
-        $panel1 = $student->panel1;
-        $panel2 = $student->panel2;
-
-        // Calculate the total marks and update the result_totalpsm1 table
-        $totalMarks = round($sv + $panel1 + $panel2, 2);
-        DB::table('result_totalpsm1')->where('studentId', $studentId)->update(['totalmarks' => $totalMarks]);
-    }
-
-    return "Data inserted and total marks calculated successfully.";
-}
 
     public function listresultPSM1() {
         // Lists all results without any filter
@@ -376,6 +378,44 @@ class CoordinatorController extends Controller
         }
     
         return redirect()->route('listcgrade')->with('success', 'Student has been graded successfully');
-}
+    }
+
+    public function fetchPanelNames(): array{
+        $response = Http::get('http://web.fc.utm.my/~wmf12apps2/cgi-bin/webman/psm2/index_json-v2.cgi?entity=examiner');
+        
+        if ($response->ok()) {
+            return json_decode($response->body(), true);
+        }
+
+        throw new \Exception('Failed to fetch lecturer data');
+    }
     
+    public function viewPanelsPSM1(){
+        try {
+            $panels = Panel::all();
+    
+            if ($panels->isEmpty()) {
+                $data = $this->fetchPanelNames();
+
+                $lecturerNames = array_column($data['list'], 'lecturer_name');
+
+                $uniqueLecturerNames = array_unique($lecturerNames);
+    
+                sort($uniqueLecturerNames);
+    
+                foreach ($uniqueLecturerNames as $name) {
+                    Panel::create(['panel_name' => $name]);
+                }
+    
+                $panels = Panel::all();
+            }
+    
+            return view('PSM1.coordinator.listpanel', ['panels' => $panels]);
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
 }
