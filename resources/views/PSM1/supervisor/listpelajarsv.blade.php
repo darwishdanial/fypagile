@@ -19,8 +19,8 @@
     
     <div class="card">
         <div class="card-header">Supervisor - Senarai Pelajar PSM1</div>
-        <div class="card-body">
-            <div class="table-responsive">
+        <div class="card-body table-responsive">
+            <!-- <div class="table-responsive"> -->
                 <table class="table table-striped table-bordered table-hover" id="senaraiPelajar">
                     <thead>
                         <tr>
@@ -35,7 +35,7 @@
                     <tbody>
                     </tbody>
                 </table>
-            </div>
+            <!-- </div> -->
         </div>
     </div>
 </div>

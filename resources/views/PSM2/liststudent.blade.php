@@ -10,7 +10,7 @@
 <div class="container mt-5 mb-5">
 	<div class="card">
 		<div class="card-header">Senarai Pelajar PSM2</div>
-		<div class="card-body">
+		<div class="card-body table-responsive">
             <table class="table table-striped table-bordered table-hover" id="senaraiPelajar">
                 <thead>
                     <tr>

@@ -134,5 +134,17 @@ class StudentPSM1Seeder extends Seeder
             'supervisorId' => null,
         ]);
 
+        StudentPSM1::create([
+            'course' => 'SECJ',
+            'matric' => 'A19EC0099',
+            'name' => 'Muhammad Albab',
+            'title' => 'House Rental Management System',
+            'email' => 'albab@graduate.utm.my',
+            'phone' => '0123456789',
+            'cohort' => '2019/2023',
+            'sessionpsm' => '2022/2023',
+            'supervisorId' => null,
+        ]);
+
     }
 }

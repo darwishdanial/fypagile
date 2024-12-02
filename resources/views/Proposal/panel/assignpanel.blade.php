@@ -13,7 +13,7 @@
 	<div class="card">
 		<div class="card-header">List of Panel</div>
         
-		<div class="card-body">
+		<div class="card-body table-responsive">
             <table class="table table-striped table-bordered table-hover" id="listPanel">
                 <button type="button" class="btn btn-outline-primary mb-3" id="autoAssignPanelBtn">Auto Assign Panel</button>
                 <br>

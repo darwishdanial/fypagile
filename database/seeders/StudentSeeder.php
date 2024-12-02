@@ -133,6 +133,18 @@ class StudentSeeder extends Seeder
             'psm' => 1,
             'supervisorId' => null,
         ]);
+
+        Student::create([
+            'course' => 'SECJ',
+            'matric' => 'A20EC0083',
+            'name' => 'Muhammad Albab',
+            'email' => 'muhammadalbab@graduate.utm.my',
+            'phone' => '0136549545',
+            'cohort' => '2020/2024',
+            'sessionpsm' => '2023/2024',
+            'psm' => 1,
+            'supervisorId' => null,
+        ]);
         
     }
 }

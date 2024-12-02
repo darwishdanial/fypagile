@@ -10,7 +10,7 @@
     <h2>Assign Supervisor</h2>
 	<div class="card">
 		<div class="card-header">List of Supervisor</div>
-		<div class="card-body">
+		<div class="card-body  overflow-x-auto">
             <table class="table table-striped table-bordered table-hover" id="listSupervisor">
                 <thead>
                     <tr>
