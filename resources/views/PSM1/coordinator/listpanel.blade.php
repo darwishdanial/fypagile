@@ -61,7 +61,7 @@
                     }
                 },
                 {
-                    "data": "panel_name",
+                    "data": "name",
                     "targets" : [1],
                 },
             ],

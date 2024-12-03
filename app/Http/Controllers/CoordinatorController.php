@@ -6,12 +6,13 @@ use App\Models\Student;
 use App\Models\ResultPSM1;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
-use App\Models\Panel;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Services\ProjectLecturerMergerService;
+use Illuminate\Support\Facades\Log;
 use Session;
 
 class CoordinatorController extends Controller
@@ -391,10 +392,62 @@ class CoordinatorController extends Controller
         throw new \Exception('Failed to fetch lecturer data');
     }
     
-    public function viewPanelsPSM1(ProjectLecturerMergerService $mergerService){
+    public function viewPanelsPSM1(){
+
+        $users = User::all();
+
+        return view('PSM1.coordinator.listpanel', ['panels' => $users]);
+    }
+
+    public function viewMergeData(ProjectLecturerMergerService $mergerService){
         $mergedData = $mergerService->mergePanelAndProjectData();
 
-        // Dump and die the output
-        dd($mergedData);
+        $samples = [];
+        $labels = [];
+        $areaMapping = [];
+        $typeMapping = [];
+        $lecturerMapping = [];
+        $areaNames = [];    // To store actual names of project_area
+        $typeNames = [];    // To store actual names of project_type
+        $lecturerNames = []; // To store actual names of lecturers
+
+        foreach ($mergedData as $data) {
+            $projectArea = $data['project_area'];
+            $projectType = $data['project_type'];
+            $lecturerName = $data['lecturer_name'];
+
+            // Map project_area to a unique numeric value
+            if (!isset($areaMapping[$projectArea])) {
+                $areaMapping[$projectArea] = count($areaMapping);
+                $areaNames[$areaMapping[$projectArea]] = $projectArea; // Store the actual name
+            }
+
+            // Map project_type to a unique numeric value
+            if (!isset($typeMapping[$projectType])) {
+                $typeMapping[$projectType] = count($typeMapping);
+                $typeNames[$typeMapping[$projectType]] = $projectType; // Store the actual name
+            }
+
+            // Map lecturer_name to a unique numeric value
+            if (!isset($lecturerMapping[$lecturerName])) {
+                $lecturerMapping[$lecturerName] = count($lecturerMapping);
+                $lecturerNames[$lecturerMapping[$lecturerName]] = $lecturerName; // Store the actual name
+            }
+
+            // Add to samples (numeric project_area and project_type)
+            $samples[] = [
+                'project_area' => [$areaMapping[$projectArea], $projectArea],
+                'project_type' => [$typeMapping[$projectType], $projectType]
+            ];
+
+            // Add to labels (numeric lecturer_name)
+            $labels[] = [$lecturerMapping[$lecturerName], $lecturerName];
+        }
+
+        // Return the view with the panels, samples, and labels
+        return view('PSM1.coordinator.mldata', [
+            'samples' => $samples, // Send samples to the front-end
+            'labels' => $labels,   // Send labels to the front-end
+        ]);
     }
 }
