@@ -36,23 +36,17 @@
             <thead>
                     <tr>
                         <th>No</th>
-                        <!-- <th>Project Area (Numeric)</th> -->
-                        <th>Project Area (Name)</th>
-                        <!-- <th>Project Type (Numeric)</th> -->
-                        <th>Project Type (Name)</th>
-                        <!-- <th>Lecturer (Numeric)</th> -->
-                        <th>Lecturer (Name)</th>
+                        <th>Project Area</th>
+                        <th>Project Type</th>
+                        <th>Lecturer</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($samples as $index => $sample)
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <!-- <td>{{ $sample['project_area'][0] }}</td> -->
                         <td> [{{ $sample['project_area'][0] }}] {{ $sample['project_area'][1] }}</td>
-                        <!-- <td>{{ $sample['project_type'][0] }}</td> -->
                         <td> [{{ $sample['project_type'][0] }}] {{ $sample['project_type'][1] }}</td>
-                        <!-- <td>{{ $labels[$index][0] }}</td> -->
                         <td> [{{ $labels[$index][0] }}] {{ $labels[$index][1] }}</td>
                     </tr>
                     @endforeach
