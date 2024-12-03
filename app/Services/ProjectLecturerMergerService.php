@@ -75,4 +75,49 @@ class ProjectLecturerMergerService
 
         return $mergedData;
     }
+
+    public function mergePanelAndProjectDataWithMapping(){
+
+        $mergedData = $this->mergePanelAndProjectData();
+
+        $samples = [];
+        $labels = [];
+        $areaMapping = [];
+        $typeMapping = [];
+        $lecturerMapping = [];
+
+        foreach ($mergedData as $data) {
+            $projectArea = $data['project_area'];
+            $projectType = $data['project_type'];
+            $lecturerName = $data['lecturer_name'];
+
+            if (!isset($areaMapping[$projectArea])) {
+                $areaMapping[$projectArea] = count($areaMapping);
+            }
+
+            if (!isset($typeMapping[$projectType])) {
+                $typeMapping[$projectType] = count($typeMapping);
+            }
+
+            if (!isset($lecturerMapping[$lecturerName])) {
+                $lecturerMapping[$lecturerName] = count($lecturerMapping);
+            }
+
+            $samples[] = [
+                'project_area' => [$areaMapping[$projectArea], $projectArea],
+                'project_type' => [$typeMapping[$projectType], $projectType]
+            ];
+
+            $labels[] = [$lecturerMapping[$lecturerName], $lecturerName];
+        }
+
+        //save areaMappingg ngan typeMappingg to database
+
+        return [
+            'samples' => $samples,
+            'labels' => $labels,
+            'areaMapping' => $areaMapping,
+            'typeMapping' => $typeMapping,
+        ];
+    }
 }

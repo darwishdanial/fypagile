@@ -12,16 +12,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Services\ProjectLecturerMergerService;
-use Illuminate\Support\Facades\Log;
+use App\Jobs\AssignPanelsToStudentsJob;
 use Session;
 
 class CoordinatorController extends Controller
 {
-    // public function index(){
-    //     return view('utility.coordinator');
-    // }
-    // test test
-
     public function rubicPSM1(){
         return view('PSM1.coordinator.rubricPage');
     }
@@ -401,42 +396,25 @@ class CoordinatorController extends Controller
 
     public function viewMergeData(ProjectLecturerMergerService $mergerService){
 
-        $mergedData = $mergerService->mergePanelAndProjectData();
+        $mergedData = $mergerService->mergePanelAndProjectDataWithMapping();
 
-        $samples = [];
-        $labels = [];
-        $areaMapping = [];
-        $typeMapping = [];
-        $lecturerMapping = [];
-
-        foreach ($mergedData as $data) {
-            $projectArea = $data['project_area'];
-            $projectType = $data['project_type'];
-            $lecturerName = $data['lecturer_name'];
-
-            if (!isset($areaMapping[$projectArea])) {
-                $areaMapping[$projectArea] = count($areaMapping);
-            }
-
-            if (!isset($typeMapping[$projectType])) {
-                $typeMapping[$projectType] = count($typeMapping);
-            }
-
-            if (!isset($lecturerMapping[$lecturerName])) {
-                $lecturerMapping[$lecturerName] = count($lecturerMapping);
-            }
-
-            $samples[] = [
-                'project_area' => [$areaMapping[$projectArea], $projectArea],
-                'project_type' => [$typeMapping[$projectType], $projectType]
-            ];
-
-            $labels[] = [$lecturerMapping[$lecturerName], $lecturerName];
-        }
+        //dd($mergedData['typeMapping'], $mergedData['areaMapping']);
 
         return view('PSM1.coordinator.mldata', [
-            'samples' => $samples, 
-            'labels' => $labels,   
+            'samples' => $mergedData['samples'],
+            'labels' => $mergedData['labels'],
         ]);
     }
+
+    public function assignPanelsToStudents()
+    {
+        //call areaMapping and typeMapping from database and pass
+
+        AssignPanelsToStudentsJob::dispatch();
+
+        return response()->json(['message' => 'Panel assignment processing started.']);
+    }
+
+
+
 }
