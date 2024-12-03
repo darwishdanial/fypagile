@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Services\ProjectLecturerMergerService;
 use Session;
 
 class CoordinatorController extends Controller
@@ -390,32 +391,10 @@ class CoordinatorController extends Controller
         throw new \Exception('Failed to fetch lecturer data');
     }
     
-    public function viewPanelsPSM1(){
-        try {
-            $panels = Panel::all();
-    
-            if ($panels->isEmpty()) {
-                $data = $this->fetchPanelNames();
+    public function viewPanelsPSM1(ProjectLecturerMergerService $mergerService){
+        $mergedData = $mergerService->mergePanelAndProjectData();
 
-                $lecturerNames = array_column($data['list'], 'lecturer_name');
-
-                $uniqueLecturerNames = array_unique($lecturerNames);
-    
-                sort($uniqueLecturerNames);
-    
-                foreach ($uniqueLecturerNames as $name) {
-                    Panel::create(['panel_name' => $name]);
-                }
-    
-                $panels = Panel::all();
-            }
-    
-            return view('PSM1.coordinator.listpanel', ['panels' => $panels]);
-
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-
-            return redirect()->back()->with('error', $e->getMessage());
-        }
+        // Dump and die the output
+        dd($mergedData);
     }
 }

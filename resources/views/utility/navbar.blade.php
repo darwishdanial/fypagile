@@ -56,7 +56,7 @@
                         <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ route('importpsm1') }}">Import PSM1 Students</a></li>
                         <li><a class="dropdown-item" href="{{ route('listPSM1') }}">List Students</a></li>
-                        <!-- <li><a class="dropdown-item" href="{{ route('viewPanelsPSM1') }}">List Panels</a></li> -->
+                        <li><a class="dropdown-item" href="{{ route('viewPanelsPSM1') }}">List Panels</a></li>
                         <li><a class="dropdown-item" href="{{ route('get.supervisors') }}">Assign Supervisor</a></li>
                         <li><a class="dropdown-item" href="{{ route('proposal.get.panel')}}">Assign Proposal Panel</a></li>
                         <li><a class="dropdown-item" href="{{ route('get.panel') }}">Assign Panel</a></li>
