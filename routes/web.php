@@ -88,6 +88,9 @@ Route::controller(CoordinatorController::class)->group(function(){
     Route::get('coordinator-students/PSM1', 'listPSM1')->name('listPSM1');
     Route::get('coordinator-students/PSM2', 'listPSM2')->name('listPSM2');
 
+    Route::get('coordinator-panels/PSM1', 'viewPanelsPSM1')->name('viewPanelsPSM1');
+    Route::get('coordinator-mergedata/PSM1', 'viewMergeData')->name('viewMergeData');
+
     Route::get('coordinator/students/PSM1/{id}', 'editstudentPSM1')->name('editstudentPSM1'); //edit student profile
     Route::put('coordinator/students/PSM1/update/{id}', 'updatestudentPSM1')->name('updatestudentPSM1'); //update student profile
     Route::get('coordinator/students/PSM1/delete/{student}', 'destroy')->name('studentdestroy'); //delete using get

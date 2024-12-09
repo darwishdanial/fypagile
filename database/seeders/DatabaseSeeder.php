@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Supervisor;
 use App\Models\Student;
+use App\Models\ProjectAreaMapping;
 
 class DatabaseSeeder extends Seeder
 {
@@ -37,6 +38,7 @@ class DatabaseSeeder extends Seeder
             StudentPSM2Seeder::class,
             UserSeeder::class,
             SupervisorSeeder::class,
+            ProjectAreaMapping::class,
         ]);
 
     }

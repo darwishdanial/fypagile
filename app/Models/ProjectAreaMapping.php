@@ -5,18 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Panel extends Model
+class ProjectAreaMapping extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'id',
-        //'userId'
-        'panel_name'
-    ];
+    protected $table = 'project_area_mappings';
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'userId');
-    }
+    protected $fillable = [
+        'name',
+        'number',
+    ];
 }
