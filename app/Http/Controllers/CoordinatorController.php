@@ -408,11 +408,9 @@ class CoordinatorController extends Controller
 
     public function assignPanelsToStudents()
     {
-        //call areaMapping and typeMapping from database and pass
-
         AssignPanelsToStudentsJob::dispatch();
 
-        return response()->json(['message' => 'Panel assignment processing started.']);
+        return response()->json(['message' => 'Panel assignment process has started....']);
     }
 
 

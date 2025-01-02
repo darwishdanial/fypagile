@@ -15,7 +15,7 @@
         
 		<div class="card-body table-responsive">
             <table class="table table-striped table-bordered table-hover" id="listPanel">
-                <button type="button" class="btn btn-outline-primary mb-3" id="autoAssignPanelBtn">Auto Assign Panel</button>
+                <!-- <button type="button" class="btn btn-outline-primary mb-3" id="autoAssignPanelBtn">Auto Assign Panel</button> -->
                 <br>
                 <thead>
                     <tr>
@@ -119,6 +119,29 @@
                 },
             });
     }
+
+    // $('#autoAssignPanelBtn').click(function () {
+    //     const button = $(this);
+    //     button.prop('disabled', true).text('Assigning...');
+
+    //     $.ajax({
+    //         url: "{{ route('autoAssign') }}",
+    //         method: 'POST',
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         success: function (response) {
+    //             alert(response.message);
+    //             button.prop('disabled', false).text('Auto Assign Panel');
+    //         },
+    //         error: function (error) {
+    //             alert('Error: ' + error.responseJSON.message);
+    //             button.prop('disabled', false).text('Auto Assign Panel');
+    //         }
+    //     });
+    // });
+
+
 </script>
 <script src="{{ asset('assets/js/modal.js') }}"></script>
 

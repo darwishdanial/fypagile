@@ -1,16 +1,15 @@
 <?php
 namespace App\Console\Commands;
 
-use Phpml\Classification\DecisionTree;
+use Phpml\Classification\KNearestNeighbors;
 use Phpml\ModelManager;
 use Illuminate\Console\Command;
 use App\Services\ProjectLecturerMergerService;
 
-
-class TrainPanelAssignmentModel extends Command
+class KnnPanelAssignmentModel extends Command
 {
-    protected $signature = 'train:model';
-    protected $description = 'Train the decision tree model for panel assignment';
+    protected $signature = 'train:modelknn';
+    protected $description = 'Train the KNN model for panel assignment';
 
     private $mergerService;
 
@@ -19,6 +18,7 @@ class TrainPanelAssignmentModel extends Command
         parent::__construct();
         $this->mergerService = $mergerService;
     }
+
     public function handle()
     {
         $mergedData = $this->mergerService->mergePanelAndProjectData();
@@ -53,18 +53,15 @@ class TrainPanelAssignmentModel extends Command
             $labels[] = $lecturerMapping[$lecturerName];
         }
 
-        $classifier = new DecisionTree();
+        // Using KNearestNeighbors instead of DecisionTree
+        $classifier = new KNearestNeighbors();
         $classifier->train($samples, $labels);
 
         // Save the trained model
         $modelManager = new ModelManager();
-        $modelPath = storage_path('app/ai_model/panel_assignment.model');
+        $modelPath = storage_path('app/ai_model/panel_assignment_knn.model');
         $modelManager->saveToFile($classifier, $modelPath);
 
         $this->info("Model trained and saved at: {$modelPath}");
     }
 }
-
-
-
-

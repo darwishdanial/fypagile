@@ -19,7 +19,7 @@ class ProjectLecturerMergerService
         throw new \Exception('Failed to fetch panel data');
     }
 
-    private function fetchStudentData(): array
+    public function fetchStudentData(): array
     {
         $response = Http::get('http://web.fc.utm.my/~wmf12apps2/cgi-bin/webman/psm2/index_json-v2.cgi?entity=project');
 
@@ -111,13 +111,14 @@ class ProjectLecturerMergerService
             $labels[] = [$lecturerMapping[$lecturerName], $lecturerName];
         }
 
-        //save areaMappingg ngan typeMappingg to database
+        //save areaMappingg and typeMappingg to database
 
         return [
             'samples' => $samples,
             'labels' => $labels,
             'areaMapping' => $areaMapping,
             'typeMapping' => $typeMapping,
+            'lecturerMapping' => $lecturerMapping,
         ];
     }
 }

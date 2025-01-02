@@ -34,11 +34,11 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             
-            StudentPSM1Seeder::class,
+            StudentPSM1SeederNew::class,
             StudentPSM2Seeder::class,
             UserSeeder::class,
             SupervisorSeeder::class,
-            ProjectAreaMapping::class,
+            ProjectAreaMappingSeeder::class,
         ]);
 
     }

@@ -6,12 +6,22 @@
 @section('content')
 <html>
 
+<!-- <div id="alertMessage" class="alert d-none" role="alert"></div> -->
+<div id="alertMessage" class="alert d-none position-fixed top-0 start-50 translate-middle-x w-30 text-center" role="alert"></div>
+
+
 <div class="container mt-1 mb-5">
     <h2>Assign Panel PSM1 </h2>
     
 	<div class="card">
 		<div class="card-header">List of Panel</div>
+
 		<div class="card-body table-responsive">
+
+            <button type="button" class="btn btn-outline-primary mb-3" id="autoAssignPanelBtn">
+                <span class="btn-text">Auto Assign Panel</span>
+            </button>            
+        
             <table class="table table-striped table-bordered table-hover" id="listPanel">
                 <thead>
                     <tr>
@@ -23,6 +33,7 @@
                     <tbody>
                     </tbody>
             </table>
+
 		</div>
 	</div>
 </div>
@@ -114,6 +125,39 @@
                 },
             });
     }
+
+    $('#autoAssignPanelBtn').click(function () {
+        const button = $(this);
+        $('#alertMessage').removeClass('d-none').removeClass('alert-success alert-danger').text('');
+
+
+        $.ajax({
+            url: "{{ route('autoAssign') }}",
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                $('#alertMessage')
+                .addClass('alert-success')
+                .text(response.message);
+
+                setTimeout(function () {
+                    $('#alertMessage').addClass('d-none');
+                }, 3000);
+            },
+            error: function (error) {
+                $('#alertMessage')
+                .addClass('alert-danger')
+                .text('Error: ');
+
+                setTimeout(function () {
+                    $('#alertMessage').addClass('d-none');
+                }, 3000);
+            }
+        });
+    });
+
 </script>
 <script src="{{ asset('assets/js/modal.js') }}"></script>
 
