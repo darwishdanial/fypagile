@@ -54,21 +54,37 @@ class AssignPanelsToStudentsJob implements ShouldQueue
             $primaryPanel = null;
             $secondaryPanel = null;
 
+            $loadFactors = [];
             foreach ($potentialPanels as $panel => $score) {
+                $currentLoad = $panelCounts[$panel];
+                $loadRatio = $currentLoad / $maxStudentsPerPanel;
                 
+                // Adjust score based on panel load
+                // As panel gets more loaded, its effective score decreases
+                $loadPenalty = $loadRatio * 0.5; // Adjust this factor to control distribution vs. compatibility
+                $adjustedScore = $score * (1 - $loadPenalty);
+                
+                $loadFactors[$panel] = $adjustedScore;
+            }
+
+            // Sort panels by adjusted scores
+            arsort($loadFactors);
+
+            foreach ($loadFactors as $panel => $adjustedScore) {
+
                 if ($panelCounts[$panel] < $maxStudentsPerPanel) {
                     if (!$primaryPanel) {
                         $primaryPanel = $panel;
                         $panelCounts[$panel]++;
-                        $primaryPanelScore = $score;
-                        logger("Primary panel: {$primaryPanel} with score: {$primaryPanelScore}, Panel count: {$panelCounts[$panel]}");  
+                        //$primaryPanelScore = $score;
+                        logger("Primary panel: {$primaryPanel}  with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");  
                         //$student->update(['panelId' => $primaryPanel]); //panel1Id
 
                     } elseif (!$secondaryPanel && $primaryPanel !== $panel) {
                         $secondaryPanel = $panel;
                         $panelCounts[$panel]++;  
-                        $secondaryPanelScore = $score;
-                        logger("Secondary panel: {$secondaryPanel} with score: {$secondaryPanelScore}, Panel count: {$panelCounts[$panel]}");
+                        //$secondaryPanelScore = $score;
+                        logger("Secondary panel: {$secondaryPanel} with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");
                         logger('---------------------------------------');
                         break;
                         //$student->update(['panel2Id' => $secondaryPanel]); //panel2Id
@@ -82,13 +98,46 @@ class AssignPanelsToStudentsJob implements ShouldQueue
             }
         }
 
-        logger('Number of potential panels: ' . count($potentialPanels));
-        logger("Number of students: {$totalStudents}");
-        logger("maxStudentsPerPanel: {$maxStudentsPerPanel}");
-        logger("Final Panel Counts:");
+        // logger('Number of potential panels: ' . count($potentialPanels));
+        // logger("Number of students: {$totalStudents}");
+        // logger("maxStudentsPerPanel: {$maxStudentsPerPanel}");
+        // logger("Final Panel Counts:");
+        // foreach ($panelCounts as $panel => $count) {
+        //     logger("Panel {$panel}: Count {$count}");
+        // };
+
+        $this->logDistributionStats($panelCounts, $maxStudentsPerPanel, $totalStudents);
+    }
+
+    private function logDistributionStats($panelCounts, $maxStudentsPerPanel, $totalStudents)
+    {
+        logger("Distribution Statistics:");
+        logger("Total Students: {$totalStudents}");
+        logger("Target Students Per Panel: {$maxStudentsPerPanel}");
+        
+        $min = min($panelCounts);
+        $max = max($panelCounts);
+        $avg = array_sum($panelCounts) / count($panelCounts);
+        $variance = $this->calculateVariance($panelCounts, $avg);
+        
+        logger("Min assignments: {$min}");
+        logger("Max assignments: {$max}");
+        logger("Average assignments: {$avg}");
+        logger("Assignment variance: {$variance}");
+        
         foreach ($panelCounts as $panel => $count) {
-            logger("Panel {$panel}: Count {$count}");
-        };
+            $deviation = $count - $maxStudentsPerPanel;
+            logger("Panel {$panel}: Count {$count} (Deviation: {$deviation})");
+        }
+    }
+
+    private function calculateVariance($panelCounts, $mean)
+    {
+        $squaredDiffs = array_map(function($count) use ($mean) {
+            return pow($count - $mean, 2);
+        }, $panelCounts);
+        
+        return array_sum($squaredDiffs) / count($panelCounts);
     }
     
 
