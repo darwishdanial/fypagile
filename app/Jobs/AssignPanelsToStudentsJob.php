@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\ProjectAreaMapping;
+use Illuminate\Bus\Queueable;
 
 class AssignPanelsToStudentsJob implements ShouldQueue
 {
-    use Dispatchable;
+    use Dispatchable, Queueable;
 
     public function handle()
     {

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Http;
 use App\Services\ProjectLecturerMergerService;
 use App\Jobs\AssignPanelsToStudentsJob;
 use Session;
+use App\Jobs\EmailPanelAssignmentCompleteJob;
+use Illuminate\Support\Facades\Auth;
 
 class CoordinatorController extends Controller
 {
@@ -408,7 +410,12 @@ class CoordinatorController extends Controller
 
     public function assignPanelsToStudents()
     {
-        AssignPanelsToStudentsJob::dispatch();
+        $user = Auth::user();
+        $email = $user->email;
+
+        AssignPanelsToStudentsJob::withChain([
+            new EmailPanelAssignmentCompleteJob($email),
+        ])->dispatch();
 
         return response()->json(['message' => 'Panel assignment process has started....']);
     }
