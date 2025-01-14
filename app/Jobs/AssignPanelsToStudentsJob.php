@@ -99,14 +99,6 @@ class AssignPanelsToStudentsJob implements ShouldQueue
             }
         }
 
-        // logger('Number of potential panels: ' . count($potentialPanels));
-        // logger("Number of students: {$totalStudents}");
-        // logger("maxStudentsPerPanel: {$maxStudentsPerPanel}");
-        // logger("Final Panel Counts:");
-        // foreach ($panelCounts as $panel => $count) {
-        //     logger("Panel {$panel}: Count {$count}");
-        // };
-
         $this->logDistributionStats($panelCounts, $maxStudentsPerPanel, $totalStudents);
     }
 
