@@ -156,7 +156,4 @@ class StudentController extends Controller
         return back();
     }
 
-   
-
-    
 }
