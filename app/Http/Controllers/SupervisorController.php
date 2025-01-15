@@ -8,28 +8,35 @@ use App\Models\ResultPSM2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Session;
+use App\Services\StudentService;
+use App\Services\SupervisorService;
 
 
 class SupervisorController extends Controller
 {
-    public function totalSupervisor()
-    {
-        $count = Supervisor::count();
+    protected $studentService;
+    protected $supervisorService;
 
-        return ($count);
+    public function __construct(StudentService $studentService, SupervisorService $supervisorService){
+
+        $this->studentService = $studentService;
+        $this->supervisorService = $supervisorService;
+    }
+    public function totalSupervisor(){
+
+        return $this->supervisorService->totalSupervisor();
     }
 
     public function listsvstudent(){
-        $students = (new StudentController)->getStudentSupervisor();
-        // $students = Student::with('supervisor')->get();
 
-        // dd($students);
-        // $students = Student::get();
+        $students = $this->studentService->getStudentSupervisor();
+
         return view('PSM1.liststudentsv',compact('students'));
     }
 
     //display gradepage for supervisor
     public function creategradePSM1(Student $student){
+
         return view('PSM1.svgradeform', compact('student'));
     }
 
@@ -88,7 +95,8 @@ class SupervisorController extends Controller
     }
 
     public function listsvstudent2(){
-        $students = (new StudentController)->getStudentSupervisor2();
+
+        $students = $this->studentService->getStudentSupervisor2();
         
         return view('PSM2.liststudentsv',compact('students'));
     }
@@ -131,7 +139,7 @@ class SupervisorController extends Controller
             'originality' => $data['originality'],
             'technical' => $data['technical'],
             'clarity' => $data['clarity'],
-            'citation2' => $data['citation2'],
+            //'citation2' => $data['citation2'],
             'asbtract' => $data['asbtract'],
             'intro' => $data['intro'],
             'literature' => $data['literature'],
@@ -156,7 +164,8 @@ class SupervisorController extends Controller
 
     //rubric agile PSM1
     public function listsvpelajar(){
-        $students = (new StudentController)->getStudentSupervisor();
+
+        $students = $this->studentService->getStudentSupervisor();
         
         return view('PSM1.supervisor.listpelajarsv',compact('students'));
     }
@@ -242,7 +251,7 @@ class SupervisorController extends Controller
 
     //rubric agile PSM2
     public function listsvpelajar2(){
-        $students = (new StudentController)->getStudentSupervisor2();
+        $students = $this->studentService->getStudentSupervisor2();
         
         return view('PSM2.supervisor.listpelajarsv',compact('students'));
     }

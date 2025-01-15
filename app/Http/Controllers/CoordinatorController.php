@@ -1,21 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\StudentController;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
+use App\Services\StudentService;
 
 class CoordinatorController extends Controller
 {
     protected $coordinatorService;
+    protected $studentService;
 
-    public function __construct(CoordinatorService $coordinatorService)
-    {
+    public function __construct(CoordinatorService $coordinatorService, StudentService $studentService){
+
         $this->coordinatorService = $coordinatorService;
+
+        $this->studentService = $studentService;
     }
 
     public function rubicPSM1(){
@@ -26,14 +29,14 @@ class CoordinatorController extends Controller
 
     public function listPSM1(){
 
-        $students = (new StudentController)->getStudentPSM1();
+        $students = $this->studentService->getStudentPSM1();
       
         return view('PSM1.liststudent',compact('students'));
     }
 
     public function listPSM2(){
 
-        $students = (new StudentController)->getStudentPSM2();
+        $students = $this->studentService->getStudentPSM2();
 
         return view('PSM2.liststudent',compact('students'));
     }

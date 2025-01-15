@@ -6,11 +6,19 @@ use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
 use Session;
 use Exception;
-
 use Illuminate\Http\Request;
+use App\Services\StudentService;
+
 
 class PanelController extends Controller
 {
+
+    protected $studentService;
+
+    public function __construct(StudentService $studentService){
+
+        $this->studentService = $studentService;
+    }
     public function getPanel(){
 
         $panels = DB::table('users')
@@ -259,12 +267,12 @@ class PanelController extends Controller
     }
 
     public function listpanelpelajar(){
-        $students = (new StudentController)->getStudentPanel();
+        $students = $this->studentService->getStudentPanel();
         return view('PSM1.panel.listpelajarsv',compact('students'));
     }
 
     public function listpanelpelajar2(){
-        $students = (new StudentController)->getStudentPanel2();
+        $students = $this->studentService->getStudentPanel2();
         return view('PSM2.panel.listpelajarsv',compact('students'));
     }
 

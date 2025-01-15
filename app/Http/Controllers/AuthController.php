@@ -15,19 +15,30 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SupervisorController;
 use Hash;
 use Session;
+use App\Services\StudentService;
+use App\Services\SupervisorService;
 
 class AuthController extends Controller
 {
-    function index(){
+
+    protected $studentService;
+    protected $supervisorService;
+
+    public function __construct(StudentService $studentService, SupervisorService $supervisorService){
+
+        $this->studentService = $studentService;
+        $this->supervisorService = $supervisorService;
+    }
+    public function index(){
         return view('login');
     }
 
-    function registration()
+    public function registration()
     {
         return view('registration');
     }
 
-    function validate_registration(Request $request)
+    public function validate_registration(Request $request)
     {
         $request->validate([
             'name'         =>   'required',
@@ -80,7 +91,7 @@ class AuthController extends Controller
         return redirect('registration')->with('success', 'Registration Completed');
     }
 
-    function validate_login(Request $request)
+    public function validate_login(Request $request)
     {
         $request->validate([
             'username' =>  'required',
@@ -120,7 +131,7 @@ class AuthController extends Controller
         return redirect('login')->with('error', 'Login details are not valid');
     }
 
-    function dashboard()
+    public function dashboard()
     {
         if(Auth::check())
         {   
@@ -149,13 +160,13 @@ class AuthController extends Controller
             }
 
             if(Session::get('role_id')==1){
-                $student = (new StudentController)->totalStudent();
-                $student2 = (new StudentController)->totalStudent2();
-                $supervisor = (new SupervisorController)->totalSupervisor();
+                $student = $this->studentService->totalStudent();
+                $student2 = $this->studentService->totalStudent();
+                $supervisor = $this->supervisorService->totalSupervisor();
             } 
             if(Session::get('role_id')==2){
-                $student = (new StudentController)->getStudentSupervisor()->count();
-                $student2 = (new StudentController)->getStudentSupervisor2()->count();
+                $student = $this->studentService->getStudentSupervisor()->count();
+                $student2 = $this->studentService->getStudentSupervisor()->count();
 
             
                 // $supervisor = (new SupervisorController)->totalSupervisor();
@@ -198,7 +209,7 @@ class AuthController extends Controller
             return back()->with("status", "Password changed successfully!");
     }
 
-    function logout()
+    public function logout()
     {
         Session::flush();
 
