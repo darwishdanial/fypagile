@@ -9,7 +9,6 @@ use Session;
 
 class StudentService 
 {
-
     public function totalStudent(){
         
         $count = StudentPSM1::count();
