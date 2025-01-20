@@ -188,7 +188,7 @@ class CoordinatorController extends Controller
         ]);
     }
 
-    public function assignPanelsToStudents(){
+    public function autoAssignPanelsToStudents(){
 
         try{
             return $this->coordinatorService->autoAssignPanelsToStudents();
@@ -196,6 +196,14 @@ class CoordinatorController extends Controller
             logger('Error auto assigning panels to students: ' . $e->getMessage());
         }
         
+    }
+
+    public function deleteAllAssignedPanels(){
+        try{
+            return $this->coordinatorService->deleteAllAssignedPanels();
+        }catch(\Exception $e){
+            logger('Error auto assigning panels to students: ' . $e->getMessage());
+        }
     }
 
 }

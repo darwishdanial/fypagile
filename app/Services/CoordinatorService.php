@@ -327,5 +327,15 @@ class CoordinatorService
         return response()->json(['message' => 'AI Panel assignment process has started....']);
     }
 
+    public function deleteAllAssignedPanels(){
+
+        StudentPSM1::query()->update([
+            'panelId' => null,
+            'panel2Id' => null,
+        ]);
+    
+        return response()->json(['message' => 'All panel assignments have been cleared successfully.']);
+    }
+
 
 }

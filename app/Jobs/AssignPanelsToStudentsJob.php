@@ -79,16 +79,16 @@ class AssignPanelsToStudentsJob implements ShouldQueue
                         $panelCounts[$panel]++;
                         //$primaryPanelScore = $score;
                         logger("Primary panel: {$primaryPanel}  with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");  
-                        //$student->update(['panelId' => $primaryPanel]); //panel1Id
+                        $student->update(['panelId' => $primaryPanel + 1]); //panel1Id
 
                     } elseif (!$secondaryPanel && $primaryPanel !== $panel) {
                         $secondaryPanel = $panel;
                         $panelCounts[$panel]++;  
                         //$secondaryPanelScore = $score;
+                        $student->update(['panel2Id' => $secondaryPanel + 1]); //panel2Id
                         logger("Secondary panel: {$secondaryPanel} with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");
                         logger('---------------------------------------');
                         break;
-                        //$student->update(['panel2Id' => $secondaryPanel]); //panel2Id
                     }
 
                     // Stop if both primary and secondary panels are assigned
@@ -106,6 +106,7 @@ class AssignPanelsToStudentsJob implements ShouldQueue
     {
         logger("Distribution Statistics:");
         logger("Total Students: {$totalStudents}");
+        logger("Total Panels: " . count($panelCounts));
         logger("Target Students Per Panel: {$maxStudentsPerPanel}");
         
         $min = min($panelCounts);
