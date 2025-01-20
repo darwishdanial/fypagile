@@ -112,7 +112,11 @@ class StudentController extends Controller
             'svId' => 'required|integer|exists:supervisors,id',
         ]);
 
-        return $this->studentService->assignStudent($request->id, $request->svId);
+        try{
+            $this->studentService->assignStudent($request->id, $request->svId);
+        }catch(\Exception $e){
+            logger('Error assigning student: ' . $e->getMessage());
+        }
     }
 
     public function unassignStudent(Request $request){
@@ -122,7 +126,12 @@ class StudentController extends Controller
             'svId' => 'required|integer|exists:supervisors,id',
         ]);
 
-        return $this->studentService->assignStudent($request->id, $request->svId);
+        try{
+            $this->studentService->unassignStudent($request->id, $request->svId);
+        }catch(\Exception $e){
+            logger('Error unassigning student: ' . $e->getMessage());
+
+        }
     }
 
     //import PSM1 student//

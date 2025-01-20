@@ -37,18 +37,25 @@ class PanelController extends Controller
     public function assignStudent(Request $request){
 
         try {
-            $res = "success";
             $this->panelService->assignStudent($request->panelType,$request->id, $request->panelId);
-            return $res;
+            return "success assign PSM1";
         } catch (Exception $e) {
-            error_log('Exception');
-            error_log($e);
+            logger('Exception:', );
+            logger($e);
+            return "error assign PSM1";
         }
     }
 
     public function unassignStudent(Request $request){
 
-        return $this->panelService->unassignStudent($request->id,$request->panelType);
+        try{
+            $this->panelService->unassignStudent($request->id,$request->panelType);
+            return "success unassign PSM1";
+        } catch (Exception $e) {
+            logger('Exception');
+            logger($e);
+            return "error unassign PSM1";
+        }
     }
 
     public function getPanelPSM2(){
@@ -67,16 +74,28 @@ class PanelController extends Controller
 
     public function assignStudentPSM2(Request $request){
 
-        $result = $this->panelService->assignStudentPSM2($request->id, $request->panelType, $request->panelId);
+        try{
+            $this->panelService->assignStudentPSM2($request->id, $request->panelType, $request->panelId);
+            return "success assign PSM2";
+        }catch(Exception $e){
+            logger('Exception');
+            logger($e);
+            return "error assign PSM2";
+        }
         
-        return response()->json(['status' => $result]);
     }
 
     public function unassignStudentPSM2(Request $request){
 
-        $result = $this->panelService->unassignStudentPSM2($request->id, $request->panelType);
+        try{
+            $this->panelService->unassignStudentPSM2($request->id, $request->panelType);
+            return "success unassign PSM2";
+        }catch(Exception $e){
+            logger('Exception');
+            logger($e);
+            return "error unassign PSM2";
+        }
         
-        return response()->json(['status' => $result]);
     }
 
     public function getPanelProposal(){
@@ -94,13 +113,27 @@ class PanelController extends Controller
     }
 
     public function assignStudentProposal(Request $request){
-        
-        return $this->panelService->assignStudentProposal($request->id, $request->panelId);
+
+        try{
+            $this->panelService->assignStudentProposal($request->id, $request->panelId);
+            return "success assign proposal";
+        }catch(Exception $e){
+            logger('Exception');
+            logger($e);
+            return "error assign proposal";
+        }
     }
 
     public function unassignStudentProposal(Request $request){
 
-        return $this->panelService->unassignStudentProposal($request->id);
+        try{
+            $this->panelService->unassignStudentProposal($request->id);
+            return "success unassign proposal";
+        }catch(Exception $e){
+            logger('Exception');
+            logger($e);
+            return "error unassign proposal";
+        }
     }
 
     public function listpanelpelajar(){

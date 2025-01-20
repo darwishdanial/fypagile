@@ -63,6 +63,7 @@ class SupervisorController extends Controller
             $this->supervisorService->gradePSM1($request->all(), $student);
             return redirect()->route('listsvstudent')->with('success','Student has been graded successfully');
         }catch(\Exception $e){
+            \Log::error('Error grading PSM1 student: ' . $e->getMessage());
             return redirect()->route('listsvstudent')->with('error','An error occurred while grading the student. Please try again.');
         }
         
@@ -94,6 +95,7 @@ class SupervisorController extends Controller
             $this->supervisorService->gradePSM2($request->all(), $student);
             return redirect()->route('listsvstudent2')->with('success','Student has been graded successfully');
         }catch(\Exception $e){
+            \Log::error('Error grading PSM2 student: ' . $e->getMessage());
             return redirect()->route('listsvstudent2')->with('error','An error occurred while grading the student. Please try again.');
         }
 
@@ -141,6 +143,7 @@ class SupervisorController extends Controller
             $this->supervisorService->markahPSM1($request->all());
             return redirect()->route('listsvpelajar')->with('success', 'Student has been graded successfully');
         } catch (\Exception $e) {
+            logger('Error markah PSM1: ' . $e->getMessage());
             return redirect()->route('listsvpelajar')->with('error', 'An error occurred while grading the student. Please try again.');
         }
 
@@ -168,6 +171,7 @@ class SupervisorController extends Controller
             $this->supervisorService->markahPSM2($request->all());
             return redirect()->route('listsvpelajar2')->with('success', 'Student has been graded successfully');
         } catch (\Exception $e) {
+            logger('Error markah PSM2: ' . $e->getMessage());
             return redirect()->route('listsvpelajar2')->with('error', 'An error occurred while grading the student. Please try again.');
         }
     }

@@ -324,7 +324,7 @@ class CoordinatorService
             new EmailPanelAssignmentCompleteJob($email),
         ])->dispatch();
 
-        return response()->json(['message' => 'Panel assignment process has started....']);
+        return response()->json(['message' => 'AI Panel assignment process has started....']);
     }
 
 

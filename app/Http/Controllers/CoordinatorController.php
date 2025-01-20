@@ -190,7 +190,12 @@ class CoordinatorController extends Controller
 
     public function assignPanelsToStudents(){
 
-        return $this->coordinatorService->assignPanelsToStudents();
+        try{
+            return $this->coordinatorService->assignPanelsToStudents();
+        }catch(\Exception $e){
+            logger('Error auto assigning panels to students: ' . $e->getMessage());
+        }
+        
     }
 
 }

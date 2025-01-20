@@ -127,19 +127,15 @@ class StudentService
         return $students;
     }
 
-    public function assignStudent(int $studentId, int $supervisorId): string{
+    public function assignStudent(int $studentId, int $supervisorId){
 
         StudentPSM1::whereId($studentId)
             ->update(['supervisorId' => $supervisorId]);
-
-        return "success";
     }
 
-    public function unassignStudent(int $studentId, int $supervisorId): string{
+    public function unassignStudent(int $studentId, int $supervisorId){
 
         StudentPSM1::whereId($studentId)
             ->update(['supervisorId' => $supervisorId]);
-
-        return "success";
     }
 }

@@ -7,9 +7,6 @@ use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
 use Session;
 use Exception;
-use Illuminate\Http\Request;
-use App\Services\StudentService;
-
 
 class PanelService 
 {
@@ -24,41 +21,36 @@ class PanelService
     public function getStudents($panelType, $panelId)
     {
 
-        try {
-            $students = collect();
-            
-            if ($panelType == 'panel1') {
-                $students = StudentPSM1::all(['id', 'course', 'name', 'panelId', 'panel2Id'])->map(function ($student) use ($panelId) {
-                    $student->assigned = false;
-                    
-                    if ($student->panelId == $panelId) {
-                        $student->assigned = true;
-                    } elseif ($student->panelId != null || $student->panel2Id == $panelId) {
-                        return null;
-                    }
-                    
-                    return $student;
-                })->filter(fn($student) => !is_null($student));
-            } elseif ($panelType == 'panel2') {
-                $students = StudentPSM1::all(['id', 'course', 'name', 'panelId', 'panel2Id'])->map(function ($student) use ($panelId) {
-                    $student->assigned = false;
-                    
-                    if ($student->panel2Id == $panelId) {
-                        $student->assigned = true;
-                    } elseif ($student->panel2Id != null || $student->panelId == $panelId) {
-                        return null;
-                    }
-                    
-                    return $student;
-                })->filter(fn($student) => !is_null($student));
-            }
-            
-            return $students->values()->all();
-        } catch (Exception $e) {
-            // Log the exception and return an empty array or handle it as needed
-            \Log::error("Error fetching students: " . $e->getMessage());
-            return [];
+        $students = collect();
+        
+        if ($panelType == 'panel1') {
+            $students = StudentPSM1::all(['id', 'course', 'name', 'panelId', 'panel2Id'])->map(function ($student) use ($panelId) {
+                $student->assigned = false;
+                
+                if ($student->panelId == $panelId) {
+                    $student->assigned = true;
+                } elseif ($student->panelId != null || $student->panel2Id == $panelId) {
+                    return null;
+                }
+                
+                return $student;
+            })->filter(fn($student) => !is_null($student));
+        } elseif ($panelType == 'panel2') {
+            $students = StudentPSM1::all(['id', 'course', 'name', 'panelId', 'panel2Id'])->map(function ($student) use ($panelId) {
+                $student->assigned = false;
+                
+                if ($student->panel2Id == $panelId) {
+                    $student->assigned = true;
+                } elseif ($student->panel2Id != null || $student->panelId == $panelId) {
+                    return null;
+                }
+                
+                return $student;
+            })->filter(fn($student) => !is_null($student));
         }
+        
+        return $students->values()->all();
+
     }
 
     public function assignStudent($panelType, $studentId, $panelId){
@@ -83,25 +75,19 @@ class PanelService
         }
     }
 
-    public function unassignStudent($studentId, $panelType): string
+    public function unassignStudent($studentId, $panelType)
     {
-        try {
-            switch ($panelType) {
-                case 'panel1':
-                    StudentPSM1::whereId($studentId)
-                        ->update(['panelId' => null]);
-                    break;
-                case 'panel2':
-                    StudentPSM1::whereId($studentId)
-                        ->update(['panel2Id' => null]);
-                    break;
-                default:
-                    throw new Exception("Invalid panel type: $panelType");
-            }
-
-            return "success";
-        } catch (Exception $e) {
-            throw $e; 
+        switch ($panelType) {
+            case 'panel1':
+                StudentPSM1::whereId($studentId)
+                    ->update(['panelId' => null]);
+                break;
+            case 'panel2':
+                StudentPSM1::whereId($studentId)
+                    ->update(['panel2Id' => null]);
+                break;
+            default:
+                throw new Exception("Invalid panel type: $panelType");
         }
     }
 
@@ -115,84 +101,67 @@ class PanelService
     }
     public function getStudentsPSM2($panelType, $panelId)
     {
-        try {
-            $students = collect();
-            
-            if ($panelType == 'panel1') {
-                $students = StudentPSM2::all(['id', 'course', 'name', 'panelId', 'panel2Id'])->map(function ($student) use ($panelId) {
-                    $student->assigned = false;
-                    
-                    if ($student->panelId == $panelId) {
-                        $student->assigned = true;
-                    } elseif ($student->panelId != null || $student->panel2Id == $panelId) {
-                        return null;
-                    }
-                    
-                    return $student;
-                })->filter(fn($student) => !is_null($student));
-            } elseif ($panelType == 'panel2') {
-                $students = StudentPSM2::all(['id', 'course', 'name', 'panelId', 'panel2Id'])->map(function ($student) use ($panelId) {
-                    $student->assigned = false;
-                    
-                    if ($student->panel2Id == $panelId) {
-                        $student->assigned = true;
-                    } elseif ($student->panel2Id != null || $student->panelId == $panelId) {
-                        return null;
-                    }
-                    
-                    return $student;
-                })->filter(fn($student) => !is_null($student));
-            }
-            
-            return $students->values()->all();
-        } catch (Exception $e) {
-            // Log the exception and return an empty array or handle it as needed
-            \Log::error("Error fetching students: " . $e->getMessage());
-            return [];
+        $students = collect();
+        
+        if ($panelType == 'panel1') {
+            $students = StudentPSM2::all(['id', 'course', 'name', 'panelId', 'panel2Id'])->map(function ($student) use ($panelId) {
+                $student->assigned = false;
+                
+                if ($student->panelId == $panelId) {
+                    $student->assigned = true;
+                } elseif ($student->panelId != null || $student->panel2Id == $panelId) {
+                    return null;
+                }
+                
+                return $student;
+            })->filter(fn($student) => !is_null($student));
+        } elseif ($panelType == 'panel2') {
+            $students = StudentPSM2::all(['id', 'course', 'name', 'panelId', 'panel2Id'])->map(function ($student) use ($panelId) {
+                $student->assigned = false;
+                
+                if ($student->panel2Id == $panelId) {
+                    $student->assigned = true;
+                } elseif ($student->panel2Id != null || $student->panelId == $panelId) {
+                    return null;
+                }
+                
+                return $student;
+            })->filter(fn($student) => !is_null($student));
         }
+        
+        return $students->values()->all();
+
     }
 
     public function assignStudentPSM2($id, $panelType, $panelId)
     {
-        try {
-            $res = "success";
-
-            if ($panelType == 'panel1') {
+        switch ($panelType) {
+            case 'panel1':
                 StudentPSM2::whereId($id)
-                    ->update([
-                        'panelId' => $panelId
-                    ]);
-            } elseif ($panelType == 'panel2') {
+                    ->update(['panelId' => $panelId]);
+                break;
+            case 'panel2':
                 StudentPSM2::whereId($id)
-                    ->update([
-                        'panel2Id' => $panelId
-                    ]);
-            }
-
-            return $res;
-        } catch (Exception $e) {
-            // Log the exception
-            \Log::error("Error assigning student: " . $e->getMessage());
-            return "error";
+                    ->update(['panel2Id' => $panelId]);
+                break;
+            default:
+                throw new Exception("Invalid panel type: $panelType");
         }
     }
 
     public function unassignStudentPSM2($id, $panelType)
     {
-        try {
-            $res = "success";
-
-            if ($panelType == 'panel1') {
-                StudentPSM2::whereId($id)->update(['panelId' => null]);
-            } elseif ($panelType == 'panel2') {
-                StudentPSM2::whereId($id)->update(['panel2Id' => null]);
-            }
-
-            return $res;
-        } catch (Exception $e) {
-            // Log the exception
-            \Log::error("Error unassigning student: " . $e->getMessage());
-            return "error";
+        switch ($panelType) {
+            case 'panel1':
+                StudentPSM1::whereId($id)
+                    ->update(['panelId' => null]);
+                break;
+            case 'panel2':
+                StudentPSM1::whereId($id)
+                    ->update(['panel2Id' => null]);
+                break;
+            default:
+                throw new Exception("Invalid panel type: $panelType");
         }
     }
 
@@ -224,34 +193,18 @@ class PanelService
 
     public function assignStudentProposal($studentId, $panelId){
 
-        try{
-            $res = "success";
-
-            StudentPSM1::whereId($studentId)
-                ->update([
-                    'panelProposalId' => $panelId
-                ]);
-            return $res;
-        } catch (Exception $e) {
-
-            \Log::error("Error assigning student: " . $e->getMessage());
-            return "error";
-        }
+        StudentPSM1::whereId($studentId)
+            ->update([
+                'panelProposalId' => $panelId
+            ]);
     }
 
     public function unassignStudentProposal($studentId){
 
-        try{
-            $res = "success";
-            StudentPSM1::whereId($studentId)
-                ->update([
-                    'panelProposalId' => null
-                ]);
-            return $res;
-        } catch (Exception $e) {
-            \Log::error("Error unassigning student: " . $e->getMessage());
-            return "error";
-        }
+        StudentPSM1::whereId($studentId)
+            ->update([
+                'panelProposalId' => null
+            ]);
     }
 
     public function markahPSM1Panel($data)
