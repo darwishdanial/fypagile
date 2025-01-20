@@ -60,7 +60,7 @@ class PanelController extends Controller
 
     public function getPanelPSM2(){
 
-        $panels = $this->panelService->getPanel();
+        $panels = $this->panelService->getPanelPSM2();
 
         return view('PSM2.panel.assignpanel', compact(['panels']));
     }

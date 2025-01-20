@@ -315,7 +315,7 @@ class CoordinatorService
         throw new \Exception('Failed to fetch lecturer data');
     }
 
-    public function assignPanelsToStudents()
+    public function autoAssignPanelsToStudents()
     {
         $user = Auth::user();
         $email = $user->email;

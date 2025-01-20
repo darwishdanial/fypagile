@@ -20,7 +20,6 @@ class PanelService
 
     public function getStudents($panelType, $panelId)
     {
-
         $students = collect();
         
         if ($panelType == 'panel1') {
