@@ -320,9 +320,11 @@ class CoordinatorService
         $user = Auth::user();
         $email = $user->email;
 
-        AssignPanelsToStudentsJob::withChain([
-            new EmailPanelAssignmentCompleteJob($email),
-        ])->dispatch();
+        // AssignPanelsToStudentsJob::withChain([
+        //     new EmailPanelAssignmentCompleteJob($email),
+        // ])->dispatch();
+
+        AssignPanelsToStudentsJob::dispatch();
 
         return response()->json(['message' => 'AI Panel assignment process has started....']);
     }

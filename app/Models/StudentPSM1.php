@@ -24,7 +24,8 @@ class StudentPSM1 extends Model
         'cohort',
         'sessionpsm',
         'supervisorId',
-        'panelId'
+        'panelId',
+        'panel2Id'
     ];
 
     public function supervisor()

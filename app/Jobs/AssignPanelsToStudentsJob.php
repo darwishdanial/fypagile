@@ -22,11 +22,10 @@ class AssignPanelsToStudentsJob implements ShouldQueue
         $students = StudentPSM1::all();
 
 
-        // $allPanels = DB::table('users')->pluck('id')->toArray();
-        // $allPanels = array_map(function($panelId) {
-        //     return $panelId - 1; // Subtract 1 from each panel ID to start from 0
-        // }, $allPanels);
-        $allPanels = DB::table('lecturer_mapping')->pluck('number')->toArray();
+        $allPanels = DB::table('users')->pluck('id')->toArray();
+        $allPanels = array_map(function($panelId) {
+            return $panelId - 1; // Subtract 1 from each panel ID to start from 0
+        }, $allPanels);
         $totalStudents = $students->count();
         $totalPanels = count($allPanels);
         $maxStudentsPerPanel = ceil($totalStudents / $totalPanels) * 2;
@@ -75,18 +74,20 @@ class AssignPanelsToStudentsJob implements ShouldQueue
 
                 if ($panelCounts[$panel] < $maxStudentsPerPanel) {
                     if (!$primaryPanel) {
-                        $primaryPanel = $panel;
+                        $primaryPanel = $panel + 1;
+                        $username = DB::table('users')->where('id', $primaryPanel)->value('name');
                         $panelCounts[$panel]++;
                         //$primaryPanelScore = $score;
-                        logger("Primary panel: {$primaryPanel}  with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");  
-                        $student->update(['panelId' => $primaryPanel + 1]); //panel1Id
+                        logger("Primary panel: {$primaryPanel} [{$username}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");  
+                        $student->update(['panelId' => $primaryPanel]); //panel1Id
 
                     } elseif (!$secondaryPanel && $primaryPanel !== $panel) {
-                        $secondaryPanel = $panel;
+                        $secondaryPanel = $panel + 1;
+                        $username = DB::table('users')->where('id', $secondaryPanel)->value('name');
                         $panelCounts[$panel]++;  
                         //$secondaryPanelScore = $score;
-                        $student->update(['panel2Id' => $secondaryPanel + 1]); //panel2Id
-                        logger("Secondary panel: {$secondaryPanel} with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");
+                        $student->update(['panel2Id' => $secondaryPanel]); //panel2Id
+                        logger("Secondary panel: {$secondaryPanel} [{$username}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");
                         logger('---------------------------------------');
                         break;
                     }
@@ -121,7 +122,9 @@ class AssignPanelsToStudentsJob implements ShouldQueue
         
         foreach ($panelCounts as $panel => $count) {
             $deviation = $count - $maxStudentsPerPanel;
-            logger("Panel {$panel}: Count {$count} (Deviation: {$deviation})");
+            $panelId = $panel + 1;
+            $username = DB::table('users')->where('id', $panelId)->value('name');
+            logger("Panel {$panelId} [{$username}]: Student Count {$count} (Deviation: {$deviation})");
         }
     }
 

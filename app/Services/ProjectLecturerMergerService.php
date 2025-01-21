@@ -61,7 +61,11 @@ class ProjectLecturerMergerService
 
         foreach ($studentData as $project) {
             $id = $project['id_project_62base'];
-            $lecturers = $panelMap[$id] ?? [null]; 
+            $lecturers = $panelMap[$id] ?? []; 
+
+            if (empty($lecturers)) {
+                continue;
+            }
 
             foreach ($lecturers as $lecturer) {
                 $mergedData[] = [

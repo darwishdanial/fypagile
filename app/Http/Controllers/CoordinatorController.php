@@ -199,6 +199,7 @@ class CoordinatorController extends Controller
     }
 
     public function deleteAllAssignedPanels(){
+
         try{
             return $this->coordinatorService->deleteAllAssignedPanels();
         }catch(\Exception $e){
