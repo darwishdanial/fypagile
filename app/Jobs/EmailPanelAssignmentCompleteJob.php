@@ -15,15 +15,19 @@ class EmailPanelAssignmentCompleteJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $email;
+    public $status;
+    public $message;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($email)
+    public function __construct($email, $status, $message = null)
     {
         $this->email = $email;
+        $this->status = $status;
+        $this->message = $message;
     }
 
     /**
@@ -33,6 +37,6 @@ class EmailPanelAssignmentCompleteJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->email)->send(new NotifyPanelAssignmentComplete());
+        Mail::to($this->email)->send(new NotifyPanelAssignmentComplete($this->status, $this->message));
     }
 }

@@ -13,14 +13,18 @@ class NotifyPanelAssignmentComplete extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $status;
+    public $message;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($status, $message)
     {
-        //
+        $this->status = $status;
+        $this->message = $message;
     }
 
     /**
@@ -44,6 +48,10 @@ class NotifyPanelAssignmentComplete extends Mailable
     {
         return new Content(
             markdown: 'mail.panelAssignComplete', //will be inside view folder
+            with: [
+                'status' => $this->status, // Passing status to the view
+                'message' => $this->message,
+            ]
         );
     }
 

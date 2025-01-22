@@ -10,16 +10,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\ProjectAreaMapping;
 use Illuminate\Bus\Queueable;
+use Throwable;
 
 class AssignPanelsToStudentsJob implements ShouldQueue
 {
     use Dispatchable, Queueable;
 
     public $studentType;
+    public $email;
 
-    public function __construct($studentType){
+    public function __construct($studentType, $email){
 
         $this->studentType = $studentType;
+        $this->email = $email;
     }
 
     public function handle(){
@@ -32,8 +35,10 @@ class AssignPanelsToStudentsJob implements ShouldQueue
 
         if ($this->studentType === "PSM1" || $this->studentType === "proposal") {
             $students = StudentPSM1::all();
-        }elseif($this->tudentType = "PSM2"){
+        }elseif($this->studentType === "PSM2"){
             $students = StudentPSM2::all();
+        }else {
+            throw new \InvalidArgumentException("Invalid student type: {$this->studentType}");
         }
 
         $panels = DB::table('users')->select('id', 'name')->get();
@@ -82,7 +87,6 @@ class AssignPanelsToStudentsJob implements ShouldQueue
                 $loadFactors[$panel] = $adjustedScore;
             }
 
-            // Sort panels by adjusted scores
             arsort($loadFactors);
 
             foreach ($loadFactors as $panel => $adjustedScore) {
@@ -159,12 +163,18 @@ class AssignPanelsToStudentsJob implements ShouldQueue
     }
 
     private function getTypeNumericValue($projectType){
-        
+
         if ($projectType == 'System Development') {
             return 0; // System Development => 0
         } elseif ($projectType == 'Research Based') {
             return 1; // Research Based => 1
         }
         return -1; // Default to -1 if not matching
+    }
+
+    public function failed(?Throwable $exception): void{
+
+        logger('Error auto assigning panels to students: ' . $exception->getMessage());
+        EmailPanelAssignmentCompleteJob::dispatch($this->email, $status = "fail", $exception->getMessage());
     }
 }

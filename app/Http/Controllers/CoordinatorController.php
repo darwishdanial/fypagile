@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
 use App\Services\StudentService;
+use App\Jobs\EmailPanelAssignmentCompleteJob;
+use Illuminate\Support\Facades\Auth;
 
 class CoordinatorController extends Controller
 {
@@ -190,13 +192,11 @@ class CoordinatorController extends Controller
 
     public function autoAssignPanelsToStudentsPSM1(){
 
-        try{
-            $psmType = 'PSM1';
-            return $this->coordinatorService->autoAssignPanelsToStudents($psmType);
-        }catch(\Exception $e){
-            logger('Error auto assigning panels to students: ' . $e->getMessage());
-        }
-        
+        $user = Auth::user();
+        $email = $user->email;
+        $psmType = 'PSM1';
+        return $this->coordinatorService->autoAssignPanelsToStudents($psmType, $email);
+
     }
 
     public function deleteAllAssignedPanels(){

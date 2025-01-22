@@ -315,16 +315,15 @@ class CoordinatorService
         throw new \Exception('Failed to fetch lecturer data');
     }
 
-    public function autoAssignPanelsToStudents($psmType)
+    public function autoAssignPanelsToStudents($psmType, $email)
     {
-        $user = Auth::user();
-        $email = $user->email;
+        $status = "success";
 
-        // AssignPanelsToStudentsJob::withChain([
-        //     new EmailPanelAssignmentCompleteJob($email),
-        // ])->dispatch();
+        AssignPanelsToStudentsJob::withChain([
+            new EmailPanelAssignmentCompleteJob($email, $status),
+        ])->dispatch($psmType, $email);
 
-        AssignPanelsToStudentsJob::dispatch($psmType);
+        //AssignPanelsToStudentsJob::dispatch($psmType);
 
         return response()->json(['message' => 'AI Panel assignment process has started....']);
     }
