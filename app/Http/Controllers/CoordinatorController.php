@@ -188,10 +188,11 @@ class CoordinatorController extends Controller
         ]);
     }
 
-    public function autoAssignPanelsToStudents(){
+    public function autoAssignPanelsToStudentsPSM1(){
 
         try{
-            return $this->coordinatorService->autoAssignPanelsToStudents();
+            $psmType = 'PSM1';
+            return $this->coordinatorService->autoAssignPanelsToStudents($psmType);
         }catch(\Exception $e){
             logger('Error auto assigning panels to students: ' . $e->getMessage());
         }

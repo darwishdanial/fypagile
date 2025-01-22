@@ -83,7 +83,7 @@ Route::controller(StudentController::class)->group(function(){
 Route::controller(CoordinatorController::class)->group(function(){
     // Route::get('coordinator', 'indexC')->name('indexC');
 
-    Route::post('/assign-panels-to-students', 'autoAssignPanelsToStudents')->name('autoAssign');
+    Route::post('/assign-panels-to-students', 'autoAssignPanelsToStudentsPSM1')->name('autoAssign');
     Route::get('/assign-panels-to-students', 'deleteAllAssignedPanels')->name('removeAllPanel');
 
     Route::get('coordinator-rubric/PSM1', 'rubicPSM1')->name('rubricPSM1');

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\StudentPSM1;
+use App\Models\StudentPSM2;
 use Phpml\ModelManager;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,26 +15,40 @@ class AssignPanelsToStudentsJob implements ShouldQueue
 {
     use Dispatchable, Queueable;
 
-    public function handle()
-    {
+    public $studentType;
+
+    public function __construct($studentType){
+
+        $this->studentType = $studentType;
+    }
+
+    public function handle(){
+
         $modelManager = new ModelManager();
         $modelPath = storage_path('app/ai_model/panel_assignment_svc.model');
         $classifier = $modelManager->restoreFromFile($modelPath);
-        $students = StudentPSM1::all();
 
+        $students = null;
 
-        $allPanels = DB::table('users')->pluck('id')->toArray();
-        $allPanels = array_map(function($panelId) {
-            return $panelId - 1; // Subtract 1 from each panel ID to start from 0
-        }, $allPanels);
+        if ($this->studentType === "PSM1" || $this->studentType === "proposal") {
+            $students = StudentPSM1::all();
+        }elseif($this->tudentType = "PSM2"){
+            $students = StudentPSM2::all();
+        }
+
+        $panels = DB::table('users')->select('id', 'name')->get();
+
+        $allPanels = $panels->pluck('id')->map(fn($id) => $id - 1)->toArray(); //start from 0 to same as $potentialPanels
+        $panelName = $panels->pluck('name', 'id')->toArray(); 
+
         $totalStudents = $students->count();
         $totalPanels = count($allPanels);
         $maxStudentsPerPanel = ceil($totalStudents / $totalPanels) * 2;
-        $panelCounts = array_fill_keys($allPanels, 0);
+        $panelCounts = array_fill_keys($allPanels, 0); //keep track of student count per panel
 
         foreach ($students as $student) {
 
-            logger("Student id: {$student->id}");
+            logger("Student id: {$student->id} [{$student->name}]");
 
             $features = [
                 $this->getAreaNumericValue($student->project_area), 
@@ -75,36 +90,27 @@ class AssignPanelsToStudentsJob implements ShouldQueue
                 if ($panelCounts[$panel] < $maxStudentsPerPanel) {
                     if (!$primaryPanel) {
                         $primaryPanel = $panel + 1;
-                        $username = DB::table('users')->where('id', $primaryPanel)->value('name');
                         $panelCounts[$panel]++;
-                        //$primaryPanelScore = $score;
-                        logger("Primary panel: {$primaryPanel} [{$username}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");  
-                        $student->update(['panelId' => $primaryPanel]); //panel1Id
+                        //$student->update(['panelId' => $primaryPanel]); 
+                        logger("Primary panel: {$primaryPanel} [{$panelName[$primaryPanel]}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");  
 
                     } elseif (!$secondaryPanel && $primaryPanel !== $panel) {
                         $secondaryPanel = $panel + 1;
-                        $username = DB::table('users')->where('id', $secondaryPanel)->value('name');
                         $panelCounts[$panel]++;  
-                        //$secondaryPanelScore = $score;
-                        $student->update(['panel2Id' => $secondaryPanel]); //panel2Id
-                        logger("Secondary panel: {$secondaryPanel} [{$username}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");
+                        //$student->update(['panel2Id' => $secondaryPanel]); 
+                        logger("Secondary panel: {$secondaryPanel} [{$panelName[$secondaryPanel]}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");
                         logger('---------------------------------------');
-                        break;
-                    }
-
-                    // Stop if both primary and secondary panels are assigned
-                    if ($primaryPanel && $secondaryPanel) {
                         break;
                     }
                 }
             }
         }
 
-        $this->logDistributionStats($panelCounts, $maxStudentsPerPanel, $totalStudents);
+        $this->logDistributionStats($panelCounts, $maxStudentsPerPanel, $totalStudents, $panelName);
     }
 
-    private function logDistributionStats($panelCounts, $maxStudentsPerPanel, $totalStudents)
-    {
+    private function logDistributionStats($panelCounts, $maxStudentsPerPanel, $totalStudents, $panelName){
+
         logger("Distribution Statistics:");
         logger("Total Students: {$totalStudents}");
         logger("Total Panels: " . count($panelCounts));
@@ -123,13 +129,12 @@ class AssignPanelsToStudentsJob implements ShouldQueue
         foreach ($panelCounts as $panel => $count) {
             $deviation = $count - $maxStudentsPerPanel;
             $panelId = $panel + 1;
-            $username = DB::table('users')->where('id', $panelId)->value('name');
-            logger("Panel {$panelId} [{$username}]: Student Count {$count} (Deviation: {$deviation})");
+            logger("Panel {$panelId} [{$panelName[$panelId]}]: Student Count {$count} (Deviation: {$deviation})");
         }
     }
 
-    private function calculateVariance($panelCounts, $mean)
-    {
+    private function calculateVariance($panelCounts, $mean){
+
         $squaredDiffs = array_map(function($count) use ($mean) {
             return pow($count - $mean, 2);
         }, $panelCounts);
@@ -138,23 +143,23 @@ class AssignPanelsToStudentsJob implements ShouldQueue
     }
     
 
-    private function assignAvailablePanel($classifier, $features)
-    {
+    private function assignAvailablePanel($classifier, $features){
+
         $score = $classifier->predictProbability($features); 
 
         return $score;
     }
 
 
-    private function getAreaNumericValue($projectArea)
-    {
+    private function getAreaNumericValue($projectArea){
+
         $areaMapping = ProjectAreaMapping::where('name', $projectArea)->first();
 
         return $areaMapping ? $areaMapping->number : -1;
     }
 
-    private function getTypeNumericValue($projectType)
-    {
+    private function getTypeNumericValue($projectType){
+        
         if ($projectType == 'System Development') {
             return 0; // System Development => 0
         } elseif ($projectType == 'Research Based') {

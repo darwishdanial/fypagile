@@ -315,7 +315,7 @@ class CoordinatorService
         throw new \Exception('Failed to fetch lecturer data');
     }
 
-    public function autoAssignPanelsToStudents()
+    public function autoAssignPanelsToStudents($psmType)
     {
         $user = Auth::user();
         $email = $user->email;
@@ -324,7 +324,7 @@ class CoordinatorService
         //     new EmailPanelAssignmentCompleteJob($email),
         // ])->dispatch();
 
-        AssignPanelsToStudentsJob::dispatch();
+        AssignPanelsToStudentsJob::dispatch($psmType);
 
         return response()->json(['message' => 'AI Panel assignment process has started....']);
     }
