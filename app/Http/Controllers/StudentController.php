@@ -108,28 +108,31 @@ class StudentController extends Controller
     public function assignStudent(Request $request){
 
         $request->validate([
-            'id' => 'required|integer|exists:student_psm1,id',
+            'id' => 'required|integer|exists:students_psm1,id',
             'svId' => 'required|integer|exists:supervisors,id',
         ]);
 
         try{
             $this->studentService->assignStudent($request->id, $request->svId);
+            return "success assign supervisor";
         }catch(\Exception $e){
             logger('Error assigning student: ' . $e->getMessage());
+            return "error assign supervisor";
         }
     }
 
     public function unassignStudent(Request $request){
 
         $request->validate([
-            'id' => 'required|integer|exists:student_psm1,id',
-            'svId' => 'required|integer|exists:supervisors,id',
+            'id' => 'required|integer|exists:students_psm1,id',
         ]);
 
         try{
-            $this->studentService->unassignStudent($request->id, $request->svId);
+            $this->studentService->unassignStudent($request->id);
+            return "success unassign supervisor";
         }catch(\Exception $e){
             logger('Error unassigning student: ' . $e->getMessage());
+            return "error unassign supervisor";
 
         }
     }

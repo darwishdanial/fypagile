@@ -50,7 +50,7 @@ class CoordinatorController extends Controller
 
     public function listresultPSM1() {
 
-        $results = $this->coordinatorService->getResultPSM1();
+        $totalResult = $this->coordinatorService->getResultPSM1();
 
         return view('PSM1.listresult', compact('totalResult'));
     }

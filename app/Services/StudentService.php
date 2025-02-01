@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
+use App\Models\StudentPSM1;
 use Illuminate\Support\Facades\DB;
 use Session;
 
@@ -126,15 +126,15 @@ class StudentService
         return $students;
     }
 
-    public function assignStudent(int $studentId, int $supervisorId){
+    public function assignStudent($studentId, $supervisorId){
 
         StudentPSM1::whereId($studentId)
             ->update(['supervisorId' => $supervisorId]);
     }
 
-    public function unassignStudent(int $studentId, int $supervisorId){
+    public function unassignStudent($studentId){
 
         StudentPSM1::whereId($studentId)
-            ->update(['supervisorId' => $supervisorId]);
+            ->update(['supervisorId' => null]);
     }
 }

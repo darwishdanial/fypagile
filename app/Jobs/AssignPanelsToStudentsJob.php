@@ -95,13 +95,13 @@ class AssignPanelsToStudentsJob implements ShouldQueue
                     if (!$primaryPanel) {
                         $primaryPanel = $panel + 1;
                         $panelCounts[$panel]++;
-                        //$student->update(['panelId' => $primaryPanel]); 
+                        $student->update(['panelId' => $primaryPanel]); 
                         logger("Primary panel: {$primaryPanel} [{$panelName[$primaryPanel]}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");  
 
                     } elseif (!$secondaryPanel && $primaryPanel !== $panel) {
                         $secondaryPanel = $panel + 1;
                         $panelCounts[$panel]++;  
-                        //$student->update(['panel2Id' => $secondaryPanel]); 
+                        $student->update(['panel2Id' => $secondaryPanel]); 
                         logger("Secondary panel: {$secondaryPanel} [{$panelName[$secondaryPanel]}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");
                         logger('---------------------------------------');
                         break;
