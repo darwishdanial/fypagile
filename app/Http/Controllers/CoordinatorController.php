@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
 use App\Services\StudentService;
+use App\Services\CompareMachineLearningService;
 use App\Jobs\EmailPanelAssignmentCompleteJob;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,7 +58,7 @@ class CoordinatorController extends Controller
 
     public function listresultPSM2() {
         
-        $results = $this->coordinatorService->getResultPSM2();
+        $totalResult = $this->coordinatorService->getResultPSM2();
 
         return view('PSM2.listresult', compact('totalResult'));
     }
@@ -185,8 +186,8 @@ class CoordinatorController extends Controller
         $mergedData = $mergerService->mergePanelAndProjectDataWithMapping();
 
         return view('PSM1.coordinator.mldata', [
-            'samples' => $mergedData['samples'],
-            'labels' => $mergedData['labels'],
+            'samples' => $mergedData['samplesWithMapping'],
+            'labels' => $mergedData['labelsWithMapping'],
         ]);
     }
 
@@ -206,6 +207,47 @@ class CoordinatorController extends Controller
         }catch(\Exception $e){
             logger('Error auto assigning panels to students: ' . $e->getMessage());
         }
+    }
+
+    public function getProjectArea(ProjectLecturerMergerService $mergerService){
+
+        $projectArea = $mergerService->mergePanelAndProjectDataWithMapping();
+        $sampleCount = count($projectArea['samples']);
+        $labelCount = count($projectArea['labels']);
+        $samples = $projectArea['samples'];
+        $labels = $projectArea['labels'];
+
+        logger(json_encode($samples, JSON_PRETTY_PRINT));
+        logger(json_encode($labels, JSON_PRETTY_PRINT));
+
+
+        dd([
+            'Total Panel (Label Count)' => $projectArea['panelCount'],  
+            'Total Project Areas' => $projectArea['projectAreaCount'],  
+            'Total Project Types' => $projectArea['projectTypeCount'],  
+            'Total Samples' => $sampleCount,  
+            'Total Labels' => $labelCount,
+            'Asg count per panel' => $projectArea['panelAssignments'],
+        ]);
+
+
+        //103 panel -> label type
+        //16 project area
+        //2 project type
+        //2567 samples and labels
+
+        //low probability because large number of panels
+
+    }
+
+    // public function getProjectArea(CompareMachineLearningService $compareMachineLearningService){
+    //     $mergeResult = $compareMachineLearningService->compareKernel();
+    //     dd($mergeResult);
+    // }
+
+    public function compareKernelModel(CompareMachineLearningService $compareMachineLearningService){
+        $mergeResult = $compareMachineLearningService->compareKernel();
+        dd($mergeResult);
     }
 
 }

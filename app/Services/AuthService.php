@@ -129,7 +129,7 @@ class AuthService
 
             if(Session::get('role_id')==1){
                 $student = $this->studentService->totalStudent();
-                $student2 = $this->studentService->totalStudent();
+                $student2 = $this->studentService->totalStudent2();
                 $supervisor = $this->supervisorService->totalSupervisor();
             } 
             if(Session::get('role_id')==2){
