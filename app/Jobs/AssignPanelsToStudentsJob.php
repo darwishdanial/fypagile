@@ -28,7 +28,7 @@ class AssignPanelsToStudentsJob implements ShouldQueue
     public function handle(){
 
         $modelManager = new ModelManager();
-        $modelPath = storage_path('app/ai_model/panel_assignment_svc.model');
+        $modelPath = storage_path('app/ai_model/panel_assignment_svc_linear.model');
         $classifier = $modelManager->restoreFromFile($modelPath);
 
         $students = null;
@@ -95,13 +95,13 @@ class AssignPanelsToStudentsJob implements ShouldQueue
                     if (!$primaryPanel) {
                         $primaryPanel = $panel + 1;
                         $panelCounts[$panel]++;
-                        $student->update(['panelId' => $primaryPanel]); 
+                        //$student->update(['panelId' => $primaryPanel]); 
                         logger("Primary panel: {$primaryPanel} [{$panelName[$primaryPanel]}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");  
 
                     } elseif (!$secondaryPanel && $primaryPanel !== $panel) {
                         $secondaryPanel = $panel + 1;
                         $panelCounts[$panel]++;  
-                        $student->update(['panel2Id' => $secondaryPanel]); 
+                        //$student->update(['panel2Id' => $secondaryPanel]); 
                         logger("Secondary panel: {$secondaryPanel} [{$panelName[$secondaryPanel]}] with original score: {$potentialPanels[$panel]}, Adjusted score: {$adjustedScore}, Panel count: {$panelCounts[$panel]}");
                         logger('---------------------------------------');
                         break;
@@ -157,7 +157,40 @@ class AssignPanelsToStudentsJob implements ShouldQueue
 
     private function getAreaNumericValue($projectArea){
 
-        $areaMapping = ProjectAreaMapping::where('name', $projectArea)->first();
+        $categories = [
+            'Mobile Application' => ['mobile', 'android', 'ios'],
+            'Web Development' => ['web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application',],
+            'Machine Learning' => ['machine learning', 'ml', 'ai', 'artificial intelligence', 'processing','classification', 'recognition', 'prediction', 'intelligence', 'analytics','analysis'],
+            'Security' => ['security', 'network security', 'encryption', 'crime', 'froud', 'scam', 'cryptography', 'biometric'],
+            'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented'],
+            'Game Development' => ['game', 'game development', 'gaming'],
+            'Management' => ['project management', 'management', 'communication', 'schedule'],
+            'Education' => ['education', 'learning', 'teaching'],
+            'Networking' => ['network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
+            'Data Science & Analytics' => ['data analytics', 'data visualization', 'data science', 'predictive analysis', 'text mining'],
+            'Health & Medical' => ['health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
+            'Financial & Business' => ['financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
+            'Human-Computer Interaction (HCI)' => ['interactive computer graphics','human computer interaction', 'hci', 'gesture recognition', 'graphics design', 'usability'],
+            'Computer Vision' => ['computer vision', 'object detection', 'facial detection', 'image denoising', 'real-time computer graphics', 'image filtering', 'realtime computer graphics'],
+            'Social & Tourism' => ['social', 'tourism', 'accommodation', 'online drivers', 'public transportation', 'travel', 'tourism planning'],
+            'Multimedia' => ['multimedia', 'multimedia and hci'],
+            'Others' => [] // A fallback category for any project area that doesn't fit into the predefined categories
+        ];
+
+        $projectArea = strtolower($projectArea);
+        $category = 'Others'; // Default category
+
+        $matchedCategory = 'Others'; // Default category if no match is found
+        foreach ($categories as $category => $keywords) {
+            foreach ($keywords as $keyword) {
+                if (strpos($projectArea, $keyword) !== false) {
+                    $matchedCategory = $category; // Assign the matched category
+                    break 2; // Exit both loops once a match is found
+                }
+            }
+        }
+
+        $areaMapping = ProjectAreaMapping::where('name', $matchedCategory)->first();
 
         return $areaMapping ? $areaMapping->number : -1;
     }
@@ -172,9 +205,9 @@ class AssignPanelsToStudentsJob implements ShouldQueue
         return -1; // Default to -1 if not matching
     }
 
-    public function failed(?Throwable $exception): void{
+    // public function failed(?Throwable $exception): void{
 
-        logger('Error auto assigning panels to students: ' . $exception->getMessage());
-        EmailPanelAssignmentCompleteJob::dispatch($this->email, $status = "fail", $exception->getMessage());
-    }
+    //     logger('Error auto assigning panels to students: ' . $exception->getMessage());
+    //     EmailPanelAssignmentCompleteJob::dispatch($this->email, $status = "fail", $exception->getMessage());
+    // }
 }
