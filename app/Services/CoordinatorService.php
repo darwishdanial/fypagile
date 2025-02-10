@@ -319,11 +319,11 @@ class CoordinatorService
     {
         $status = "success";
 
-        AssignPanelsToStudentsJob::withChain([
-            new EmailPanelAssignmentCompleteJob($email, $status),
-        ])->dispatch($psmType, $email);
+        // AssignPanelsToStudentsJob::withChain([
+        //     new EmailPanelAssignmentCompleteJob($email, $status),
+        // ])->dispatch($psmType, $email);
 
-        //AssignPanelsToStudentsJob::dispatch($psmType);
+        AssignPanelsToStudentsJob::dispatch($psmType, $email);
 
         return response()->json(['message' => 'AI Panel assignment process has started....']);
     }

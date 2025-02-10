@@ -209,7 +209,7 @@ class CoordinatorController extends Controller
         }
     }
 
-    public function getProjectArea(ProjectLecturerMergerService $mergerService){
+    public function getMLData(ProjectLecturerMergerService $mergerService){
 
         $projectArea = $mergerService->mergePanelAndProjectDataWithMapping();
         $sampleCount = count($projectArea['samples']);

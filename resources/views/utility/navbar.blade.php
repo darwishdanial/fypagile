@@ -64,6 +64,7 @@
                         <li><a class="dropdown-item" href="{{ route('listcgrade') }}">Grade Students</a></li>
                         <li><a class="dropdown-item" href="{{ route('listresultPSM1') }}">View Result</a></li>
                         <li><a class="dropdown-item" href="{{ route('rubricPSM1') }}">Evaluation Rubric</a></li>
+                        <li><a class="dropdown-item" href="{{ route('getMLData') }}">ML Data</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

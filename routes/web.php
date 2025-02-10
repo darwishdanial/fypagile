@@ -7,6 +7,8 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\CoordinatorController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\MLController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -85,6 +87,8 @@ Route::controller(CoordinatorController::class)->group(function(){
 
     Route::post('/assign-panels-to-students', 'autoAssignPanelsToStudentsPSM1')->name('autoAssign');
     Route::get('/assign-panels-to-students', 'deleteAllAssignedPanels')->name('removeAllPanel');
+
+    Route::get('/project-area', 'getMLData')->name('getMLData');
 
     Route::get('coordinator-rubric/PSM1', 'rubicPSM1')->name('rubricPSM1');
 
