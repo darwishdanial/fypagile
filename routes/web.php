@@ -24,6 +24,14 @@ Route::get('/', function () {
     return inertia('Home');
 });
 
+Route::get('/PSM1', function () {
+    return inertia('PSM1');
+});
+
+Route::get('/PSM2', function () {
+    return inertia('PSM2');
+});
+
 
 Route::get('login', function () {
     return redirect()->route('index');
