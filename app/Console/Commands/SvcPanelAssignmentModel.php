@@ -23,49 +23,20 @@ class SvcPanelAssignmentModel extends Command
 
     public function handle()
     {
-        $mergedData = $this->mergerService->mergePanelAndProjectData();
+        $mergedData = $this->mergerService->mergePanelAndProjectDataWithMapping();
+        $samples = $mergedData['samples'];
+        $labels = $mergedData['labels'];
 
-        $samples = [];
-        $labels = [];
-        $areaMapping = [];
-        $typeMapping = [];
-        $lecturerMapping = [];
-
-        foreach ($mergedData as $data) {
-            $projectArea = $data['project_area'];
-            $projectType = $data['project_type'];
-            $lecturerName = $data['lecturer_name'];
-
-            if (!isset($areaMapping[$projectArea])) {
-                $areaMapping[$projectArea] = count($areaMapping);
-            }
-
-            if (!isset($typeMapping[$projectType])) {
-                $typeMapping[$projectType] = count($typeMapping);
-            }
-
-            if (!isset($lecturerMapping[$lecturerName])) {
-                $lecturerMapping[$lecturerName] = count($lecturerMapping);
-            }
-
-            $samples[] = [
-                $areaMapping[$projectArea],
-                $typeMapping[$projectType],
-            ];
-            $labels[] = $lecturerMapping[$lecturerName];
-        }
-
-        // Using Support Vector Classification (SVC) with probability estimates enabled
         $classifier = new SVC(
-            Kernel::LINEAR,      // Use linear kernel
-            1.0,                 // Cost parameter
-            3,                   // Degree of the polynomial kernel (if using polynomial)
-            null,                // Gamma (optional)
-            0.0,                 // Coefficient for kernel
-            0.01,               // Tolerance
-            100,                 // Cache size
-            true,                // Shrinking enabled
-            true                 // Enable probability estimates
+            Kernel::POLYNOMIAL, // Using Polynomial kernel
+            1.0,                // Cost parameter (C) //default = 1.0
+            4,                  // Polynomial degree (try 2 or 3 first)
+            null,               // Gamma (set to null, as it's auto-calculated for poly)
+            0.0,                // Coefficient for kernel (default is usually fine)
+            0.01,               // Tolerance for stopping criteria
+            100,                // Cache size in MB
+            true,               // Enable shrinking heuristic
+            true                // Enable probability estimates
         );
 
         $this->info("Training classifier with " . count($samples) . " samples...");
@@ -74,11 +45,11 @@ class SvcPanelAssignmentModel extends Command
 
         $this->info("Model training completed!");
 
-        // Save the trained model
         $modelManager = new ModelManager();
-        $modelPath = storage_path('app/ai_model/panel_assignment_svc.model');
+        $modelPath = storage_path('app/ai_model/panel_assignment_svc_polinomial_degree4.model');
         $modelManager->saveToFile($classifier, $modelPath);
 
         $this->info("Model trained and saved at: {$modelPath}");
+        
     }
 }
