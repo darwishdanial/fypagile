@@ -20,13 +20,18 @@ use App\Http\Controllers\MLController;
 |
 */
 
+Route::get('/', function () {
+    return inertia('Home');
+});
+
+
 Route::get('login', function () {
     return redirect()->route('index');
 });
 
 Route::controller(AuthController::class)->group(function(){
 
-    Route::get('/', 'index')->name('index');
+    //Route::get('/', 'index')->name('index');
 
     // Route::get('login', 'index')->redirect()->route('index');
 
