@@ -22,17 +22,17 @@ export function PanelSidebar() {
         {
             icon: <ListChecks />,
             label: "Grade Supervision",
-            link: "/Coordinator/PSM1/grade-supervision",
+            link: "/Panel/PSM1/grade-supervision",
         },
         {
             icon: <ListChecks />,
             label: "Grade Proposal",
-            link: "/Coordinator/PSM1/grade-proposal",
+            link: "/Panel/PSM1/grade-proposal",
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM1",
-            link: "/Coordinator/PSM1/grade-PSM1",
+            link: "/Panel/PSM1/grade-PSM1",
         },
     ];
 
@@ -40,21 +40,21 @@ export function PanelSidebar() {
         {
             icon: <ListChecks />,
             label: "Grade Supervision",
-            link: "/Coordinator/PSM2/grade-supervision",
+            link: "/Panel/PSM2/grade-supervision",
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM2",
-            link: "/Coordinator/PSM2/grade-PSM2",
+            link: "/Panel/PSM2/grade-PSM2",
         },
     ];
 
     let menuItems: MenuItemType[] = [];
-    if (url === "/Coordinator/Home") {
+    if (url === "/Panel/Home") {
         menuItems = []; 
-    } else if (url.startsWith("/Coordinator/PSM1")) {
+    } else if (url.startsWith("/Panel/PSM1")) {
         menuItems = menuItemsPSM1; 
-    } else if (url.startsWith("/Coordinator/PSM2")) {
+    } else if (url.startsWith("/Panel/PSM2")) {
         menuItems = menuItemsPSM2; 
     }
 
@@ -67,30 +67,16 @@ export function PanelSidebar() {
                         icon={collapsed && <PanelRightClose />}
                     >
                         <div className="flex justify-between">
-                            <span className="pl-3 ">Coordinator</span>
+                            <span className="pl-3 ">Panel</span>
                             <PanelRightOpen />
                         </div>
                     </MenuItem>
 
-                    {/* Render menu items dynamically */}
-                    {/* {menuItems.map(({ icon, label, link }, index) => (
-                        
-                        <MenuItem key={index} icon={icon}>
-                            <Link
-                                href={link}
-                                style={{ textDecoration: "none" }}
-                            >
-                                <div className="!text-[#808080]">{label}</div>
-                            </Link>
-                        </MenuItem>
-                    ))} */}
-
                     {menuItems.map(({ icon, label, link }, index) => {
-                        // Determine if the menu item is active (current link)
                         const isActive = url === link;
                         const iconColor = isActive
                             ? "text-[#6D2323] font-bold"
-                            : "text-[#808080]"; // Change color if active
+                            : "text-[#808080]"; 
 
                         return (
                             <MenuItem
@@ -108,7 +94,7 @@ export function PanelSidebar() {
                         );
                     })}
 
-                    <MenuItem icon={<LogOut />}  className="border-t-2">Log Out</MenuItem>
+                    <MenuItem icon={<LogOut />}>Log Out</MenuItem>
                 </Menu>
             </Sidebar>
         </div>

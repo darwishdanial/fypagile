@@ -20,6 +20,10 @@ use App\Http\Controllers\MLController;
 |
 */
 
+Route::get('/', function () {
+    return inertia('LogIn');
+})->name('loginNew');
+
 Route::prefix('Coordinator')->group(function () {
     Route::get('/Home', function () {
         return inertia('Coordinator/Home/Index');
@@ -100,6 +104,40 @@ Route::prefix('Coordinator')->group(function () {
 
 });
 
+
+Route::prefix('Panel')->group(function () {
+
+    Route::get('/Home', function () {
+        return inertia('Panel/Home/Index');
+    });
+
+    Route::prefix('PSM1')->group(function () {
+
+        Route::get('/grade-supervision', function () {
+            return inertia('Panel/PSM1/GradeSupervision');
+        });
+
+        Route::get('/grade-proposal', function () {
+            return inertia('Panel/PSM1/GradeProposal');
+        });
+
+        Route::get('/grade-PSM1', function () {
+            return inertia('Panel/PSM1/GradePSM1');
+        });
+
+    });
+
+    Route::prefix('PSM2')->group(function () {
+
+        Route::get('/grade-supervision', function () {
+            return inertia('Panel/PSM2/GradeSupervision');
+        });
+
+        Route::get('/grade-PSM2', function () {
+            return inertia('Panel/PSM2/GradePSM2');
+        });
+    });
+});
 
 // Route::get('/Coordinator/Home', function () {
 //     return inertia('/Coordinator/Home/Index');

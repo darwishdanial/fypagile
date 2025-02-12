@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, usePage } from "@inertiajs/react";
-import { CoordinatorSidebar } from "./CoordinatorSidebar";
+import { PanelSidebar } from "./PanelSidebar";
 
-export function CoordinatorLayout({ children }) {
+export function PanelLayout({ children }) {
     const { url } = usePage();
     return (
         <>
             <div className="flex h-screen overflow-hidden">
-                <CoordinatorSidebar></CoordinatorSidebar>
+                <PanelSidebar></PanelSidebar>
                 <div className="flex flex-col w-full">
                     <header className="bg-white shadow-md">
                         <div>
@@ -16,14 +16,13 @@ export function CoordinatorLayout({ children }) {
                                 <ul className="hidden lg:flex space-x-4 uppercase font-semibold text-3xl tracking-wide mb-0 ">
                                     <li>
                                         <Link
-                                            href="/Coordinator/Home"
+                                            href="/Panel/Home"
                                             style={{ textDecoration: "none" }}
-
                                         >
                                             <p
                                                 className={`${
                                                     url.startsWith(
-                                                        "/Coordinator/Home"
+                                                        "/Panel/Home"
                                                     )
                                                         ? "text-[#6D2323] border-b-2 border-[#6D2323]"
                                                         : "text-[#CCCCCC]"
@@ -35,13 +34,13 @@ export function CoordinatorLayout({ children }) {
                                     </li>
                                     <li>
                                         <Link
-                                            href="/Coordinator/PSM1/list-students"
+                                            href="/Panel/PSM1/grade-supervision"
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p
                                                 className={`${
                                                     url.startsWith(
-                                                        "/Coordinator/PSM1"
+                                                        "/Panel/PSM1"
                                                     )
                                                         ? "text-[#6D2323] border-b-2 border-[#6D2323]"
                                                         : "text-[#CCCCCC]"
@@ -53,13 +52,13 @@ export function CoordinatorLayout({ children }) {
                                     </li>
                                     <li>
                                         <Link
-                                            href="/Coordinator/PSM2/list-students"
+                                            href="/Panel/PSM2/grade-supervision"
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p
                                                 className={`${
                                                     url.startsWith(
-                                                        "/Coordinator/PSM2"
+                                                        "/Panel/PSM2"
                                                     )
                                                         ? "text-[#6D2323] border-b-2 border-[#6D2323]"
                                                         : "text-[#CCCCCC]"

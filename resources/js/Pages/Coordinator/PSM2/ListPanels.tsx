@@ -1,4 +1,4 @@
-import { CoordinatorLayout } from "../../../Layouts/CoordinatorLayout";
+import { CoordinatorLayout } from "../../../Layouts/Coordinator/CoordinatorLayout";
 import React from "react";
 
 export default function ListPanels() {

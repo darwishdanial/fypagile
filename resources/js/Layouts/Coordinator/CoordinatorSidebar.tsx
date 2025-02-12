@@ -117,11 +117,11 @@ export function CoordinatorSidebar() {
 
     let menuItems: MenuItemType[] = [];
     if (url === "/Coordinator/Home") {
-        menuItems = []; // Empty menu if on /Coordinator/Home
+        menuItems = [];
     } else if (url.startsWith("/Coordinator/PSM1")) {
-        menuItems = menuItemsPSM1; // Use PSM1 menu if URL starts with /Coordinator/PSM1
+        menuItems = menuItemsPSM1; 
     } else if (url.startsWith("/Coordinator/PSM2")) {
-        menuItems = menuItemsPSM2; // Use PSM2 menu if URL starts with /Coordinator/PSM2
+        menuItems = menuItemsPSM2; 
     }
 
     return (
@@ -138,23 +138,9 @@ export function CoordinatorSidebar() {
                         </div>
                     </MenuItem>
 
-                    {/* Render menu items dynamically */}
-                    {/* {menuItems.map(({ icon, label, link }, index) => (
-                        
-                        <MenuItem key={index} icon={icon}>
-                            <Link
-                                href={link}
-                                style={{ textDecoration: "none" }}
-                            >
-                                <div className="!text-[#808080]">{label}</div>
-                            </Link>
-                        </MenuItem>
-                    ))} */}
-
                     {menuItems.map(({ icon, label, link }, index) => {
-                        // Determine if the menu item is active (current link)
                         const isActive = url === link;
-                        const iconColor = isActive ? "text-[#6D2323] font-bold" : "text-[#808080]"; // Change color if active
+                        const iconColor = isActive ? "text-[#6D2323] font-bold" : "text-[#808080]"; 
 
                         return (
                             <MenuItem key={index} icon={icon} className= {iconColor}>
