@@ -20,22 +20,112 @@ use App\Http\Controllers\MLController;
 |
 */
 
-Route::get('/', function () {
-    return inertia('Home');
+Route::prefix('Coordinator')->group(function () {
+    Route::get('/Home', function () {
+        return inertia('Coordinator/Home/Index');
+    });
+
+    Route::prefix('PSM1')->group(function () {
+        Route::get('/list-students', function () {
+            return inertia('Coordinator/PSM1/ListStudents');
+        });
+
+        Route::get('/list-panels', function () {
+            return inertia('Coordinator/PSM1/ListPanels');
+        });
+
+        Route::get('/assign-supervisor', function () {
+            return inertia('Coordinator/PSM1/AssignSupervisor');
+        });
+
+        Route::get('/assign-proposal-panel', function () {
+            return inertia('Coordinator/PSM1/AssignProposalPanel');
+        });
+
+        Route::get('/assign-PSM1-panel', function () {
+            return inertia('Coordinator/PSM1/AssignPSM1Panel');
+        });
+
+        Route::get('/view-result', function () {
+            return inertia('Coordinator/PSM1/ViewResult');
+        });
+
+        Route::get('/evaluation-rubric', function () {
+            return inertia('Coordinator/PSM1/EvaluationRubric');
+        });
+
+        Route::get('/grade-supervision', function () {
+            return inertia('Coordinator/PSM1/GradeSupervision');
+        });
+
+        Route::get('/grade-proposal', function () {
+            return inertia('Coordinator/PSM1/GradeProposal');
+        });
+
+        Route::get('/grade-PSM1', function () {
+            return inertia('Coordinator/PSM1/GradePSM1');
+        });
+
+    });
+
+    Route::prefix('PSM2')->group(function () {
+        Route::get('/list-students', function () {
+            return inertia('Coordinator/PSM2/ListStudents');
+        });
+
+        Route::get('/list-panels', function () {
+            return inertia('Coordinator/PSM2/ListPanels');
+        });
+
+        Route::get('/assign-PSM2-panel', function () {
+            return inertia('Coordinator/PSM2/AssignPSM2Panel');
+        });
+
+        Route::get('/view-result', function () {
+            return inertia('Coordinator/PSM2/ViewResult');
+        });
+
+        Route::get('/evaluation-rubric', function () {
+            return inertia('Coordinator/PSM2/EvaluationRubric');
+        });
+
+        Route::get('/grade-supervision', function () {
+            return inertia('Coordinator/PSM2/GradeSupervision');
+        });
+
+        Route::get('/grade-PSM2', function () {
+            return inertia('Coordinator/PSM2/GradePSM2');
+        });
+    });
+
 });
 
-Route::get('/PSM1', function () {
+
+// Route::get('/Coordinator/Home', function () {
+//     return inertia('/Coordinator/Home/Index');
+// });
+
+// Route::get('/Coordinator/PSM1/list-students', function () {
+//     return inertia('/Coordinator/PSM1/ListStudents');
+// });
+
+// Route::get('/Coordinator/PSM1/list-panels', function () {
+//     return inertia('/Coordinator/PSM1/ListPanels');
+// });
+
+
+Route::get('/Coordinator/PSM1', function () {
     return inertia('PSM1');
 });
 
-Route::get('/PSM2', function () {
+Route::get('/Coordinator/PSM2', function () {
     return inertia('PSM2');
 });
-
 
 Route::get('login', function () {
     return redirect()->route('index');
 });
+
 
 Route::controller(AuthController::class)->group(function(){
 
