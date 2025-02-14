@@ -140,7 +140,7 @@ export function CoordinatorSidebar() {
                     {menuItems.map(({ icon, label, link }, index) => {
                         const isActive = url === link;
                         const iconColor = isActive
-                            ? "text-[#6D2323] font-bold"
+                            ? "text-[#6D2323] font-semibold"
                             : "text-[#808080]";
 
                         return (
