@@ -1,13 +1,13 @@
 import React from "react";
+import StatsCard from "../../../Components/StatsCard";
 
 export default function Index() {
     return (
-            <div className="min-h-screen bg-gray-100 py-10 px-5">
-                <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-                    <h1 className="font-bold text-3xl text-center text-blue-600 mb-4">
-                        Home Coordinator
-                    </h1>
-                </div>
+        <div className="min-h-screen bg-gray-100 ">
+            <div className="w-full flex flex-col items-center justify-center space-y-6 pt-15">
+                <StatsCard studentCount={220} panelCount={110} />
+                <StatsCard studentCount={220} panelCount={110} />
             </div>
+        </div>
     );
 }

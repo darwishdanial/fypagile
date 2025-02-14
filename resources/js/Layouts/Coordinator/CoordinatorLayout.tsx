@@ -24,9 +24,9 @@ export function CoordinatorLayout({ children }) {
                                                     url.startsWith(
                                                         "/Coordinator/Home"
                                                     )
-                                                        ? "text-[#6D2323] border-b-2 border-[#6D2323]"
+                                                        ? "text-[#6D2323] border-b-3 border-[#6D2323]"
                                                         : "text-[#CCCCCC]"
-                                                } inline-block m-0 `}
+                                                } inline-block m-0 pb-2`}
                                             >
                                                 H
                                             </p>
@@ -42,9 +42,9 @@ export function CoordinatorLayout({ children }) {
                                                     url.startsWith(
                                                         "/Coordinator/PSM1"
                                                     )
-                                                        ? "text-[#6D2323] border-b-2 border-[#6D2323]"
+                                                        ? "text-[#6D2323] border-b-3 border-[#6D2323]"
                                                         : "text-[#CCCCCC]"
-                                                } inline-block m-0 `}
+                                                } inline-block m-0 pb-2`}
                                             >
                                                 PSM1
                                             </p>
@@ -60,9 +60,9 @@ export function CoordinatorLayout({ children }) {
                                                     url.startsWith(
                                                         "/Coordinator/PSM2"
                                                     )
-                                                        ? "text-[#6D2323] border-b-2 border-[#6D2323]"
+                                                        ? "text-[#6D2323] border-b-3 border-[#6D2323]"
                                                         : "text-[#CCCCCC]"
-                                                } inline-block m-0`}
+                                                } inline-block m-0 pb-2`}
                                             >
                                                 PSM2
                                             </p>
