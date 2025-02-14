@@ -8,7 +8,6 @@ import { PanelLayout } from "@/Layouts/Panel/PanelLayout";
 createInertiaApp({
     resolve: (name) => {
         const pages = import.meta.glob("./Pages/**/*.tsx", { eager: true });
-        //return pages[`./Pages/${name}.tsx`]
         let page = pages[`./Pages/${name}.tsx`];
         if (name.startsWith("Coordinator/")) {
             page.default.layout =

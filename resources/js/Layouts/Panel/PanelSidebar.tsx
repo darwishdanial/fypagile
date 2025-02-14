@@ -51,11 +51,11 @@ export function PanelSidebar() {
 
     let menuItems: MenuItemType[] = [];
     if (url === "/Panel/Home") {
-        menuItems = []; 
+        menuItems = [];
     } else if (url.startsWith("/Panel/PSM1")) {
-        menuItems = menuItemsPSM1; 
+        menuItems = menuItemsPSM1;
     } else if (url.startsWith("/Panel/PSM2")) {
-        menuItems = menuItemsPSM2; 
+        menuItems = menuItemsPSM2;
     }
 
     return (
@@ -76,19 +76,23 @@ export function PanelSidebar() {
                         const isActive = url === link;
                         const iconColor = isActive
                             ? "text-[#6D2323] font-bold"
-                            : "text-[#808080]"; 
+                            : "text-[#808080]";
 
                         return (
                             <MenuItem
                                 key={index}
                                 icon={icon}
                                 className={iconColor}
+                                component="div"
                             >
                                 <Link
                                     href={link}
-                                    style={{ textDecoration: "none" }}
+                                    style={{
+                                        textDecoration: "none",
+                                        color: "inherit",
+                                    }}
                                 >
-                                    <div className={iconColor}>{label}</div>
+                                    {label}
                                 </Link>
                             </MenuItem>
                         );

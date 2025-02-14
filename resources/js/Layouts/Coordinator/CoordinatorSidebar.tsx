@@ -1,6 +1,6 @@
 import React from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Link,usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import {
     Users,
     PanelRightClose,
@@ -22,7 +22,6 @@ interface MenuItemType {
 export function CoordinatorSidebar() {
     const [collapsed, setCollapsed] = React.useState(false);
     const { url } = usePage();
-
 
     const menuItemsPSM1: MenuItemType[] = [
         {
@@ -119,9 +118,9 @@ export function CoordinatorSidebar() {
     if (url === "/Coordinator/Home") {
         menuItems = [];
     } else if (url.startsWith("/Coordinator/PSM1")) {
-        menuItems = menuItemsPSM1; 
+        menuItems = menuItemsPSM1;
     } else if (url.startsWith("/Coordinator/PSM2")) {
-        menuItems = menuItemsPSM2; 
+        menuItems = menuItemsPSM2;
     }
 
     return (
@@ -140,18 +139,31 @@ export function CoordinatorSidebar() {
 
                     {menuItems.map(({ icon, label, link }, index) => {
                         const isActive = url === link;
-                        const iconColor = isActive ? "text-[#6D2323] font-bold" : "text-[#808080]"; 
+                        const iconColor = isActive
+                            ? "text-[#6D2323] font-bold"
+                            : "text-[#808080]";
 
                         return (
-                            <MenuItem key={index} icon={icon} className= {iconColor}>
-                                <Link href={link} style={{ textDecoration: "none" }}>
-                                    <div className={iconColor}>{label}</div>
+                            <MenuItem
+                                key={index}
+                                icon={icon}
+                                className={iconColor}
+                                component="div"
+                            >
+                                <Link
+                                    href={link}
+                                    style={{
+                                        textDecoration: "none",
+                                        color: "inherit",
+                                    }}
+                                >
+                                    {label}
                                 </Link>
                             </MenuItem>
                         );
                     })}
 
-                    <MenuItem icon={<LogOut />} >Log Out</MenuItem>
+                    <MenuItem icon={<LogOut />}>Log Out</MenuItem>
                 </Menu>
             </Sidebar>
         </div>
