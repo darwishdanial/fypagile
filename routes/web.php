@@ -22,12 +22,18 @@ use App\Http\Controllers\MLController;
 
 Route::get('/', function () {
     return inertia('LogIn');
-})->name('loginNew');
+})->name('login');
 
-Route::prefix('Coordinator')->group(function () {
+Route::post('/validate_login', [AuthController::class, 'validate_login'])->name('validate_login');
+
+Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+
+Route::middleware('auth')->prefix('Coordinator')->group(function () {
     Route::get('/Home', function () {
         return inertia('Coordinator/Home/Index');
-    });
+    })->name('CoordinatorHome');
 
     Route::prefix('PSM1')->group(function () {
         Route::get('/list-students', function () {
@@ -105,11 +111,10 @@ Route::prefix('Coordinator')->group(function () {
 });
 
 
-Route::prefix('Panel')->group(function () {
-
+Route::middleware('auth')->prefix('Panel')->group(function () {
     Route::get('/Home', function () {
         return inertia('Panel/Home/Index');
-    });
+    })->name('PanelHome');
 
     Route::prefix('PSM1')->group(function () {
 
@@ -160,20 +165,20 @@ Route::get('/Coordinator/PSM2', function () {
     return inertia('PSM2');
 });
 
-Route::get('login', function () {
-    return redirect()->route('index');
-});
+// Route::get('login', function () {
+//     return redirect()->route('index');
+// });
 
 
 Route::controller(AuthController::class)->group(function(){
 
     //Route::get('/', 'index')->name('index');
 
-    // Route::get('login', 'index')->redirect()->route('index');
+    //Route::get('login', 'index')->redirect()->route('index');
 
     Route::get('registration', 'registration')->name('registration');
 
-    Route::get('logout', 'logout')->name('logout');
+    // Route::get('logout', 'logout')->name('logout');
 
     Route::post('validate_registration', 'validate_registration')->name('auth.validate_registration');
 
@@ -182,7 +187,7 @@ Route::controller(AuthController::class)->group(function(){
     Route::get('change-password', 'changePassword')->name('change-password');
     Route::post('change-password',  'updatePassword')->name('update-password');
 
-    Route::get('dashboard', 'dashboard')->name('dashboard');
+    
 
 });
 

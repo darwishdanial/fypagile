@@ -1,6 +1,6 @@
 import React from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, usePage, useForm } from "@inertiajs/react";
 import {
     Users,
     PanelRightClose,
@@ -22,6 +22,12 @@ interface MenuItemType {
 export function CoordinatorSidebar() {
     const [collapsed, setCollapsed] = React.useState(false);
     const { url } = usePage();
+    const { get } = useForm();
+
+    const handleLogout = (e: React.FormEvent) => {
+        e.preventDefault();
+        get("/logout");
+    };
 
     const menuItemsPSM1: MenuItemType[] = [
         {
@@ -163,7 +169,13 @@ export function CoordinatorSidebar() {
                         );
                     })}
 
-                    <MenuItem icon={<LogOut />}>Log Out</MenuItem>
+                    <form onSubmit={handleLogout} className="w-full">
+                        <MenuItem icon={<LogOut />}>
+                            <button type="submit" className="w-full text-left">
+                                Log Out
+                            </button>
+                        </MenuItem>
+                    </form>
                 </Menu>
             </Sidebar>
         </div>

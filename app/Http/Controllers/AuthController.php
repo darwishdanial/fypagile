@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\Services\StudentService;
 use App\Services\SupervisorService;
 use App\Services\AuthService;
@@ -63,7 +63,7 @@ class AuthController extends Controller
             $this->authService->validate_login($request);
             return redirect('dashboard');
         }catch(\Exception $e){
-            return redirect('login')->with('error', 'Login details are not valid');
+            return redirect()->route('login');
         }
 
     }
@@ -72,7 +72,16 @@ class AuthController extends Controller
     {
         try{
             $data = $this->authService->dashboard();
-            return view('dashboard',$data);
+            //return view('dashboard',$data);
+            // return redirect()->route('CoordinatorHome');
+            $user = Auth::user();
+
+            if ($user->role == 1) {
+                return redirect()->route('CoordinatorHome');
+            } elseif ($user->role == 2) {
+                return redirect()->route('PanelHome');
+            }
+
         }catch(\Exception $e){
             return redirect('login')->with('error', 'you are not allowed to access');
         }
@@ -101,7 +110,7 @@ class AuthController extends Controller
 
         Auth::logout();
 
-        return Redirect('login');
+        return redirect()->route('login');
     }
 }
 
