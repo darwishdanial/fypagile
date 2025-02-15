@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, usePage } from "@inertiajs/react";
 import { CoordinatorSidebar } from "./CoordinatorSidebar";
+import { User } from "lucide-react";
 
 export function CoordinatorLayout({ children }) {
     const { url } = usePage();
@@ -11,9 +12,18 @@ export function CoordinatorLayout({ children }) {
                 <div className="flex flex-col w-full">
                     <header className="bg-white shadow-md">
                         <div>
-                            <nav className="flex items-center justify-center pt-2">
-                                {/* Navbar Links */}
-                                <ul className="hidden lg:flex space-x-4 uppercase font-semibold text-3xl tracking-wide mb-0 ">
+                            <nav className="flex items-center justify-between pt-2 px-4 w-full">
+                                {/* Left Side: UTM Logo */}
+                                <div className="flex-shrink-0">
+                                    <img
+                                        src="/images/utm-logo.png"
+                                        alt="UTM Logo"
+                                        className="w-25 mb-2"
+                                    />
+                                </div>
+
+                                {/* Center: Navigation Links */}
+                                <ul className="flex space-x-6 uppercase font-semibold text-3xl tracking-wide">
                                     <li>
                                         <Link
                                             href="/Coordinator/Home"
@@ -69,6 +79,10 @@ export function CoordinatorLayout({ children }) {
                                         </Link>
                                     </li>
                                 </ul>
+
+                                <div className="flex-shrink-0 mb-2">
+                                    <User />
+                                </div>
                             </nav>
                         </div>
                     </header>
