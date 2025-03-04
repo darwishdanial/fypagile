@@ -11,6 +11,7 @@ use App\Services\StudentService;
 use App\Services\CompareMachineLearningService;
 use App\Jobs\EmailPanelAssignmentCompleteJob;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class CoordinatorController extends Controller
 {
@@ -23,6 +24,151 @@ class CoordinatorController extends Controller
 
         $this->studentService = $studentService;
     }
+
+    //Home
+
+    public function index()
+    {
+        $this->authorize('view coordinator dashboard');
+
+        $userName = Auth::user()->name;
+
+        return Inertia::render('Coordinator/Home/Index',[
+            'userName' => $userName
+        ]);
+    }
+
+    //PSM1
+
+    public function PSM1ListStudents()
+    {
+        $this->authorize('view psm1 list students table');
+
+        //$students = $this->studentService->getStudentPSM1();
+
+        return Inertia::render('Coordinator/PSM1/ListStudents');
+    }
+
+    public function PSM1ListPanels()
+    {
+        $this->authorize('view psm1 list panels table');
+
+        return Inertia::render('Coordinator/PSM1/ListPanels');
+    }
+
+    public function PSM1AssignSupervisor()
+    {
+        $this->authorize('view psm1 assign supervisor table');
+
+        return Inertia::render('Coordinator/PSM1/AssignSupervisor');
+    }
+
+    public function PSM1AssignProposalPanel()
+    {
+        $this->authorize('view psm1 assign proposal panel table');
+
+        return Inertia::render('Coordinator/PSM1/AssignProposalPanel');
+    }
+
+    public function PSM1AssignPanel()
+    {
+        $this->authorize('view psm1 assign panel table');
+
+        return Inertia::render('Coordinator/PSM1/AssignPSM1Panel');
+    }
+
+    public function PSM1ViewResult()
+    {
+        $this->authorize('view psm1 result table');
+
+        return Inertia::render('Coordinator/PSM1/ViewResult');
+    }
+
+    public function PSM1EvaluationRurbric()
+    {
+        $this->authorize('view psm1 evaluation rubric');
+
+        return Inertia::render('Coordinator/PSM1/EvaluationRubric');
+    }
+
+    public function PSM1GradeSupervision()
+    {
+        $this->authorize('view psm1 grade supervision table');
+
+        return Inertia::render('Coordinator/PSM1/GradeSupervision');
+    }
+
+    public function PSM1GradeProposal()
+    {
+        $this->authorize('view psm1 grade proposal table');
+
+        return Inertia::render('Coordinator/PSM1/GradeProposal');
+    }
+
+    public function PSM1Grade()
+    {
+        $this->authorize('view psm1 grade table');
+
+        return Inertia::render('Coordinator/PSM1/GradePSM1');
+    }
+
+    //PSM2
+
+    public function PSM2ListStudents()
+    {
+        $this->authorize('view psm2 list students table');
+
+        //$students = $this->studentService->getStudentPSM1();
+
+        return Inertia::render('Coordinator/PSM2/ListStudents');
+    }
+
+    public function PSM2ListPanels()
+    {
+        $this->authorize('view psm2 list panels table');
+
+        return Inertia::render('Coordinator/PSM2/ListPanels');
+    }
+
+    public function PSM2AssignPanel()
+    {
+        $this->authorize('view psm2 assign panel table');
+
+        return Inertia::render('Coordinator/PSM2/AssignPSM2Panel');
+    }
+
+    public function PSM2ViewResult()
+    {
+        $this->authorize('view psm2 result table');
+
+        return Inertia::render('Coordinator/PSM2/ViewResult');
+    }
+
+    public function PSM2EvaluationRurbric()
+    {
+        $this->authorize('view psm2 evaluation rubric');
+
+        return Inertia::render('Coordinator/PSM2/EvaluationRubric');
+    }
+
+    public function PSM2GradeSupervision()
+    {
+        $this->authorize('view psm2 grade supervision table');
+
+        return Inertia::render('Coordinator/PSM2/GradeSupervision');
+    }
+
+    public function PSM2Grade()
+    {
+        $this->authorize('view psm2 grade table');
+
+        return Inertia::render('Coordinator/PSM2/GradePSM2');
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+
 
     public function rubicPSM1(){
 

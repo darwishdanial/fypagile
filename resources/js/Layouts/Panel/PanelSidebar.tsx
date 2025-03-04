@@ -13,6 +13,7 @@ interface MenuItemType {
     label: string;
     link: string;
 }
+import { route } from 'ziggy-js';
 
 export function PanelSidebar() {
     const [collapsed, setCollapsed] = React.useState(false);
@@ -28,17 +29,17 @@ export function PanelSidebar() {
         {
             icon: <ListChecks />,
             label: "Grade Supervision",
-            link: "/Panel/PSM1/grade-supervision",
+            link: route('panel.PSM1.gradeSupervision'),
         },
         {
             icon: <ListChecks />,
             label: "Grade Proposal",
-            link: "/Panel/PSM1/grade-proposal",
+            link: route('panel.PSM1.gradeProposal'),
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM1",
-            link: "/Panel/PSM1/grade-PSM1",
+            link: route('panel.PSM1.gradePSM1'),
         },
     ];
 
@@ -46,12 +47,12 @@ export function PanelSidebar() {
         {
             icon: <ListChecks />,
             label: "Grade Supervision",
-            link: "/Panel/PSM2/grade-supervision",
+            link: route('panel.PSM2.gradeSupervision'),
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM2",
-            link: "/Panel/PSM2/grade-PSM2",
+            link: route('panel.PSM2.gradePSM2'),
         },
     ];
 
@@ -79,9 +80,9 @@ export function PanelSidebar() {
                     </MenuItem>
 
                     {menuItems.map(({ icon, label, link }, index) => {
-                        const isActive = url === link;
+                        const isActive = url === new URL(link, window.location.origin).pathname;
                         const iconColor = isActive
-                            ? "text-[#6D2323] font-bold"
+                            ? "text-[#6D2323] font-semibold"
                             : "text-[#808080]";
 
                         return (

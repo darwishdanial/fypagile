@@ -20,7 +20,9 @@
         "maatwebsite/excel": "3.*",
         "php-ai/php-ml": "^0.10.0",
         "psr/simple-cache": "^3.0",
-        "ramsey/uuid": "^4.7"
+        "ramsey/uuid": "^4.7",
+        "spatie/laravel-permission": "^6.16",
+        "tightenco/ziggy": "^2.5"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

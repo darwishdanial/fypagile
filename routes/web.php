@@ -8,6 +8,8 @@ use App\Http\Controllers\CoordinatorController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\MLController;
+use App\Http\Middleware\EnsureCoordinator;
+use App\Http\Middleware\EnsurePanel;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,117 +32,88 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
-Route::middleware('auth')->prefix('Coordinator')->group(function () {
-    Route::get('/Home', function () {
-        return inertia('Coordinator/Home/Index');
-    })->name('CoordinatorHome');
+Route::middleware( EnsureCoordinator::class)
+    ->prefix('Coordinator')
+    ->as('coordinator.')
+    ->group(function () {
 
-    Route::prefix('PSM1')->group(function () {
-        Route::get('/list-students', function () {
-            return inertia('Coordinator/PSM1/ListStudents');
-        });
+    Route::get('/Home', [CoordinatorController::class, 'index'])->name('home');
 
-        Route::get('/list-panels', function () {
-            return inertia('Coordinator/PSM1/ListPanels');
-        });
+    Route::prefix('PSM1')
+        ->as('PSM1.')
+        ->group(function () {
 
-        Route::get('/assign-supervisor', function () {
-            return inertia('Coordinator/PSM1/AssignSupervisor');
-        });
+        Route::get('/list-students', [CoordinatorController::class, 'PSM1ListStudents'])->name('listStudents');
 
-        Route::get('/assign-proposal-panel', function () {
-            return inertia('Coordinator/PSM1/AssignProposalPanel');
-        });
+        Route::get('/list-panels', [CoordinatorController::class, 'PSM1ListPanels'])->name('listPanels');
 
-        Route::get('/assign-PSM1-panel', function () {
-            return inertia('Coordinator/PSM1/AssignPSM1Panel');
-        });
+        Route::get('/assign-supervisor', [CoordinatorController::class, 'PSM1AssignSupervisor'])->name('assignSupervisor');
 
-        Route::get('/view-result', function () {
-            return inertia('Coordinator/PSM1/ViewResult');
-        });
+        Route::get('/assign-proposal-panel', [CoordinatorController::class, 'PSM1AssignProposalPanel'])->name('assignProposalPanel');
 
-        Route::get('/evaluation-rubric', function () {
-            return inertia('Coordinator/PSM1/EvaluationRubric');
-        });
+        Route::get('/assign-PSM1-panel', [CoordinatorController::class, 'PSM1AssignPanel'])->name('assignPSM1Panel');
 
-        Route::get('/grade-supervision', function () {
-            return inertia('Coordinator/PSM1/GradeSupervision');
-        });
+        Route::get('/view-result', [CoordinatorController::class, 'PSM1ViewResult'])->name('viewResult');
 
-        Route::get('/grade-proposal', function () {
-            return inertia('Coordinator/PSM1/GradeProposal');
-        });
+        Route::get('/evaluation-rubric', [CoordinatorController::class, 'PSM1EvaluationRurbric'])->name('evaluationRubric');
 
-        Route::get('/grade-PSM1', function () {
-            return inertia('Coordinator/PSM1/GradePSM1');
-        });
+        Route::get('/grade-supervision', [CoordinatorController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
+
+        Route::get('/grade-proposal', [CoordinatorController::class, 'PSM1GradeProposal'])->name('gradeProposal');
+
+        Route::get('/grade-PSM1', [CoordinatorController::class, 'PSM1Grade'])->name('gradePSM1');
 
     });
 
-    Route::prefix('PSM2')->group(function () {
-        Route::get('/list-students', function () {
-            return inertia('Coordinator/PSM2/ListStudents');
-        });
+    Route::prefix('PSM2')
+        ->as('PSM2.')
+        ->group(function () {
 
-        Route::get('/list-panels', function () {
-            return inertia('Coordinator/PSM2/ListPanels');
-        });
+        Route::get('/list-students', [CoordinatorController::class, 'PSM2ListStudents'])->name('listStudents');
 
-        Route::get('/assign-PSM2-panel', function () {
-            return inertia('Coordinator/PSM2/AssignPSM2Panel');
-        });
+        Route::get('/list-panels', [CoordinatorController::class, 'PSM2ListPanels'])->name('listPanels');
 
-        Route::get('/view-result', function () {
-            return inertia('Coordinator/PSM2/ViewResult');
-        });
+        Route::get('/assign-PSM2-panel', [CoordinatorController::class, 'PSM2AssignPanel'])->name('assignPSM2Panel');
 
-        Route::get('/evaluation-rubric', function () {
-            return inertia('Coordinator/PSM2/EvaluationRubric');
-        });
+        Route::get('/view-result', [CoordinatorController::class, 'PSM2ViewResult'])->name('viewResult');
 
-        Route::get('/grade-supervision', function () {
-            return inertia('Coordinator/PSM2/GradeSupervision');
-        });
+        Route::get('/evaluation-rubric', [CoordinatorController::class, 'PSM2EvaluationRurbric'])->name('evaluationRubric');
 
-        Route::get('/grade-PSM2', function () {
-            return inertia('Coordinator/PSM2/GradePSM2');
-        });
+        Route::get('/grade-supervision', [CoordinatorController::class, 'PSM2GradeSupervision'])->name('gradeSupervision');
+
+        Route::get('/grade-PSM2', [CoordinatorController::class, 'PSM2Grade'])->name('gradePSM2');
+
     });
 
 });
 
 
-Route::middleware('auth')->prefix('Panel')->group(function () {
-    Route::get('/Home', function () {
-        return inertia('Panel/Home/Index');
-    })->name('PanelHome');
+Route::middleware(EnsurePanel::class)
+    ->prefix('Panel')
+    ->as('panel.')
+    ->group(function () {
 
-    Route::prefix('PSM1')->group(function () {
+    Route::get('/Home', [PanelController::class, 'index'])->name('home');
 
-        Route::get('/grade-supervision', function () {
-            return inertia('Panel/PSM1/GradeSupervision');
-        });
+    Route::prefix('PSM1')
+        ->as('PSM1.')
+        ->group(function () {
 
-        Route::get('/grade-proposal', function () {
-            return inertia('Panel/PSM1/GradeProposal');
-        });
+        Route::get('/grade-supervision', [PanelController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-PSM1', function () {
-            return inertia('Panel/PSM1/GradePSM1');
-        });
+        Route::get('/grade-proposal', [PanelController::class, 'PSM1GradeProposal'])->name('gradeProposal');
+
+        Route::get('/grade-PSM1', [PanelController::class, 'PSM1Grade'])->name('gradePSM1');
 
     });
 
-    Route::prefix('PSM2')->group(function () {
+    Route::prefix('PSM2')
+        ->as('PSM2.')
+        ->group(function () {
 
-        Route::get('/grade-supervision', function () {
-            return inertia('Panel/PSM2/GradeSupervision');
-        });
+        Route::get('/grade-supervision', [PanelController::class, 'PSM2GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-PSM2', function () {
-            return inertia('Panel/PSM2/GradePSM2');
-        });
+        Route::get('/grade-PSM2', [PanelController::class, 'PSM2Grade'])->name('gradePSM2');
     });
 });
 

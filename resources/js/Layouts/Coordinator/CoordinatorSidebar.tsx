@@ -12,6 +12,7 @@ import {
     ListChecks,
     LogOut,
 } from "lucide-react";
+import { route } from 'ziggy-js';
 
 interface MenuItemType {
     icon: React.ReactNode;
@@ -33,52 +34,52 @@ export function CoordinatorSidebar() {
         {
             icon: <Users />,
             label: "List Students",
-            link: "/Coordinator/PSM1/list-students",
+            link: route('coordinator.PSM1.listStudents'),
         },
         {
             icon: <UserCheck />,
             label: "List Panels",
-            link: "/Coordinator/PSM1/list-panels",
+            link: route('coordinator.PSM1.listPanels'),
         },
         {
             icon: <UserPlus />,
             label: "Assign Supervisor",
-            link: "/Coordinator/PSM1/assign-supervisor",
+            link: route('coordinator.PSM1.assignSupervisor'),
         },
         {
             icon: <UserPlus />,
             label: "Assign Proposal Panel",
-            link: "/Coordinator/PSM1/assign-proposal-panel",
+            link: route('coordinator.PSM1.assignProposalPanel'),
         },
         {
             icon: <UserPlus />,
             label: "Assign PSM1 Panel",
-            link: "/Coordinator/PSM1/assign-PSM1-panel",
+            link: route('coordinator.PSM1.assignPSM1Panel'),
         },
         {
             icon: <FileText />,
             label: "View Result",
-            link: "/Coordinator/PSM1/view-result",
+            link: route('coordinator.PSM1.viewResult'),
         },
         {
             icon: <ClipboardList />,
             label: "Evaluation Rubric",
-            link: "/Coordinator/PSM1/evaluation-rubric",
+            link: route('coordinator.PSM1.evaluationRubric'),
         },
         {
             icon: <ListChecks />,
             label: "Grade Supervision",
-            link: "/Coordinator/PSM1/grade-supervision",
+            link: route('coordinator.PSM1.gradeSupervision'),
         },
         {
             icon: <ListChecks />,
             label: "Grade Proposal",
-            link: "/Coordinator/PSM1/grade-proposal",
+            link: route('coordinator.PSM1.gradeProposal'),
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM1",
-            link: "/Coordinator/PSM1/grade-PSM1",
+            link: route('coordinator.PSM1.gradePSM1'),
         },
     ];
 
@@ -86,37 +87,37 @@ export function CoordinatorSidebar() {
         {
             icon: <Users />,
             label: "List Students",
-            link: "/Coordinator/PSM2/list-students",
+            link:route('coordinator.PSM2.listStudents'),
         },
         {
             icon: <UserCheck />,
             label: "List Panels",
-            link: "/Coordinator/PSM2/list-panels",
+            link: route('coordinator.PSM2.listPanels'),
         },
         {
             icon: <UserPlus />,
             label: "Assign PSM2 Panel",
-            link: "/Coordinator/PSM2/assign-PSM2-panel",
+            link: route('coordinator.PSM2.assignPSM2Panel'),
         },
         {
             icon: <FileText />,
             label: "View Result",
-            link: "/Coordinator/PSM2/view-result",
+            link: route('coordinator.PSM2.viewResult'),
         },
         {
             icon: <ClipboardList />,
             label: "Evaluation Rubric",
-            link: "/Coordinator/PSM2/evaluation-rubric",
+            link: route('coordinator.PSM2.evaluationRubric'),
         },
         {
             icon: <ListChecks />,
             label: "Grade Supervision",
-            link: "/Coordinator/PSM2/grade-supervision",
+            link: route('coordinator.PSM2.gradeSupervision'),
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM2",
-            link: "/Coordinator/PSM2/grade-PSM2",
+            link: route('coordinator.PSM2.gradePSM2'),
         },
     ];
 
@@ -144,7 +145,7 @@ export function CoordinatorSidebar() {
                     </MenuItem>
 
                     {menuItems.map(({ icon, label, link }, index) => {
-                        const isActive = url === link;
+                        const isActive = url === new URL(link, window.location.origin).pathname;
                         const iconColor = isActive
                             ? "text-[#6D2323] font-semibold"
                             : "text-[#808080]";

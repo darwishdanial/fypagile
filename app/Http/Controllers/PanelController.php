@@ -9,6 +9,8 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Services\StudentService;
 use App\Services\PanelService;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 
 class PanelController extends Controller
@@ -21,6 +23,60 @@ class PanelController extends Controller
         $this->studentService = $studentService;
         $this->panelService = $panelService;
     }
+
+    public function index()
+    {
+        $this->authorize('view panel dashboard');
+
+        $userName = Auth::user()->name;
+
+        return Inertia::render('Panel/Home/Index',[
+            'userName' => $userName
+        ]);
+    }
+
+    //PSM1
+
+    public function PSM1GradeSupervision(){
+
+        $this->authorize('view psm1 grade supervision table');
+
+        return Inertia::render('Panel/PSM1/GradeSupervision');
+    }
+
+    public function PSM1GradeProposal(){
+
+        $this->authorize('view psm1 grade proposal table');
+
+        return Inertia::render('Panel/PSM1/GradeProposal');
+    }
+
+    public function PSM1Grade(){
+
+        $this->authorize('view psm1 grade table');
+
+        return Inertia::render('Panel/PSM1/GradePSM1');
+    }
+
+    //PSM2
+
+    public function PSM2GradeSupervision(){
+
+        $this->authorize('view psm2 grade supervision table');
+
+        return Inertia::render('Panel/PSM2/GradeSupervision');
+    }
+
+    public function PSM2Grade(){
+
+        $this->authorize('view psm2 grade table');
+
+        return Inertia::render('Panel/PSM2/GradePSM2');
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+
+
     public function getPanel(){
 
         $panels = $this->panelService->getPanel();
@@ -203,12 +259,12 @@ class PanelController extends Controller
         return view('Proposal.panel.liststudent',compact('students'));
     }
 
-    public function gradeProposal($id){
+    // public function gradeProposal($id){
 
-        $data = ['id' => $id];
+    //     $data = ['id' => $id];
 
-        return view('Proposal.panel.gradepageProposal',$data);
-    }
+    //     return view('Proposal.panel.gradepageProposal',$data);
+    // }
 
     public function markahProposal(Request $request){
 

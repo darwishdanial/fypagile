@@ -2,6 +2,7 @@ import React from "react";
 import { Link, usePage } from "@inertiajs/react";
 import { CoordinatorSidebar } from "./CoordinatorSidebar";
 import { User } from "lucide-react";
+import { route } from 'ziggy-js';
 
 export function CoordinatorLayout({ children }) {
     const { url } = usePage();
@@ -26,7 +27,7 @@ export function CoordinatorLayout({ children }) {
                                 <ul className="flex space-x-6 uppercase font-semibold text-3xl tracking-wide">
                                     <li>
                                         <Link
-                                            href="/Coordinator/Home"
+                                            href={route('coordinator.home')}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p

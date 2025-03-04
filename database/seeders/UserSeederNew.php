@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use App\Services\ProjectLecturerMergerService;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 
 class UserSeederNew extends Seeder
@@ -29,7 +30,7 @@ class UserSeederNew extends Seeder
             $isPanel = 1;
             $email = strtolower(str_replace(' ', '.', $name)) . '@utm.my'; // Generate email based on the name
 
-            User::create([
+            $user = User::create([
                 'name' => $name,
                 'username' => strtolower(str_replace(' ', '', $name)),
                 'email' => $email,
@@ -38,6 +39,13 @@ class UserSeederNew extends Seeder
                 'email_verified_at' => now(),
                 'password' => Hash::make(123456),
             ]);
+
+            if($role === 1) {
+                $user->assignRole('Coordinator');
+            } else {
+                $user->assignRole('Panel');
+            }
+
         }
     }
 }

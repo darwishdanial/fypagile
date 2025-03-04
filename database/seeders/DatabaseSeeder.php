@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             
             StudentPSM1SeederNew::class,
             StudentPSM2Seeder::class,
+            PermissionSeeder::class,
             UserSeederNew::class,
             SupervisorSeeder::class,
             ProjectAreaMappingSeeder::class,
