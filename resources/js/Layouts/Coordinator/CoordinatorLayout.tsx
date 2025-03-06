@@ -8,8 +8,8 @@ export function CoordinatorLayout({ children }) {
     const { url } = usePage();
     return (
         <>
-            <div className="flex h-screen overflow-hidden">
-                <CoordinatorSidebar></CoordinatorSidebar>
+            <div className="flex h-screen">
+                <CoordinatorSidebar ></CoordinatorSidebar>
                 <div className="flex flex-col w-full">
                     <header className="bg-white shadow-md">
                         <div>

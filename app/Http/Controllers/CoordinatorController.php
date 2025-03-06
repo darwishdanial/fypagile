@@ -44,9 +44,13 @@ class CoordinatorController extends Controller
     {
         $this->authorize('view psm1 list students table');
 
-        //$students = $this->studentService->getStudentPSM1();
+        $students = $this->studentService->getStudentPSM1();
+        $archivedStudents = StudentPSM1::onlyTrashed()->get();
 
-        return Inertia::render('Coordinator/PSM1/ListStudents');
+        return Inertia::render('Coordinator/PSM1/ListStudents',[
+            'students' => $students,
+            'archivedStudents' => $archivedStudents
+        ]);
     }
 
     public function PSM1ListPanels()
@@ -110,6 +114,20 @@ class CoordinatorController extends Controller
         $this->authorize('view psm1 grade table');
 
         return Inertia::render('Coordinator/PSM1/GradePSM1');
+    }
+
+    public function PSM1ArchiveStudent($id)
+    {
+        $student = StudentPSM1::findOrFail($id);
+        $student->delete(); // Soft delete
+        return redirect()->back()->with('success', 'Student archived successfully.');
+    }
+
+    public function PSM1RestoreStudent($id)
+    {
+        $student = StudentPSM1::onlyTrashed()->findOrFail($id);
+        $student->restore(); // Restores the soft-deleted student
+        return back()->with('success', 'Student restore successfully.');
     }
 
     //PSM2
