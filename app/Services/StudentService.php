@@ -28,17 +28,21 @@ class StudentService
         $students = StudentPSM1::leftJoin('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
             ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
             ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
-            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_type','students_psm1.sessionpsm', 'sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+            ->leftJoin('users as panel_proposal_users', 'students_psm1.panelProposalId', '=', 'panel_proposal_users.id')
+            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_type','students_psm1.sessionpsm', 'sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name','panel_proposal_users.name as panel_proposal_name')
             ->orWhereNull('students_psm1.supervisorId')
             ->get();
 
         $students_with_supervisor = StudentPSM1::join('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
             ->leftJoin('users as panel_users', 'students_psm1.panel2Id', '=', 'panel_users.id')
             ->leftJoin('users as panel2_users', 'students_psm1.panelId', '=', 'panel2_users.id')
-            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_type','students_psm1.sessionpsm', 'sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+            ->leftJoin('users as panel_proposal_users', 'students_psm1.panelProposalId', '=', 'panel_proposal_users.id')
+            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_type','students_psm1.sessionpsm', 'sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name','panel_proposal_users.name as panel_proposal_name')
             ->get();
 
         $totalStudents = $students->concat($students_with_supervisor);
+
+        // $totalStudents = StudentPSM1::all();
 
         return $totalStudents;
     }

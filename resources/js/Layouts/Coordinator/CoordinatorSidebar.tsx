@@ -170,13 +170,15 @@ export function CoordinatorSidebar() {
                         );
                     })}
 
-                    <form onSubmit={handleLogout} className="w-full">
                         <MenuItem icon={<LogOut />}>
-                            <button type="submit" className="w-full text-left">
+                            <button 
+                                type="submit" 
+                                className="w-full text-left"
+                                onClick={handleLogout}>
+
                                 Log Out
                             </button>
                         </MenuItem>
-                    </form>
                 </Menu>
             </Sidebar>
         </div>

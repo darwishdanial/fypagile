@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { usePage, router } from "@inertiajs/react";
-import { Pencil, Archive, ArchiveRestore } from "lucide-react";
+import { Pencil, Archive, ArchiveRestore, Trash } from "lucide-react";
 import { route } from "ziggy-js";
 
 interface Student {
@@ -15,6 +15,7 @@ interface Student {
     sv_name?: string; // Supervisor Name
     panel_name?: string; // Panel 1 Name
     panel2_name?: string; // Panel 2 Name
+    panel_proposal_name?: string; // Proposal Panel Name
 }
 
 export default function ListStudents() {
@@ -29,6 +30,7 @@ export default function ListStudents() {
     const archivedStudents = props.archivedStudents;
 
     const [showArchived, setShowArchived] = useState(false);
+    const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
     const handleArchive = (id: number) => {
         router.post(
@@ -111,20 +113,28 @@ export default function ListStudents() {
                         </div>
                     </div>
 
-                    <h1 className="text-center font-semibold text-3xl text-[#6D2323]">
+                    {/* <h1 className="text-center font-semibold text-3xl text-[#6D2323]">
                         List of PSM1 Students
-                    </h1>
+                    </h1> */}
 
-                    <button
-                        type="button"
-                        className="p-2 px-3 bg-[#6D2323] text-white rounded mx-4 my-4 font-semibold"
-                    >
-                        + Import Students
-                    </button>
+                    <div className="flex">
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-[#6D2323] text-white rounded my-4 font-semibold"
+                        >
+                            + Add Students
+                        </button>
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-[#6D2323] text-white rounded mx-4 my-4 font-semibold"
+                        >
+                            + Import Students
+                        </button>
+                    </div>
                 </div>
 
                 {/* Search Input */}
-                <div className="flex justify-between mx-4 my-4">
+                <div className="flex justify-between mx-4 my-2">
                     <div className="flex">
                         <label className="font-semibold">
                             Rows per page:
@@ -159,100 +169,143 @@ export default function ListStudents() {
                 </div>
 
                 {/* Table */}
-                <table className="w-full border-collapse border border-gray-300">
+                <table className="w-full border-collapse border-t border-b border-gray-300">
                     <thead className="bg-gray-200">
                         <tr>
-                            <th className="border border-gray-300 px-4 py-2">
+                            <th className="px-4 py-2 border-b border-gray-300">
                                 No
                             </th>
-                            <th className="border border-gray-300 px-4 py-2">
+                            <th className="px-4 py-2 border-b border-gray-300">
                                 Course
                             </th>
-                            <th className="border border-gray-300 px-4 py-2">
+                            <th className="px-4 py-2 border-b border-gray-300">
                                 Matric No
                             </th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">
+                            <th className="px-4 py-2 text-left border-b border-gray-300">
                                 Name
                             </th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">
+                            <th className="px-4 py-2 text-left border-b border-gray-300">
                                 Project Title
                             </th>
-                            <th className="border border-gray-300 px-4 py-2">
+                            <th className="px-4 py-2 border-b border-gray-300">
                                 Session
                             </th>
-                            <th className="border border-gray-300 px-4 py-2">
+                            <th className="px-4 py-2 border-b border-gray-300">
                                 Action
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {paginatedStudents.map((student, index) => (
+                            <React.Fragment key={student.id}>
                             <tr
-                                key={student.id}
-                                className="text-center bg-white"
+                                className="text-center bg-white hover:bg-gray-100 border-b border-gray-300 cursor-pointer"
+                                onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
                             >
-                                <td className="border border-gray-300 px-4 py-2">
+                                <td className="px-4 py-2">
                                     {index +
                                         1 +
                                         (currentPage - 1) * rowsPerPage}
                                 </td>
-                                <td className="border border-gray-300 px-4 py-2">
-                                    {student.course}
-                                </td>
-                                <td className="border border-gray-300 px-4 py-2">
-                                    {student.matric}
-                                </td>
-                                <td className="border border-gray-300 px-4 py-2 text-left">
+                                <td className="px-4 py-2">{student.course}</td>
+                                <td className="px-4 py-2">{student.matric}</td>
+                                <td className="px-4 py-2 text-left">
                                     {student.name}
                                 </td>
-                                <td className="border border-gray-300 px-4 py-2 text-left">
+                                <td className="px-4 py-2 text-left">
                                     {student.title}
                                 </td>
-                                <td className="border border-gray-300 px-4 py-2">
+                                <td className="px-4 py-2">
                                     {student.sessionpsm}
                                 </td>
-                                <td className="border border-gray-300 px-4 py-2">
+                                <td className="px-4 py-2">
                                     <div className="flex items-center justify-center space-x-2">
                                         <button
                                             type="button"
                                             className="p-1 text-blue-600 hover:text-blue-800 transition"
-                                            onClick={() =>
-                                                console.log("Edit", student.id)
-                                            }
+                                            onClick={(e) =>{
+                                                e.stopPropagation();
+                                                console.log("Edit", student.id);
+                                            }}
                                             title="Edit Student"
                                         >
-                                            <Pencil size={20} />
+                                            <Pencil
+                                                size={20}
+                                                className="transition-transform duration-200 hover:scale-125"
+                                            />
                                         </button>
                                         {!showArchived ? (
                                             <>
                                                 <button
                                                     type="button"
                                                     className="p-1 text-red-600 hover:text-red-800 transition"
-                                                    onClick={() =>
+                                                    onClick={(e) =>{
+                                                        e.stopPropagation();
                                                         handleArchive(
                                                             student.id
-                                                        )
-                                                    }
+                                                        );
+                                                    }}
                                                     title="Archive Student"
                                                 >
-                                                    <Archive size={20} />
+                                                    <Archive
+                                                        size={20}
+                                                        className="transition-transform duration-200 hover:scale-125"
+                                                    />
                                                 </button>
                                             </>
                                         ) : (
-                                            <button
-                                                type="button"
-                                                className="p-1 text-green-600 hover:text-green-800 transition"
-                                                onClick={() =>
-                                                    handleRestore(student.id)
-                                                }
-                                                title="Restore Student"
-                                            >
-                                                <ArchiveRestore size={20} />
-                                            </button>
+                                            <div className="flex">
+                                                <button
+                                                    type="button"
+                                                    className="p-1 text-green-600 hover:text-green-800 transition"
+                                                    onClick={(e) =>{
+                                                        e.stopPropagation();
+                                                        handleRestore(
+                                                            student.id
+                                                        )
+                                                    }}
+                                                    title="Restore Student"
+                                                >
+                                                    <ArchiveRestore
+                                                        size={20}
+                                                        className="transition-transform duration-200 hover:scale-125"
+                                                    />
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    className="p-1 text-green-600 hover:text-green-800 transition pl-2"
+                                                    onClick={(e) =>{
+                                                        e.stopPropagation();
+                                                        handleRestore(
+                                                            student.id
+                                                        )
+                                                    }}
+                                                    title="Delete Student"
+                                                >
+                                                    <Trash
+                                                        size={20}
+                                                        className="transition-transform duration-200 hover:scale-125"
+                                                    />
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 </td>
                             </tr>
+                            {expandedRow === student.id && (
+                                    <tr className="bg-gray-50 border-b border-gray-300">
+                                        <td colSpan={7} className="px-4 py-2 text-left">
+                                            <strong>Project Type:</strong> {student.project_type} <br />
+                                            <strong>Project Area:</strong> {student.project_area} <br />
+                                            <strong>Supervisor:</strong> {student.sv_name || "N/A"} <br />
+                                            <strong>Panel Proposal:</strong> {student.panel_proposal_name || "N/A"} <br />
+                                            <strong>Panel 1:</strong> {student.panel_name || "N/A"} <br />
+                                            <strong>Panel 2:</strong> {student.panel2_name || "N/A"} <br />
+                                        </td>
+                                    </tr>
+                                )}
+                            </React.Fragment>
                         ))}
                     </tbody>
                 </table>
@@ -261,7 +314,7 @@ export default function ListStudents() {
                 <div className="flex justify-center space-x-2 items-center mt-4">
                     <button
                         type="button"
-                        className="px-3 py-1 bg-white rounded disabled:opacity-50 hover:bg-gray-300 transition border border-gray-300"
+                        className="px-3 py-1 bg-white rounded disabled:opacity-50 hover:bg-gray-100 transition border border-gray-300"
                         disabled={currentPage === 1}
                         onClick={() => setCurrentPage((prev) => prev - 1)}
                     >
@@ -274,7 +327,7 @@ export default function ListStudents() {
 
                     <button
                         type="button"
-                        className="px-3 py-1 bg-white rounded disabled:opacity-50 hover:bg-gray-300 transition border border-gray-300"
+                        className="px-3 py-1 bg-white rounded disabled:opacity-50 hover:bg-gray-100 transition border border-gray-300"
                         disabled={currentPage === totalPages}
                         onClick={() => setCurrentPage((prev) => prev + 1)}
                     >
