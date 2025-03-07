@@ -20,11 +20,9 @@ interface Student {
 
 export default function ListStudents() {
     const { props } = usePage<{
-        props: {
-            students: Student[];
-            archivedStudents: Student[];
-            flash?: { success?: string };
-        };
+        students: Student[];
+        archivedStudents: Student[];
+        flash?: { success?: string };
     }>();
     const students = props.students;
     const archivedStudents = props.archivedStudents;

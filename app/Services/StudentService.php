@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\StudentPSM2;
 use App\Models\StudentPSM1;
 use Illuminate\Support\Facades\DB;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class StudentService 
 {
