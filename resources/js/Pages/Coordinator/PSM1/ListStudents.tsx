@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { usePage, router } from "@inertiajs/react";
 import { Pencil, Archive, ArchiveRestore, Trash } from "lucide-react";
 import { route } from "ziggy-js";
+import AddStudentModal from "../../../Components/AddStudentModal";
 
 interface Student {
     id: number;
@@ -29,6 +30,7 @@ export default function ListStudents() {
 
     const [showArchived, setShowArchived] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const handleArchive = (id: number) => {
         router.post(
@@ -90,8 +92,8 @@ export default function ListStudents() {
                                 type="button"
                                 className={`p-1 px-3 transition  text-center ${
                                     !showArchived
-                                        ? "bg-[#6D2323] text-white"
-                                        : "bg-white border-r "
+                                        ? "bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white"
+                                        : "bg-white hover:bg-gray-100 border-r "
                                 }`}
                                 onClick={() => setShowArchived(false)}
                             >
@@ -101,8 +103,8 @@ export default function ListStudents() {
                                 type="button"
                                 className={`p-1 px-3 transition text-center ${
                                     showArchived
-                                        ? "bg-[#6D2323] text-white"
-                                        : "bg-white "
+                                        ? "bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white"
+                                        : "bg-white hover:bg-gray-100"
                                 }`}
                                 onClick={() => setShowArchived(true)}
                             >
@@ -118,13 +120,14 @@ export default function ListStudents() {
                     <div className="flex">
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] text-white rounded my-4 font-semibold"
+                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded my-4 font-semibold"
+                            onClick={() => setIsAddModalOpen(true)} 
                         >
                             + Add Students
                         </button>
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] text-white rounded mx-4 my-4 font-semibold"
+                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded mx-4 my-4 font-semibold"
                         >
                             + Import Students
                         </button>
@@ -333,6 +336,12 @@ export default function ListStudents() {
                     </button>
                 </div>
             </div>
+
+            <AddStudentModal 
+                isOpen={isAddModalOpen} 
+                onClose={() => setIsAddModalOpen(false)} 
+            />
+
         </div>
     );
 }
