@@ -83,7 +83,8 @@ class AuthController extends Controller
             }
 
         }catch(\Exception $e){
-            return redirect('login')->with('error', 'you are not allowed to access');
+
+            return redirect()->route('login')->with('error', 'Invalid user');
         }
 
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { usePage, router } from "@inertiajs/react";
 import { Pencil, Archive, ArchiveRestore, Trash } from "lucide-react";
 import { route } from "ziggy-js";
@@ -19,12 +19,18 @@ interface Student {
     panel_proposal_name?: string; // Proposal Panel Name
 }
 
+interface Flash {
+    error?: string;
+    success?: string;
+}
+
 export default function ListStudents() {
     const { props } = usePage<{
         students: Student[];
         archivedStudents: Student[];
-        flash?: { success?: string };
+        flash?: Flash;
     }>();
+
     const students = props.students;
     const archivedStudents = props.archivedStudents;
 
@@ -43,6 +49,14 @@ export default function ListStudents() {
     const handleRestore = (id: number) => {
         router.post(
             route("coordinator.PSM1.students.restore", id),
+            {},
+            { preserveScroll: true }
+        );
+    };
+
+    const handleDelete = (id: number) => {
+        router.post(
+            route("coordinator.PSM1.students.delete", id),
             {},
             { preserveScroll: true }
         );
@@ -80,10 +94,32 @@ export default function ListStudents() {
         currentPage * rowsPerPage
     );
 
+    const [flashMessage, setFlashMessage] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+    useEffect(() => {
+        if (props.flash?.success) {
+            setFlashMessage({ type: "success", message: props.flash.success });
+        }
+        if (props.flash?.error) {
+            setFlashMessage({ type: "error", message: props.flash.error });
+        }
+
+        if (props.flash?.success || props.flash?.error) {
+            const timer = setTimeout(() => setFlashMessage(null), 3000); // Hide after 3s
+            return () => clearTimeout(timer);
+        }
+    }, [props.flash]); // Run effect when flash message changes
+
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center">
+
+        {flashMessage && (
+            <div className={`fixed bottom-5 right-5 px-4 py-3 rounded shadow-lg text-white ${flashMessage.type === "success" ? "bg-green-600" : "bg-red-600"}`}>
+                {flashMessage.message}
+            </div>
+        )}
+
             <div className="w-full bg-gray-100 shadow-lg pb-6">
-                {/* Flash Message */}
 
                 <div className="flex items-center justify-between">
                     <div className="mx-4 my-4">
@@ -127,7 +163,7 @@ export default function ListStudents() {
                         </button>
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded mx-4 my-4 font-semibold"
+                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded ml-2 mr-4 my-4 font-semibold"
                         >
                             + Import Students
                         </button>
@@ -278,7 +314,7 @@ export default function ListStudents() {
                                                     className="p-1 text-green-600 hover:text-green-800 transition pl-2"
                                                     onClick={(e) =>{
                                                         e.stopPropagation();
-                                                        handleRestore(
+                                                        handleDelete(
                                                             student.id
                                                         )
                                                     }}

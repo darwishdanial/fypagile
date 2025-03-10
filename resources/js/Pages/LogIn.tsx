@@ -1,11 +1,22 @@
 import React from "react";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage  } from "@inertiajs/react";
+
+interface Flash {
+    error?: string;
+}
 
 export default function LoginPage() {
     const { data, setData, post, processing, errors } = useForm({
         username: "",
         password: "",
     });
+
+    const { props } = usePage<{
+        flash: Flash;
+    }>();
+
+    const flash = props.flash;
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -33,33 +44,46 @@ export default function LoginPage() {
 
                 {/* Right Section - Login Form */}
                 <div className="w-1/2 flex flex-col justify-center  bg-white p-2 rounded-sm shadow-md border border-gray-200">
+
                     <form onSubmit={handleSubmit}>
-                        {errors.username && (
-                            <p className="text-red-500">{errors.username}</p>
+                        <div className="mb-4">
+                            <input
+                                type="text"
+                                name="username"
+                                value={data.username}
+                                onChange={(e) =>
+                                    setData("username", e.target.value)
+                                }
+                                placeholder="Username"
+                                className="w-full px-4 py-2 bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000]"
+                            />
+                                                    {errors.username && (
+                                <p className="text-red-500  mb-4">{errors.username}</p>
+                            )}
+                        </div>
+
+                        <div className="mb-4">
+                            <input
+                                type="password"
+                                name="password"
+                                value={data.password}
+                                onChange={(e) =>
+                                    setData("password", e.target.value)
+                                }
+                                placeholder="Password"
+                                className="w-full px-4 py-2  bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000]"
+                            />
+                                                    {errors.password && (
+                                <p className="text-red-500 ">{errors.password}</p>
+                            )}
+                        </div>
+
+                        {flash?.error && (
+                            <p className="text-red-500 text-sm text-center bg-red-100 , p-2 mb-4 rounded-sm">
+                                {flash.error}
+                            </p>
                         )}
-                        <input
-                            type="text"
-                            name="username"
-                            value={data.username}
-                            onChange={(e) =>
-                                setData("username", e.target.value)
-                            }
-                            placeholder="Username"
-                            className="w-full px-4 py-2 mb-4 bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000]"
-                        />
-                        {errors.password && (
-                            <p className="text-red-500">{errors.password}</p>
-                        )}
-                        <input
-                            type="password"
-                            name="password"
-                            value={data.password}
-                            onChange={(e) =>
-                                setData("password", e.target.value)
-                            }
-                            placeholder="Password"
-                            className="w-full px-4 py-2 mb-4 bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000]"
-                        />
+    
                         <button
                             type="submit"
                             disabled={processing}
@@ -67,6 +91,7 @@ export default function LoginPage() {
                         >
                             {processing ? "Logging in..." : "Log In"}
                         </button>
+
                     </form>
                 </div>
             </div>

@@ -130,6 +130,13 @@ class CoordinatorController extends Controller
         return back()->with('success', 'Student restore successfully.');
     }
 
+    public function PSM1DeleteStudent($id)
+    {
+        $student = StudentPSM1::onlyTrashed()->findOrFail($id);
+        $student->forceDelete(); // Delete permanently
+        return redirect()->back()->with('success', 'Student deleted successfully.');
+    }
+
     //PSM2
 
     public function PSM2ListStudents()
