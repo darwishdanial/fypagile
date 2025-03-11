@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { usePage, router } from "@inertiajs/react";
-import { Pencil, Archive, ArchiveRestore, Trash } from "lucide-react";
+import { Pencil, Archive, ArchiveRestore, Trash, FileDown, CirclePlus } from "lucide-react";
 import { route } from "ziggy-js";
 import AddStudentModal from "../../../Components/AddStudentModal";
 import EditStudentModal from "../../../Components/EditStudentModal";
@@ -139,7 +139,7 @@ export default function ListStudents() {
                 </div>
             )}
 
-            <div>
+            <div className="w-full">
                 <div className="flex items-center justify-between">
                     <div className="mx-4 my-4">
                         <div className="flex border rounded overflow-hidden font-semibold">
@@ -178,13 +178,19 @@ export default function ListStudents() {
                             className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded my-4 font-semibold"
                             onClick={() => setIsAddModalOpen(true)}
                         >
-                            + Add Students
+                           <div className="flex">
+                                <CirclePlus className="mr-2"/> 
+                                Add Students
+                            </div>
                         </button>
                         <button
                             type="button"
                             className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded ml-2 mr-4 my-4 font-semibold"
                         >
-                            + Import Students
+                            <div className="flex">
+                                <FileDown className="mr-2"/> 
+                                Import Students
+                            </div>
                         </button>
                     </div>
                 </div>
@@ -212,7 +218,7 @@ export default function ListStudents() {
 
                     <input
                         type="text"
-                        className="border border-gray-300 rounded p-2 w-1/5 bg-white"
+                        className="border border-gray-300 rounded p-2 w-1/5 bg-white hover:border-[#6D2323]"
                         placeholder="Search "
                         value={searchQuery}
                         onChange={(e) => {
