@@ -12,6 +12,7 @@ use App\Services\CompareMachineLearningService;
 use App\Jobs\EmailPanelAssignmentCompleteJob;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Validation\Rule;
 
 class CoordinatorController extends Controller
 {
@@ -135,6 +136,61 @@ class CoordinatorController extends Controller
         $student = StudentPSM1::onlyTrashed()->findOrFail($id);
         $student->forceDelete(); // Delete permanently
         return redirect()->back()->with('success', 'Student deleted successfully.');
+    }
+
+    public function PSM1StoreStudent(Request $request)
+    {
+        // dd( $request->all());
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'matric' => 'required|string|unique:students_psm1,matric|max:50',
+            'course' => 'required|string|max:255',
+            'cohort' => 'required|string|max:50',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|unique:students_psm1,email|max:255',
+            'project_type' => ['required', Rule::in(['System Development', 'Research'])],
+            'project_area' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'sessionpsm' => 'required|string|max:50',
+        ]);
+
+        StudentPSM1::create($validated);
+
+        return redirect()->back()->with('success', 'Student added successfully!');
+    }
+
+    public function PSM1UpdateStudent(Request $request, $id)
+    {
+
+        $student = StudentPSM1::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'matric' => 'required|string|max:50|unique:students_psm1,matric,' . $id,
+            'course' => 'required|string|max:255',
+            'cohort' => 'required|string|max:50',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255|unique:students_psm1,email,' . $id,
+            'project_type' => ['required', Rule::in(['System Development', 'Research'])],
+            'project_area' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'sessionpsm' => 'required|string|max:50',
+        ]);
+
+        $student->update([
+            'name' => $request->name,
+            'matric' => $request->matric,
+            'course' => $request->course,
+            'cohort' => $request->cohort,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'project_type' => $request->project_type,
+            'project_area' => $request->project_area,
+            'title' => $request->title,
+            'sessionpsm' => $request->sessionpsm,
+        ]);
+
+        return redirect()->back()->with('success', 'Student updated successfully!');
     }
 
     //PSM2

@@ -51,6 +51,10 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/students/{id}/delete', [CoordinatorController::class, 'PSM1DeleteStudent'])->name('students.delete');
 
+        Route::post('/students/store', [CoordinatorController::class, 'PSM1StoreStudent'])->name('students.store');
+
+        Route::put('/students/{id}/update', [CoordinatorController::class, 'PSM1UpdateStudent'])->name('students.update');
+
         Route::get('/list-panels', [CoordinatorController::class, 'PSM1ListPanels'])->name('listPanels');
 
         Route::get('/assign-supervisor', [CoordinatorController::class, 'PSM1AssignSupervisor'])->name('assignSupervisor');

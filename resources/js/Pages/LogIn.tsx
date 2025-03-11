@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, usePage  } from "@inertiajs/react";
 
 interface Flash {
     error?: string;
+    success?: string;
 }
 
 export default function LoginPage() {
@@ -15,16 +16,37 @@ export default function LoginPage() {
         flash: Flash;
     }>();
 
-    const flash = props.flash;
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
         post("/validate_login"); // Send data to backend
     };
 
+    const [flashMessage, setFlashMessage] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+    useEffect(() => {
+        if (props.flash?.success) {
+            setFlashMessage({ type: "success", message: props.flash.success });
+        }
+        if (props.flash?.error) {
+            setFlashMessage({ type: "error", message: props.flash.error });
+        }
+
+        if (props.flash?.success || props.flash?.error) {
+            const timer = setTimeout(() => setFlashMessage(null), 3000); // Hide after 3s
+            return () => clearTimeout(timer);
+        }
+    }, [props.flash]); // Run effect when flash message changes
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
+
+            {flashMessage && (
+                <div className={`fixed bottom-5 right-5 px-4 py-3 rounded shadow-lg text-white ${flashMessage.type === "success" ? "bg-green-600" : "bg-red-600"}`}>
+                    {flashMessage.message}
+                </div>
+            )}
+            
             <div className="flex w-[900px] p-10">
                 {/* Left Section - Logo & Text */}
                 <div className="w-1/2 flex flex-col justify-center items-end mr-10">
@@ -57,7 +79,7 @@ export default function LoginPage() {
                                 placeholder="Username"
                                 className="w-full px-4 py-2 bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000]"
                             />
-                                                    {errors.username && (
+                            {errors.username && (
                                 <p className="text-red-500  mb-4">{errors.username}</p>
                             )}
                         </div>
@@ -77,12 +99,6 @@ export default function LoginPage() {
                                 <p className="text-red-500 ">{errors.password}</p>
                             )}
                         </div>
-
-                        {flash?.error && (
-                            <p className="text-red-500 text-sm text-center bg-red-100 , p-2 mb-4 rounded-sm">
-                                {flash.error}
-                            </p>
-                        )}
     
                         <button
                             type="submit"

@@ -3,6 +3,7 @@ import { usePage, router } from "@inertiajs/react";
 import { Pencil, Archive, ArchiveRestore, Trash } from "lucide-react";
 import { route } from "ziggy-js";
 import AddStudentModal from "../../../Components/AddStudentModal";
+import EditStudentModal from "../../../Components/EditStudentModal";
 
 interface Student {
     id: number;
@@ -13,6 +14,9 @@ interface Student {
     project_area: string;
     project_type: string;
     sessionpsm: string;
+    cohort: string;
+    phone: string;
+    email: string;
     sv_name?: string; // Supervisor Name
     panel_name?: string; // Panel 1 Name
     panel2_name?: string; // Panel 2 Name
@@ -37,6 +41,10 @@ export default function ListStudents() {
     const [showArchived, setShowArchived] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState<Student | null>(
+        null
+    );
 
     const handleArchive = (id: number) => {
         router.post(
@@ -78,6 +86,10 @@ export default function ListStudents() {
                 student.title
                     .toLowerCase()
                     .includes(searchQuery.toLowerCase())) ||
+            (student.email &&
+                student.email
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase())) ||
             student.course.toLowerCase().includes(searchQuery.toLowerCase()) || // Search by course
             (student.sessionpsm &&
                 student.sessionpsm
@@ -94,7 +106,10 @@ export default function ListStudents() {
         currentPage * rowsPerPage
     );
 
-    const [flashMessage, setFlashMessage] = useState<{ type: "success" | "error"; message: string } | null>(null);
+    const [flashMessage, setFlashMessage] = useState<{
+        type: "success" | "error";
+        message: string;
+    } | null>(null);
 
     useEffect(() => {
         if (props.flash?.success) {
@@ -111,16 +126,20 @@ export default function ListStudents() {
     }, [props.flash]); // Run effect when flash message changes
 
     return (
-        <div className="min-h-screen bg-gray-100 flex justify-center">
+        <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
+            {flashMessage && (
+                <div
+                    className={`fixed bottom-5 right-5 px-4 py-3 rounded shadow-lg text-white ${
+                        flashMessage.type === "success"
+                            ? "bg-green-600"
+                            : "bg-red-600"
+                    }`}
+                >
+                    {flashMessage.message}
+                </div>
+            )}
 
-        {flashMessage && (
-            <div className={`fixed bottom-5 right-5 px-4 py-3 rounded shadow-lg text-white ${flashMessage.type === "success" ? "bg-green-600" : "bg-red-600"}`}>
-                {flashMessage.message}
-            </div>
-        )}
-
-            <div className="w-full bg-gray-100 shadow-lg pb-6">
-
+            <div>
                 <div className="flex items-center justify-between">
                     <div className="mx-4 my-4">
                         <div className="flex border rounded overflow-hidden font-semibold">
@@ -157,7 +176,7 @@ export default function ListStudents() {
                         <button
                             type="button"
                             className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded my-4 font-semibold"
-                            onClick={() => setIsAddModalOpen(true)} 
+                            onClick={() => setIsAddModalOpen(true)}
                         >
                             + Add Students
                         </button>
@@ -235,113 +254,136 @@ export default function ListStudents() {
                     <tbody>
                         {paginatedStudents.map((student, index) => (
                             <React.Fragment key={student.id}>
-                            <tr
-                                className="text-center bg-white hover:bg-gray-100 border-b border-gray-300 cursor-pointer"
-                                onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
-                            >
-                                <td className="px-4 py-2">
-                                    {index +
-                                        1 +
-                                        (currentPage - 1) * rowsPerPage}
-                                </td>
-                                <td className="px-4 py-2">{student.course}</td>
-                                <td className="px-4 py-2">{student.matric}</td>
-                                <td className="px-4 py-2 text-left">
-                                    {student.name}
-                                </td>
-                                <td className="px-4 py-2 text-left">
-                                    {student.title}
-                                </td>
-                                <td className="px-4 py-2">
-                                    {student.sessionpsm}
-                                </td>
-                                <td className="px-4 py-2">
-                                    <div className="flex items-center justify-center space-x-2">
-                                        <button
-                                            type="button"
-                                            className="p-1 text-blue-600 hover:text-blue-800 transition"
-                                            onClick={(e) =>{
-                                                e.stopPropagation();
-                                                console.log("Edit", student.id);
-                                            }}
-                                            title="Edit Student"
-                                        >
-                                            <Pencil
-                                                size={20}
-                                                className="transition-transform duration-200 hover:scale-125"
-                                            />
-                                        </button>
-                                        {!showArchived ? (
-                                            <>
-                                                <button
-                                                    type="button"
-                                                    className="p-1 text-red-600 hover:text-red-800 transition"
-                                                    onClick={(e) =>{
-                                                        e.stopPropagation();
-                                                        handleArchive(
-                                                            student.id
-                                                        );
-                                                    }}
-                                                    title="Archive Student"
-                                                >
-                                                    <Archive
-                                                        size={20}
-                                                        className="transition-transform duration-200 hover:scale-125"
-                                                    />
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <div className="flex">
-                                                <button
-                                                    type="button"
-                                                    className="p-1 text-green-600 hover:text-green-800 transition"
-                                                    onClick={(e) =>{
-                                                        e.stopPropagation();
-                                                        handleRestore(
-                                                            student.id
-                                                        )
-                                                    }}
-                                                    title="Restore Student"
-                                                >
-                                                    <ArchiveRestore
-                                                        size={20}
-                                                        className="transition-transform duration-200 hover:scale-125"
-                                                    />
-                                                </button>
+                                <tr
+                                    className="text-center bg-white hover:bg-gray-100 border-b border-gray-300 cursor-pointer"
+                                    onClick={() =>
+                                        setExpandedRow(
+                                            expandedRow === student.id
+                                                ? null
+                                                : student.id
+                                        )
+                                    }
+                                >
+                                    <td className="px-4 py-2">
+                                        {index +
+                                            1 +
+                                            (currentPage - 1) * rowsPerPage}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {student.course}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {student.matric}
+                                    </td>
+                                    <td className="px-4 py-2 text-left">
+                                        {student.name}
+                                    </td>
+                                    <td className="px-4 py-2 text-left">
+                                        {student.title}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        {student.sessionpsm}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        <div className="flex items-center justify-center space-x-2">
+                                            <button
+                                                type="button"
+                                                className="p-1 text-blue-600 hover:text-blue-800 transition"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setSelectedStudent(student);
+                                                    setIsEditModalOpen(true);
+                                                }}
+                                                title="Edit Student"
+                                            >
+                                                <Pencil
+                                                    size={20}
+                                                    className="transition-transform duration-200 hover:scale-125"
+                                                />
+                                            </button>
+                                            {!showArchived ? (
+                                                <>
+                                                    <button
+                                                        type="button"
+                                                        className="p-1 text-red-600 hover:text-red-800 transition"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleArchive(
+                                                                student.id
+                                                            );
+                                                        }}
+                                                        title="Archive Student"
+                                                    >
+                                                        <Archive
+                                                            size={20}
+                                                            className="transition-transform duration-200 hover:scale-125"
+                                                        />
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <div className="flex">
+                                                    <button
+                                                        type="button"
+                                                        className="p-1 text-green-600 hover:text-green-800 transition"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleRestore(
+                                                                student.id
+                                                            );
+                                                        }}
+                                                        title="Restore Student"
+                                                    >
+                                                        <ArchiveRestore
+                                                            size={20}
+                                                            className="transition-transform duration-200 hover:scale-125"
+                                                        />
+                                                    </button>
 
-                                                <button
-                                                    type="button"
-                                                    className="p-1 text-green-600 hover:text-green-800 transition pl-2"
-                                                    onClick={(e) =>{
-                                                        e.stopPropagation();
-                                                        handleDelete(
-                                                            student.id
-                                                        )
-                                                    }}
-                                                    title="Delete Student"
-                                                >
-                                                    <Trash
-                                                        size={20}
-                                                        className="transition-transform duration-200 hover:scale-125"
-                                                    />
-                                                </button>
+                                                    <button
+                                                        type="button"
+                                                        className="p-1 text-green-600 hover:text-green-800 transition pl-2"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDelete(
+                                                                student.id
+                                                            );
+                                                        }}
+                                                        title="Delete Student"
+                                                    >
+                                                        <Trash
+                                                            size={20}
+                                                            className="transition-transform duration-200 hover:scale-125"
+                                                        />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {expandedRow === student.id && (
+                                <tr className="bg-gray-50 border-b border-gray-300">
+                                    <td colSpan={7} className="px-4 py-2 text-left">
+                                        <div className="grid grid-cols-7 gap-4">
+                                            <div className="col-span-2">
+                                                <strong>Project Type:</strong> {student.project_type} <br />
+                                                <strong>Project Area:</strong> {student.project_area} <br />
+                                                <strong>Supervisor:</strong> {student.sv_name || "N/A"} <br />
                                             </div>
-                                        )}
-                                    </div>
-                                </td>
-                            </tr>
-                            {expandedRow === student.id && (
-                                    <tr className="bg-gray-50 border-b border-gray-300">
-                                        <td colSpan={7} className="px-4 py-2 text-left">
-                                            <strong>Project Type:</strong> {student.project_type} <br />
-                                            <strong>Project Area:</strong> {student.project_area} <br />
-                                            <strong>Supervisor:</strong> {student.sv_name || "N/A"} <br />
-                                            <strong>Panel Proposal:</strong> {student.panel_proposal_name || "N/A"} <br />
-                                            <strong>Panel 1:</strong> {student.panel_name || "N/A"} <br />
-                                            <strong>Panel 2:</strong> {student.panel2_name || "N/A"} <br />
-                                        </td>
-                                    </tr>
-                                )}
+                                            <div className="col-span-2">
+                                                <strong>Panel Proposal:</strong> {student.panel_proposal_name || "N/A"} <br />
+                                                <strong>Panel 1:</strong> {student.panel_name || "N/A"} <br />
+                                                <strong>Panel 2:</strong> {student.panel2_name || "N/A"} <br />
+                                            </div>
+                                            <div className="col-span-3">
+                                                <strong>Email:</strong> {student.email} <br />
+                                                <strong>Cohort:</strong> {student.cohort} <br />
+                                                <strong>Session:</strong> {student.sessionpsm} <br />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+
                             </React.Fragment>
                         ))}
                     </tbody>
@@ -373,11 +415,19 @@ export default function ListStudents() {
                 </div>
             </div>
 
-            <AddStudentModal 
-                isOpen={isAddModalOpen} 
-                onClose={() => setIsAddModalOpen(false)} 
+            <AddStudentModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
             />
 
+            <EditStudentModal
+                isOpen={isEditModalOpen}
+                onClose={() => {
+                    setIsEditModalOpen(false);
+                    setSelectedStudent(null);
+                }}
+                student={selectedStudent}
+            />
         </div>
     );
 }

@@ -24,6 +24,9 @@ class StudentPSM1 extends Model
         'phone',
         'cohort',
         'sessionpsm',
+        'project_type',
+        'project_area',
+        'title',
         'supervisorId',
         'panelId',
         'panel2Id'

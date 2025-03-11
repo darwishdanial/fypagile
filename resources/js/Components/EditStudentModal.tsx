@@ -1,16 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { router, useForm, usePage  } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { X } from "lucide-react";
 
-interface AddStudentModalProps {
-    isOpen: boolean;
-    onClose: () => void;
+interface Student {
+    id: number;
+    name: string;
+    matric: string;
+    course: string;
+    title: string;
+    project_area: string;
+    project_type: string;
+    sessionpsm: string;
+    cohort?: string;
+    phone?: string;
+    email?: string;
 }
 
-const AddStudentModal: React.FC<AddStudentModalProps> = ({
+interface EditStudentModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    student: Student | null;
+}
+
+const EditStudentModal: React.FC<EditStudentModalProps> = ({
     isOpen,
     onClose,
+    student,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -24,20 +40,38 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
         };
     }, [isOpen]);
 
-    const { data, setData,  processing } = useForm({
-        name: "",
-        matric: "",
-        course: "",
-        cohort: "",
-        phone: "",
-        email: "",
-        project_type: "",
-        project_area: "",
-        title: "",
-        sessionpsm: "",
+    const { data, setData, processing, reset } = useForm({
+        name: student?.name || "",
+        matric: student?.matric || "",
+        course: student?.course || "",
+        cohort: student?.cohort || "",
+        phone: student?.phone || "",
+        email: student?.email || "",
+        project_type: student?.project_type || "",
+        project_area: student?.project_area || "",
+        title: student?.title || "",
+        sessionpsm: student?.sessionpsm || "",
     });
 
     const { errors } = usePage().props
+
+    // Update form data when student prop changes
+    useEffect(() => {
+        if (student) {
+            setData({
+                name: student.name || "",
+                matric: student.matric || "",
+                course: student.course || "",
+                cohort: student.cohort || "",
+                phone: student.phone || "",
+                email: student.email || "",
+                project_type: student.project_type || "",
+                project_area: student.project_area || "",
+                title: student.title || "",
+                sessionpsm: student.sessionpsm || "",
+            });
+        }
+    }, [student, setData]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -49,34 +83,26 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        router.post(route("coordinator.PSM1.students.store"), data, {
-            onError: (errors) => {
-                console.log(errors); // Debugging: Check if errors are logged
-                console.log("Matric Error:", errors.matric);
-            },
-            onSuccess: () => {
-                onClose();
-                // Reset form
-                setData({
-                    name: "",
-                    matric: "",
-                    course: "",
-                    cohort: "",
-                    phone: "",
-                    email: "",
-                    project_type: "",
-                    project_area: "",
-                    title: "",
-                    sessionpsm: "",
-                });
-            },
-        }); // Send data to backend ✅ Properly closed
+        if (!student) return;
+
+        router.put(
+            route("coordinator.PSM1.students.update", student.id),
+            data,
+            {
+                onError: (errors) => {
+                    console.log(errors);
+                },
+                onSuccess: () => {
+                    onClose();
+                },
+            }
+        );
     };
 
-    if (!isOpen) return null;
+    if (!isOpen || !student) return null;
 
     return (
         <div
@@ -84,11 +110,11 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
             onClick={onClose}
         >
             <div
-                className="bg-white rounded-lg w-full max-w-lg xl:max-w-2xl shadow-xl"
+                className="bg-white rounded-lg w-full max-w-lg shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center py-2 px-4">
-                    <h2 className="text-lg font-semibold">Add Student</h2>
+                    <h2 className="text-lg font-semibold">Edit Student</h2>
                     <button
                         title="close"
                         type="button"
@@ -101,8 +127,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
                 <hr className="border-t-1 border-gray-300"></hr>
 
-                <div className="overflow-y-auto  max-h-[80vh]">
-                    <form id="PSM1AddStudentForm" onSubmit={handleSubmit}>
+                <div className="overflow-y-auto max-h-[80vh]">
+                    <form id="PSM1EditStudentForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Student Information
@@ -132,19 +158,20 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                 <label className="col-span-1 font-medium">
                                     Matric no:
                                 </label>
+
                                 <input
                                     title="Matric no"
                                     type="text"
                                     name="matric"
                                     value={data.matric}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 />
                                 {errors.matric && (
-                                     <p className="text-red-500 col-start-2 col-span-4">
-                                     {errors.matric}
-                                 </p>
+                                    <p className="text-red-500 col-start-2 col-span-5">
+                                        {errors.matric}
+                                    </p>
                                 )}
                             </div>
 
@@ -158,7 +185,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     name="cohort"
                                     value={data.cohort}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 />
                                 {errors.cohort && (
@@ -178,7 +205,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     name="phone"
                                     value={data.phone}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 />
                                 {errors.phone && (
@@ -198,7 +225,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     name="email"
                                     value={data.email}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 />
                                 {errors.email && (
@@ -218,7 +245,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     name="course"
                                     value={data.course}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 />
                                 {errors.course && (
@@ -243,7 +270,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     name="project_type"
                                     value={data.project_type}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 >
                                     <option value="">
@@ -271,7 +298,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     name="project_area"
                                     value={data.project_area}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 />
                                 {errors.project_area && (
@@ -291,7 +318,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     name="title"
                                     value={data.title}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 />
                                 {errors.title && (
@@ -311,7 +338,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     name="sessionpsm"
                                     value={data.sessionpsm}
                                     onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    className="w-90 border border-gray-300 rounded p-2"
                                     required
                                 />
                                 {errors.sessionpsm && (
@@ -336,11 +363,11 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     </button>
                     <button
                         type="submit"
-                        form="PSM1AddStudentForm"
+                        form="PSM1EditStudentForm"
                         disabled={processing}
                         className="px-4 py-2 bg-[#6D2323] text-white rounded hover:bg-[#5a1d1d] transition"
                     >
-                        {processing ? "Saving..." : "Save"}
+                        Update
                     </button>
                 </div>
             </div>
@@ -348,4 +375,4 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
     );
 };
 
-export default AddStudentModal;
+export default EditStudentModal;
