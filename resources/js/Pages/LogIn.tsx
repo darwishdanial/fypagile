@@ -103,7 +103,9 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={processing}
-                            className="w-full bg-[#730000] text-white py-2 border !rounded-sm hover:bg-[#5a0000] transition font-semibold"
+                            className={`w-full bg-[#730000] text-white py-2 border !rounded-sm hover:bg-[#5a0000] transition font-semibold ${
+                                processing ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                         >
                             {processing ? "Logging in..." : "Log In"}
                         </button>

@@ -37,9 +37,13 @@ class CoordinatorController extends Controller
         $this->authorize('view coordinator dashboard');
 
         $userName = Auth::user()->name;
+        $studentsPSM1 = $this->studentService->getStudentPSM1()->count();
+        $studentsPSM2 = $this->studentService->getStudentPSM2()->count();
 
         return Inertia::render('Coordinator/Home/Index',[
-            'userName' => $userName
+            'userName' => $userName,
+            'studentsPSM1' => $studentsPSM1,
+            'studentsPSM2' => $studentsPSM2
         ]);
     }
 
@@ -212,6 +216,13 @@ class CoordinatorController extends Controller
         }
 
         return redirect()->back()->with('success', 'Student imported successfully!');
+    }
+
+    public function PSM1BulkArchive(Request $request){
+
+        StudentPSM1::whereIn('id', $request->ids)->delete();
+
+        return redirect()->back()->with('success', 'Selected students have been archived successfully!');
     }
 
     //PSM2

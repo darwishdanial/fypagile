@@ -25,13 +25,6 @@ interface Student {
     panel_proposal_name?: string; // Proposal Panel Name
 }
 
-interface ValidationError {
-    row: number;
-    attribute: string;
-    errors: string[];
-    values: Record<string, string>;
-}
-
 interface Flash {
     error?: string;
     success?: string;
@@ -58,12 +51,39 @@ export default function ListStudents() {
     );
     const [isImportModalOpen, setIsImoprtModalOpen] = useState(false);
 
+    // State for selected students
+    const [selectedStudents, setSelectedStudents] = useState<number[]>([]);
+    const [selectAll, setSelectAll] = useState(false);
+    const [selectAllPages, setSelectAllPages] = useState(false);
+
     const handleArchive = (id: number) => {
         router.post(
             route("coordinator.PSM1.students.archive", id),
             {},
             { preserveScroll: true }
         );
+    };
+
+    // Handle bulk archive of selected students
+    const handleBulkArchive = () => {
+        if (selectedStudents.length === 0) return;
+        
+        const isConfirmed = confirm(`Are you sure you want to archive ${selectedStudents.length} selected students?`);
+        
+        if (isConfirmed) {
+            router.post(
+                route("coordinator.PSM1.students.bulkArchive"),
+                { ids: selectedStudents },
+                { 
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setSelectedStudents([]);
+                        setSelectAll(false);
+                        setSelectAllPages(false);
+                    }
+                }
+            );
+        }
     };
 
     const handleRestore = (id: number) => {
@@ -120,6 +140,75 @@ export default function ListStudents() {
         currentPage * rowsPerPage
     );
 
+    // Handle select all on current page only
+    const handleSelectAllOnPage = () => {
+        if (selectAll) {
+            // If currently all selected on page, deselect them
+            const currentPageIds = paginatedStudents.map(student => student.id);
+            setSelectedStudents(prev => 
+                prev.filter(id => !currentPageIds.includes(id))
+            );
+        } else {
+            // Select all on current page (preserving other selections)
+            const currentPageIds = paginatedStudents.map(student => student.id);
+            setSelectedStudents(prev => {
+                const newSelection = [...prev];
+                currentPageIds.forEach(id => {
+                    if (!newSelection.includes(id)) {
+                        newSelection.push(id);
+                    }
+                });
+                return newSelection;
+            });
+        }
+    };
+
+    // Handle selecting all students across all pages
+    const handleSelectAllPages = () => {
+        if (selectAllPages) {
+            // Deselect all
+            setSelectedStudents([]);
+            setSelectAllPages(false);
+            setSelectAll(false);
+        } else {
+            // Select all across all pages
+            const allIds = filteredStudents.map(student => student.id);
+            setSelectedStudents(allIds);
+            setSelectAllPages(true);
+            setSelectAll(true);
+        }
+    };
+
+    // Handle individual row selection
+    const handleSelectRow = (id: number) => {
+        setSelectedStudents(prev => {
+            if (prev.includes(id)) {
+                return prev.filter(studentId => studentId !== id);
+            } else {
+                return [...prev, id];
+            }
+        });
+    };
+
+    // Update selectAll state based on current page selections
+    useEffect(() => {
+        if (paginatedStudents.length > 0) {
+            const allCurrentPageSelected = paginatedStudents.every(
+                student => selectedStudents.includes(student.id)
+            );
+            setSelectAll(allCurrentPageSelected);
+        } else {
+            setSelectAll(false);
+        }
+    }, [selectedStudents, paginatedStudents]);
+
+    // Reset selections when toggling archived view or changing search
+    useEffect(() => {
+        setSelectedStudents([]);
+        setSelectAll(false);
+        setSelectAllPages(false);
+    }, [showArchived, searchQuery]);
+
     const [flashMessage, setFlashMessage] = useState<{
         type: "success" | "error";
         message: string;
@@ -142,6 +231,10 @@ export default function ListStudents() {
             return () => clearTimeout(timer);
         }
     }, [props.flash]); // Run effect when flash message changes
+
+    // Calculate selection statistics
+    const totalActiveStudents = filteredStudents.length;
+    const selectedCount = selectedStudents.length;
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
@@ -186,14 +279,23 @@ export default function ListStudents() {
                         </div>
                     </div>
 
-                    {/* <h1 className="text-center font-semibold text-3xl text-[#6D2323]">
-                        List of PSM1 Students
-                    </h1> */}
-
                     <div className="flex">
+                        {/* Show bulk archive button when students are selected */}
+                        {selectedStudents.length > 0 && !showArchived && (
+                            <button
+                                type="button"
+                                className="p-2 px-3 bg-red-600 hover:bg-red-700 transition text-white rounded my-4 ml-2 font-semibold"
+                                onClick={handleBulkArchive}
+                            >
+                                <div className="flex">
+                                    <Archive className="mr-2"/> 
+                                    Archive Selected ({selectedStudents.length})
+                                </div>
+                            </button>
+                        )}
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded my-4 font-semibold"
+                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded my-4 ml-2 font-semibold"
                             onClick={() => setIsAddModalOpen(true)}
                         >
                            <div className="flex">
@@ -215,7 +317,7 @@ export default function ListStudents() {
                 </div>
 
                 {/* Search Input */}
-                <div className="flex justify-between mx-4 my-2">
+                <div className="flex justify-between mx-4 mt-2">
                     <div className="flex">
                         <label className="font-semibold">
                             Rows per page:
@@ -233,6 +335,8 @@ export default function ListStudents() {
                                 <option value={50}>50</option>
                             </select>
                         </label>
+
+                        
                     </div>
 
                     <input
@@ -245,14 +349,41 @@ export default function ListStudents() {
                             setCurrentPage(1); // Reset to first page on search
                         }}
                     />
-
-                    {/* Row Selection Dropdown */}
                 </div>
+
+                {/* Selection status and controls for all-pages selection */}
+                {!showArchived && (
+                    <div className="flex items-center mx-4 mb-3">
+                        <button
+                            type="button"
+                            className={`text-sm underline ${selectAllPages ? 'text-red-600' : 'text-blue-600'} mr-2`}
+                            onClick={handleSelectAllPages}
+                        >
+                            {selectAllPages ? 'Deselect All Students' : 'Select All Students'}
+                        </button>
+                        {selectedStudents.length > 0 && (
+                            <span className="text-sm text-gray-600">
+                                {selectedStudents.length} of {totalActiveStudents} students selected
+                            </span>
+                        )}
+                    </div>
+                )}
 
                 {/* Table */}
                 <table className="w-full border-collapse border-t border-b border-gray-300">
                     <thead className="bg-gray-200">
                         <tr>
+                            {!showArchived && (
+                                <th className="px-4 py-2 border-b border-gray-300 w-12">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectAll}
+                                        onChange={handleSelectAllOnPage}
+                                        className="h-4 w-4 cursor-pointer"
+                                        title="Select all on this page"
+                                    />
+                                </th>
+                            )}
                             <th className="px-4 py-2 border-b border-gray-300">
                                 No
                             </th>
@@ -280,33 +411,53 @@ export default function ListStudents() {
                         {paginatedStudents.map((student, index) => (
                             <React.Fragment key={student.id}>
                                 <tr
-                                    className="text-center bg-white hover:bg-gray-100 border-b border-gray-300 cursor-pointer"
-                                    onClick={() =>
-                                        setExpandedRow(
-                                            expandedRow === student.id
-                                                ? null
-                                                : student.id
-                                        )
-                                    }
+                                    className={`text-center bg-white hover:bg-gray-100 border-b border-gray-300 ${selectedStudents.includes(student.id) ? 'bg-blue-50' : ''}`}
                                 >
-                                    <td className="px-4 py-2">
-                                        {index +
-                                            1 +
-                                            (currentPage - 1) * rowsPerPage}
+                                    {!showArchived && (
+                                        <td className="px-4 py-2" onClick={(e) => e.stopPropagation()}>
+                                            <input
+                                                title="select this student"
+                                                type="checkbox"
+                                                checked={selectedStudents.includes(student.id)}
+                                                onChange={() => handleSelectRow(student.id)}
+                                                className="h-4 w-4 cursor-pointer"
+                                            />
+                                        </td>
+                                    )}
+                                    <td 
+                                        className="px-4 py-2 cursor-pointer"
+                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                    >
+                                        {index + 1 + (currentPage - 1) * rowsPerPage}
                                     </td>
-                                    <td className="px-4 py-2">
+                                    <td 
+                                        className="px-4 py-2 cursor-pointer" 
+                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                    >
                                         {student.course}
                                     </td>
-                                    <td className="px-4 py-2">
+                                    <td 
+                                        className="px-4 py-2 cursor-pointer"
+                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                    >
                                         {student.matric}
                                     </td>
-                                    <td className="px-4 py-2 text-left">
+                                    <td 
+                                        className="px-4 py-2 text-left cursor-pointer"
+                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                    >
                                         {student.name}
                                     </td>
-                                    <td className="px-4 py-2 text-left">
+                                    <td 
+                                        className="px-4 py-2 text-left cursor-pointer"
+                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                    >
                                         {student.title}
                                     </td>
-                                    <td className="px-4 py-2">
+                                    <td 
+                                        className="px-4 py-2 cursor-pointer"
+                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                    >
                                         {student.sessionpsm}
                                     </td>
                                     <td className="px-4 py-2">
@@ -387,7 +538,7 @@ export default function ListStudents() {
                                 </tr>
                                 {expandedRow === student.id && (
                                 <tr className="bg-gray-50 border-b border-gray-300">
-                                    <td colSpan={7} className="px-4 py-2 text-left">
+                                    <td colSpan={showArchived ? 7 : 8} className="px-4 py-2 text-left">
                                         <div className="grid grid-cols-7 gap-4">
                                             <div className="col-span-2">
                                                 <strong>Project Type:</strong> {student.project_type} <br />

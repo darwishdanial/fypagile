@@ -104,7 +104,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
                 onFinish: () => {
                     setIsProcessing(false);
                 },
-                
+
                 onError: (errors) => {
                     console.log(errors);
                 },
@@ -378,7 +378,9 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
                         type="submit"
                         form="PSM1EditStudentForm"
                         disabled={processing}
-                        className="px-4 py-2 bg-[#6D2323] text-white rounded hover:bg-[#5a1d1d] transition"
+                        className={`px-4 py-2 bg-[#6D2323] text-white rounded hover:bg-[#5a1d1d] transition ${
+                            processing ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                     >
                         {processing ? "Updating..." : "Update"}
                     </button>

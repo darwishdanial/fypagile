@@ -57,6 +57,8 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/students/import', [CoordinatorController::class, 'PSM1ImportStudent'])->name('students.import');
 
+        Route::post('/students/bulk-archive', [CoordinatorController::class, 'PSM1BulkArchive'])->name('students.bulkArchive');
+
         Route::get('/list-panels', [CoordinatorController::class, 'PSM1ListPanels'])->name('listPanels');
 
         Route::get('/assign-supervisor', [CoordinatorController::class, 'PSM1AssignSupervisor'])->name('assignSupervisor');

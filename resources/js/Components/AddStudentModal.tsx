@@ -351,7 +351,9 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                         type="submit"
                         form="PSM1AddStudentForm"
                         disabled={processing}
-                        className="px-4 py-2 bg-[#6D2323] text-white rounded hover:bg-[#5a1d1d] transition"
+                        className={`px-4 py-2 bg-[#6D2323] text-white rounded hover:bg-[#5a1d1d] transition ${
+                            processing ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                     >
                         {processing ? "Saving..." : "Save"}
                     </button>
