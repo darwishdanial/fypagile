@@ -135,8 +135,6 @@ export default function ListStudents() {
 
         if (props.flash?.warning) {
             setIsImportErrorModalOpen(true);
-            console.log("setIsImportErrorModalOpen");
-            console.log(props.flash?.warning);
         }
 
         if (props.flash?.success || props.flash?.error) {

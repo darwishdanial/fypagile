@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { router, useForm, usePage  } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { X } from "lucide-react";
 
@@ -24,7 +24,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
         };
     }, [isOpen]);
 
-    const { data, setData,  processing } = useForm({
+    const { data, setData } = useForm({
         name: "",
         matric: "",
         course: "",
@@ -37,7 +37,13 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
         sessionpsm: "",
     });
 
-    const { errors } = usePage().props
+    const [processing, setIsProcessing] = useState(false);
+
+    useEffect(() => {
+        console.log("process:", processing);
+    }, [processing]);
+
+    const { errors } = usePage().props;
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -53,6 +59,14 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
         e.preventDefault();
 
         router.post(route("coordinator.PSM1.students.store"), data, {
+
+            onStart: () => {
+                setIsProcessing(true);
+            },
+            onFinish: () => {
+                setIsProcessing(false);
+            },
+            
             onError: (errors) => {
                 console.log(errors);
             },
@@ -141,9 +155,9 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     required
                                 />
                                 {errors.matric && (
-                                     <p className="text-red-500 col-start-2 col-span-4">
-                                     {errors.matric}
-                                 </p>
+                                    <p className="text-red-500 col-start-2 col-span-4">
+                                        {errors.matric}
+                                    </p>
                                 )}
                             </div>
 

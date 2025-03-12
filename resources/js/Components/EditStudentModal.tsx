@@ -40,7 +40,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
         };
     }, [isOpen]);
 
-    const { data, setData, processing, reset } = useForm({
+    const { data, setData, reset } = useForm({
         name: student?.name || "",
         matric: student?.matric || "",
         course: student?.course || "",
@@ -53,7 +53,13 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
         sessionpsm: student?.sessionpsm || "",
     });
 
-    const { errors } = usePage().props
+    const [processing, setIsProcessing] = useState(false);
+
+    useEffect(() => {
+        console.log("process:", processing);
+    }, [processing]);
+
+    const { errors } = usePage().props;
 
     // Update form data when student prop changes
     useEffect(() => {
@@ -92,6 +98,13 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
             route("coordinator.PSM1.students.update", student.id),
             data,
             {
+                onStart: () => {
+                    setIsProcessing(true);
+                },
+                onFinish: () => {
+                    setIsProcessing(false);
+                },
+                
                 onError: (errors) => {
                     console.log(errors);
                 },
@@ -367,7 +380,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
                         disabled={processing}
                         className="px-4 py-2 bg-[#6D2323] text-white rounded hover:bg-[#5a1d1d] transition"
                     >
-                        {processing? "Updating..." : "Update"}
+                        {processing ? "Updating..." : "Update"}
                     </button>
                 </div>
             </div>

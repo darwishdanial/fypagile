@@ -17,7 +17,7 @@ export default function LoginPage() {
     }>();
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         post("/validate_login"); // Send data to backend
     };

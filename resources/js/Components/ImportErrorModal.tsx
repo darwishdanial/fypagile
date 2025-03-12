@@ -66,9 +66,9 @@ const ImportErrorModal: React.FC<ImportErrorModalProps> = ({
                             {message.map((errorArray, index) => (
                                 <div
                                     key={index}
-                                    className="border rounded p-3 bg-red-50"
+                                    className="border rounded p-2 bg-red-50"
                                 >
-                                    <ul className="list-disc pl-5 mt-1">
+                                    <ul className="list-disc pl-5 ">
                                         {errorArray.map((err, errIndex) => (
                                             <li
                                                 key={errIndex}
