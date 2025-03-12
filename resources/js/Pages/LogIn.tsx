@@ -60,7 +60,7 @@ export default function LoginPage() {
                         System
                     </p>
                     <p className="text-sm italic text-[#A31D1D] leading-none mt-1 ">
-                        + smart Panel Assignment
+                        Faculty of Computing
                     </p>
                 </div>
 

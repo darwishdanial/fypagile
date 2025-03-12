@@ -367,7 +367,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
                         disabled={processing}
                         className="px-4 py-2 bg-[#6D2323] text-white rounded hover:bg-[#5a1d1d] transition"
                     >
-                        Update
+                        {processing? "Updating..." : "Update"}
                     </button>
                 </div>
             </div>

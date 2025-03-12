@@ -13,6 +13,10 @@ use App\Jobs\EmailPanelAssignmentCompleteJob;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Validation\Rule;
+use App\Imports\PSM1StudentsImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Cache;
+
 
 class CoordinatorController extends Controller
 {
@@ -191,6 +195,23 @@ class CoordinatorController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Student updated successfully!');
+    }
+
+    public function PSM1ImportStudent(Request $request)
+    {
+
+        $import = new PSM1StudentsImport();
+        Excel::import($import, $request->file('file'));
+
+        $failures = Cache::get('psm1_import_failures', []);
+
+        if($failures){
+            Cache::forget('psm1_import_failures');
+            //dd($failures);
+            return redirect()->back()->with('warning', $failures);
+        }
+
+        return redirect()->back()->with('success', 'Student imported successfully!');
     }
 
     //PSM2

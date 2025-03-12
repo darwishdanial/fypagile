@@ -4,6 +4,8 @@ import { Pencil, Archive, ArchiveRestore, Trash, FileDown, CirclePlus } from "lu
 import { route } from "ziggy-js";
 import AddStudentModal from "../../../Components/AddStudentModal";
 import EditStudentModal from "../../../Components/EditStudentModal";
+import ImportStudentModal from "../../../Components/ImportStudentModal";
+import ImportErrorModal from "../../../Components/ImportErrorModal";
 
 interface Student {
     id: number;
@@ -23,9 +25,17 @@ interface Student {
     panel_proposal_name?: string; // Proposal Panel Name
 }
 
+interface ValidationError {
+    row: number;
+    attribute: string;
+    errors: string[];
+    values: Record<string, string>;
+}
+
 interface Flash {
     error?: string;
     success?: string;
+    warning?: string[][];
 }
 
 export default function ListStudents() {
@@ -42,9 +52,11 @@ export default function ListStudents() {
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isImportErrorModalOpen, setIsImportErrorModalOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState<Student | null>(
         null
     );
+    const [isImportModalOpen, setIsImoprtModalOpen] = useState(false);
 
     const handleArchive = (id: number) => {
         router.post(
@@ -63,11 +75,13 @@ export default function ListStudents() {
     };
 
     const handleDelete = (id: number) => {
-        router.post(
-            route("coordinator.PSM1.students.delete", id),
-            {},
-            { preserveScroll: true }
-        );
+        const isConfirmed = confirm("Are you sure you want to delete this student? This action cannot be undone.");
+
+        if (isConfirmed) {
+            router.delete(route("coordinator.PSM1.students.delete", id), {
+                preserveScroll: true,
+            });
+        }
     };
 
     // State for pagination & search
@@ -117,6 +131,12 @@ export default function ListStudents() {
         }
         if (props.flash?.error) {
             setFlashMessage({ type: "error", message: props.flash.error });
+        }
+
+        if (props.flash?.warning) {
+            setIsImportErrorModalOpen(true);
+            console.log("setIsImportErrorModalOpen");
+            console.log(props.flash?.warning);
         }
 
         if (props.flash?.success || props.flash?.error) {
@@ -186,6 +206,7 @@ export default function ListStudents() {
                         <button
                             type="button"
                             className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded ml-2 mr-4 my-4 font-semibold"
+                            onClick={() => setIsImoprtModalOpen(true)}
                         >
                             <div className="flex">
                                 <FileDown className="mr-2"/> 
@@ -434,6 +455,18 @@ export default function ListStudents() {
                 }}
                 student={selectedStudent}
             />
+
+            <ImportStudentModal
+                isOpen={isImportModalOpen}
+                onClose={() => setIsImoprtModalOpen(false)}
+            />
+
+            <ImportErrorModal 
+                isOpen={isImportErrorModalOpen} 
+                onClose={() => setIsImportErrorModalOpen(false)} 
+                message={props.flash?.warning}
+            />
+
         </div>
     );
 }

@@ -49,11 +49,13 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/students/{id}/restore', [CoordinatorController::class, 'PSM1RestoreStudent'])->name('students.restore');
 
-        Route::post('/students/{id}/delete', [CoordinatorController::class, 'PSM1DeleteStudent'])->name('students.delete');
+        Route::delete('/students/{id}/delete', [CoordinatorController::class, 'PSM1DeleteStudent'])->name('students.delete');
 
         Route::post('/students/store', [CoordinatorController::class, 'PSM1StoreStudent'])->name('students.store');
 
         Route::put('/students/{id}/update', [CoordinatorController::class, 'PSM1UpdateStudent'])->name('students.update');
+
+        Route::post('/students/import', [CoordinatorController::class, 'PSM1ImportStudent'])->name('students.import');
 
         Route::get('/list-panels', [CoordinatorController::class, 'PSM1ListPanels'])->name('listPanels');
 

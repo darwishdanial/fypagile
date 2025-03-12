@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'error' => Session::get('error'),
                 'success' => Session::get('success'),
+                'warning' => Session::get('warning'),
             ],
         ]);
     }

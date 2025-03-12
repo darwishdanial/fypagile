@@ -54,8 +54,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
         router.post(route("coordinator.PSM1.students.store"), data, {
             onError: (errors) => {
-                console.log(errors); // Debugging: Check if errors are logged
-                console.log("Matric Error:", errors.matric);
+                console.log(errors);
             },
             onSuccess: () => {
                 onClose();
