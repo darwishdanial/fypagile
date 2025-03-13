@@ -36,7 +36,7 @@ const ImportErrorModal: React.FC<ImportErrorModalProps> = ({
             onClick={onClose}
         >
             <div
-                className="bg-white rounded-lg w-full max-w-lg shadow-xl max-h-[80vh] overflow-auto"
+                className="bg-white rounded-lg w-full max-w-lg shadow-xl "
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center py-2 px-4">
@@ -51,8 +51,8 @@ const ImportErrorModal: React.FC<ImportErrorModalProps> = ({
                     </button>
                 </div>
 
-                <hr className="border-t-1 border-gray-300"></hr>
-                <div className="py-4 p-4">
+                <hr className="border-t-1 border-gray-300 "></hr>
+                <div className="py-4 p-4 max-h-[80vh] overflow-auto">
                     {!message || message.length === 0 ? (
                         <p className="text-gray-700">
                             An error occurred during import.

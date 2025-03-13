@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             
             StudentPSM1SeederNew::class,
-            StudentPSM2Seeder::class,
+            StudentPSM2SeederNew::class,
             PermissionSeeder::class,
             UserSeederNew::class,
             SupervisorSeeder::class,

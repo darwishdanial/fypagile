@@ -6,11 +6,13 @@ import { X } from "lucide-react";
 interface ImportStudentModalProps {
     isOpen: boolean;
     onClose: () => void;
+    studentType : string
 }
 
 const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
     isOpen,
     onClose,
+    studentType
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -44,7 +46,12 @@ const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
         const formData = new FormData();
         formData.append("file", data.file as Blob);
 
-        router.post(route("coordinator.PSM1.students.import"), formData, {
+        const route_path =
+            studentType === "PSM1"
+                ? "coordinator.PSM1.students.import"
+                : "coordinator.PSM2.students.import";
+
+        router.post(route(route_path), formData, {
 
             onStart: () => {
                 setIsProcessing(true);

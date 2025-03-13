@@ -52,14 +52,14 @@ class StudentService
         $students = StudentPSM2::leftJoin('users', 'students_psm2.supervisorId', '=', 'users.id')
         ->leftJoin('users as panel_users', 'students_psm2.panelId', '=', 'panel_users.id')
         ->leftJoin('users as panel2_users', 'students_psm2.panel2Id', '=', 'panel2_users.id')
-        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title','students_psm2.project_area','students_psm2.project_type','students_psm2.sessionpsm','students_psm2.cohort','students_psm2.phone','students_psm2.email', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
         ->orWhereNull('students_psm2.supervisorId')
         ->get();
   
         $students_with_supervisor = StudentPSM2::join('users', 'students_psm2.supervisorId', '=', 'users.id')
         ->leftJoin('users as panel_users', 'students_psm2.panel2Id', '=', 'panel_users.id')
         ->leftJoin('users as panel2_users', 'students_psm2.panelId', '=', 'panel2_users.id')
-        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title','students_psm2.project_area','students_psm2.project_type','students_psm2.sessionpsm','students_psm2.cohort','students_psm2.phone','students_psm2.email', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
         ->get();
   
         $totalstudents = $students->concat($students_with_supervisor);

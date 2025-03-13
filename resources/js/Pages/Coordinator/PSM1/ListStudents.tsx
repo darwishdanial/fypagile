@@ -40,6 +40,7 @@ export default function ListStudents() {
 
     const students = props.students;
     const archivedStudents = props.archivedStudents;
+    const studentType = "PSM1";
 
     const [showArchived, setShowArchived] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
@@ -594,6 +595,7 @@ export default function ListStudents() {
             <AddStudentModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
+                studentType = {studentType}
             />
 
             <EditStudentModal
@@ -603,6 +605,7 @@ export default function ListStudents() {
                     setSelectedStudent(null);
                 }}
                 student={selectedStudent}
+                studentType = {studentType}
             />
 
             <ImportStudentModal

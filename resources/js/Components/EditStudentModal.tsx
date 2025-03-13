@@ -21,12 +21,14 @@ interface EditStudentModalProps {
     isOpen: boolean;
     onClose: () => void;
     student: Student | null;
+    studentType: string
 }
 
 const EditStudentModal: React.FC<EditStudentModalProps> = ({
     isOpen,
     onClose,
     student,
+    studentType
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -94,8 +96,13 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
 
         if (!student) return;
 
+        const route_path =
+            studentType === "PSM1"
+                ? "coordinator.PSM1.students.update"
+                : "coordinator.PSM2.students.update";
+
         router.put(
-            route("coordinator.PSM1.students.update", student.id),
+            route(route_path, student.id),
             data,
             {
                 onStart: () => {

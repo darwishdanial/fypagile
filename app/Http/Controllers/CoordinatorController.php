@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Validation\Rule;
 use App\Imports\PSM1StudentsImport;
+use App\Imports\PSM2StudentsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
 
@@ -48,6 +49,7 @@ class CoordinatorController extends Controller
     }
 
     //PSM1
+    //Student Management
 
     public function PSM1ListStudents()
     {
@@ -60,69 +62,6 @@ class CoordinatorController extends Controller
             'students' => $students,
             'archivedStudents' => $archivedStudents
         ]);
-    }
-
-    public function PSM1ListPanels()
-    {
-        $this->authorize('view psm1 list panels table');
-
-        return Inertia::render('Coordinator/PSM1/ListPanels');
-    }
-
-    public function PSM1AssignSupervisor()
-    {
-        $this->authorize('view psm1 assign supervisor table');
-
-        return Inertia::render('Coordinator/PSM1/AssignSupervisor');
-    }
-
-    public function PSM1AssignProposalPanel()
-    {
-        $this->authorize('view psm1 assign proposal panel table');
-
-        return Inertia::render('Coordinator/PSM1/AssignProposalPanel');
-    }
-
-    public function PSM1AssignPanel()
-    {
-        $this->authorize('view psm1 assign panel table');
-
-        return Inertia::render('Coordinator/PSM1/AssignPSM1Panel');
-    }
-
-    public function PSM1ViewResult()
-    {
-        $this->authorize('view psm1 result table');
-
-        return Inertia::render('Coordinator/PSM1/ViewResult');
-    }
-
-    public function PSM1EvaluationRurbric()
-    {
-        $this->authorize('view psm1 evaluation rubric');
-
-        return Inertia::render('Coordinator/PSM1/EvaluationRubric');
-    }
-
-    public function PSM1GradeSupervision()
-    {
-        $this->authorize('view psm1 grade supervision table');
-
-        return Inertia::render('Coordinator/PSM1/GradeSupervision');
-    }
-
-    public function PSM1GradeProposal()
-    {
-        $this->authorize('view psm1 grade proposal table');
-
-        return Inertia::render('Coordinator/PSM1/GradeProposal');
-    }
-
-    public function PSM1Grade()
-    {
-        $this->authorize('view psm1 grade table');
-
-        return Inertia::render('Coordinator/PSM1/GradePSM1');
     }
 
     public function PSM1ArchiveStudent($id)
@@ -225,15 +164,185 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Selected students have been archived successfully!');
     }
 
+    //Panel Management
+
+    public function PSM1ListPanels()
+    {
+        $this->authorize('view psm1 list panels table');
+
+        return Inertia::render('Coordinator/PSM1/ListPanels');
+    }
+
+    public function PSM1AssignSupervisor()
+    {
+        $this->authorize('view psm1 assign supervisor table');
+
+        return Inertia::render('Coordinator/PSM1/AssignSupervisor');
+    }
+
+    public function PSM1AssignProposalPanel()
+    {
+        $this->authorize('view psm1 assign proposal panel table');
+
+        return Inertia::render('Coordinator/PSM1/AssignProposalPanel');
+    }
+
+    public function PSM1AssignPanel()
+    {
+        $this->authorize('view psm1 assign panel table');
+
+        return Inertia::render('Coordinator/PSM1/AssignPSM1Panel');
+    }
+
+    public function PSM1ViewResult()
+    {
+        $this->authorize('view psm1 result table');
+
+        return Inertia::render('Coordinator/PSM1/ViewResult');
+    }
+
+    public function PSM1EvaluationRurbric()
+    {
+        $this->authorize('view psm1 evaluation rubric');
+
+        return Inertia::render('Coordinator/PSM1/EvaluationRubric');
+    }
+
+    public function PSM1GradeSupervision()
+    {
+        $this->authorize('view psm1 grade supervision table');
+
+        return Inertia::render('Coordinator/PSM1/GradeSupervision');
+    }
+
+    public function PSM1GradeProposal()
+    {
+        $this->authorize('view psm1 grade proposal table');
+
+        return Inertia::render('Coordinator/PSM1/GradeProposal');
+    }
+
+    public function PSM1Grade()
+    {
+        $this->authorize('view psm1 grade table');
+
+        return Inertia::render('Coordinator/PSM1/GradePSM1');
+    }
+
     //PSM2
+    //Student Management
 
     public function PSM2ListStudents()
     {
         $this->authorize('view psm2 list students table');
 
-        //$students = $this->studentService->getStudentPSM1();
+        $students = $this->studentService->getStudentPSM2();
+        $archivedStudents = StudentPSM2::onlyTrashed()->get();
 
-        return Inertia::render('Coordinator/PSM2/ListStudents');
+        return Inertia::render('Coordinator/PSM2/ListStudents',[
+            'students' => $students,
+            'archivedStudents' => $archivedStudents
+        ]);
+    }
+
+    public function PSM2ArchiveStudent($id)
+    {
+        $student = StudentPSM2::findOrFail($id);
+        $student->delete(); // Soft delete
+        return redirect()->back()->with('success', 'Student archived successfully.');
+    }
+
+    public function PSM2RestoreStudent($id)
+    {
+        $student = StudentPSM2::onlyTrashed()->findOrFail($id);
+        $student->restore(); // Restores the soft-deleted student
+        return back()->with('success', 'Student restore successfully.');
+    }
+
+    public function PSM2DeleteStudent($id)
+    {
+        $student = StudentPSM2::onlyTrashed()->findOrFail($id);
+        $student->forceDelete(); // Delete permanently
+        return redirect()->back()->with('success', 'Student deleted successfully.');
+    }
+
+    public function PSM2StoreStudent(Request $request)
+    {
+        //dd( $request->all());
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'matric' => 'required|string|unique:students_psm1,matric|max:50',
+            'course' => 'required|string|max:255',
+            'cohort' => 'required|string|max:50',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|unique:students_psm1,email|max:255',
+            'project_type' => ['required', Rule::in(['System Development', 'Research'])],
+            'project_area' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'sessionpsm' => 'required|string|max:50',
+        ]);
+
+        StudentPSM2::create($validated);
+
+        return redirect()->back()->with('success', 'Student added successfully!');
+    }
+
+    public function PSM2UpdateStudent(Request $request, $id)
+    {
+
+        $student = StudentPSM2::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'matric' => 'required|string|max:50|unique:students_psm1,matric,' . $id,
+            'course' => 'required|string|max:255',
+            'cohort' => 'required|string|max:50',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|max:255|unique:students_psm1,email,' . $id,
+            'project_type' => ['required', Rule::in(['System Development', 'Research'])],
+            'project_area' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'sessionpsm' => 'required|string|max:50',
+        ]);
+
+        $student->update([
+            'name' => $request->name,
+            'matric' => $request->matric,
+            'course' => $request->course,
+            'cohort' => $request->cohort,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'project_type' => $request->project_type,
+            'project_area' => $request->project_area,
+            'title' => $request->title,
+            'sessionpsm' => $request->sessionpsm,
+        ]);
+
+        return redirect()->back()->with('success', 'Student updated successfully!');
+    }
+
+    public function PSM2ImportStudent(Request $request)
+    {
+
+        $import = new PSM2StudentsImport();
+        Excel::import($import, $request->file('file'));
+
+        $failures = Cache::get('psm2_import_failures', []);
+
+        if($failures){
+            Cache::forget('psm2_import_failures');
+            //dd($failures);
+            return redirect()->back()->with('warning', $failures);
+        }
+
+        return redirect()->back()->with('success', 'Student imported successfully!');
+    }
+
+    public function PSM2BulkArchive(Request $request){
+
+        StudentPSM2::whereIn('id', $request->ids)->delete();
+
+        return redirect()->back()->with('success', 'Selected students have been archived successfully!');
     }
 
     public function PSM2ListPanels()

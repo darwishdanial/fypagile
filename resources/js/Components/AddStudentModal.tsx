@@ -6,11 +6,13 @@ import { X } from "lucide-react";
 interface AddStudentModalProps {
     isOpen: boolean;
     onClose: () => void;
+    studentType: string;
 }
 
 const AddStudentModal: React.FC<AddStudentModalProps> = ({
     isOpen,
     onClose,
+    studentType,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -58,15 +60,18 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        router.post(route("coordinator.PSM1.students.store"), data, {
+        const route_path =
+            studentType === "PSM1"
+                ? "coordinator.PSM1.students.store"
+                : "coordinator.PSM2.students.store";
 
+        router.post(route(route_path), data, {
             onStart: () => {
                 setIsProcessing(true);
             },
             onFinish: () => {
                 setIsProcessing(false);
             },
-            
             onError: (errors) => {
                 console.log(errors);
             },
@@ -86,7 +91,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     sessionpsm: "",
                 });
             },
-        }); // Send data to backend ✅ Properly closed
+        });
     };
 
     if (!isOpen) return null;

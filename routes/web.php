@@ -85,6 +85,20 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/list-students', [CoordinatorController::class, 'PSM2ListStudents'])->name('listStudents');
 
+        Route::post('/students/{id}/archive', [CoordinatorController::class, 'PSM2ArchiveStudent'])->name('students.archive');
+
+        Route::post('/students/{id}/restore', [CoordinatorController::class, 'PSM2RestoreStudent'])->name('students.restore');
+
+        Route::delete('/students/{id}/delete', [CoordinatorController::class, 'PSM2DeleteStudent'])->name('students.delete');
+
+        Route::post('/students/store', [CoordinatorController::class, 'PSM2StoreStudent'])->name('students.store');
+
+        Route::put('/students/{id}/update', [CoordinatorController::class, 'PSM2UpdateStudent'])->name('students.update');
+
+        Route::post('/students/import', [CoordinatorController::class, 'PSM2ImportStudent'])->name('students.import');
+
+        Route::post('/students/bulk-archive', [CoordinatorController::class, 'PSM2BulkArchive'])->name('students.bulkArchive');
+
         Route::get('/list-panels', [CoordinatorController::class, 'PSM2ListPanels'])->name('listPanels');
 
         Route::get('/assign-PSM2-panel', [CoordinatorController::class, 'PSM2AssignPanel'])->name('assignPSM2Panel');
