@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
 use App\Services\StudentService;
+use App\Services\PanelService;
 use App\Services\CompareMachineLearningService;
 use App\Jobs\EmailPanelAssignmentCompleteJob;
 use Illuminate\Support\Facades\Auth;
@@ -23,12 +24,15 @@ class CoordinatorController extends Controller
 {
     protected $coordinatorService;
     protected $studentService;
+    protected $panelService;
 
-    public function __construct(CoordinatorService $coordinatorService, StudentService $studentService){
+    public function __construct(CoordinatorService $coordinatorService, StudentService $studentService, PanelService $panelService){
 
         $this->coordinatorService = $coordinatorService;
 
         $this->studentService = $studentService;
+
+        $this->panelService = $panelService;
     }
 
     //Home
@@ -56,7 +60,7 @@ class CoordinatorController extends Controller
         $this->authorize('view psm1 list students table');
 
         $students = $this->studentService->getStudentPSM1();
-        $archivedStudents = StudentPSM1::onlyTrashed()->get();
+        $archivedStudents = $this->studentService->getStudentPSM1Archive();
 
         return Inertia::render('Coordinator/PSM1/ListStudents',[
             'students' => $students,
@@ -170,7 +174,44 @@ class CoordinatorController extends Controller
     {
         $this->authorize('view psm1 list panels table');
 
-        return Inertia::render('Coordinator/PSM1/ListPanels');
+        $panelActive = $this->panelService->getPanelPSM1();
+
+        $panelArchive = $this->panelService->getPanelPSM1Archive();
+
+        //dd($panelActive);
+
+        return Inertia::render('Coordinator/PSM1/ListPanels',[
+            'panels' => $panelActive,
+            'archivedPanels' => $panelArchive
+        ]);
+
+    }
+
+    public function PSM1ArchivePanel($id)
+    {
+        $panel = User ::findOrFail($id);
+
+        //dd($panel);
+
+        $panel->update([
+            'isArchivePSM1' => 1,
+            'isSupervisorPSM1' => 0,
+            'isProposalPanel' => 0,
+            'isPanelPSM1' => 0,
+        ]);
+
+        return redirect()->back()->with('success', 'Panel archived successfully.');
+    }
+
+    public function PSM1RestorePanel($id)
+    {
+        $panel = User ::findOrFail($id);
+
+        $panel->update([
+            'isArchivePSM1' => 0,
+        ]);
+
+        return back()->with('success', 'Panel restore successfully.');
     }
 
     public function PSM1AssignSupervisor()
@@ -237,7 +278,7 @@ class CoordinatorController extends Controller
         $this->authorize('view psm2 list students table');
 
         $students = $this->studentService->getStudentPSM2();
-        $archivedStudents = StudentPSM2::onlyTrashed()->get();
+        $archivedStudents =$this->studentService->getStudentPSM2Archive();
 
         return Inertia::render('Coordinator/PSM2/ListStudents',[
             'students' => $students,

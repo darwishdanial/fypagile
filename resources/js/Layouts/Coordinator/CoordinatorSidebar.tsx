@@ -38,7 +38,7 @@ export function CoordinatorSidebar() {
         },
         {
             icon: <UserCheck />,
-            label: "List Panels",
+            label: "List Panels/Supervisors",
             link: route('coordinator.PSM1.listPanels'),
         },
         {
@@ -91,7 +91,7 @@ export function CoordinatorSidebar() {
         },
         {
             icon: <UserCheck />,
-            label: "List Panels",
+            label: "List Panels/Supervisors",
             link: route('coordinator.PSM2.listPanels'),
         },
         {

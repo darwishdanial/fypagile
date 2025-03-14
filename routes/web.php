@@ -61,6 +61,10 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/list-panels', [CoordinatorController::class, 'PSM1ListPanels'])->name('listPanels');
 
+        Route::post('/panels/{id}/archive', [CoordinatorController::class, 'PSM1ArchivePanel'])->name('panels.archive');
+
+        Route::post('/panels/{id}/restore', [CoordinatorController::class, 'PSM1RestorePanel'])->name('panels.restore');
+
         Route::get('/assign-supervisor', [CoordinatorController::class, 'PSM1AssignSupervisor'])->name('assignSupervisor');
 
         Route::get('/assign-proposal-panel', [CoordinatorController::class, 'PSM1AssignProposalPanel'])->name('assignProposalPanel');

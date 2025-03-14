@@ -23,9 +23,17 @@ class User extends Authenticatable
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'username',
+        'matricNo',
         'name',
+        'username',
         'email',
+        'isSupervisorPSM1',
+        'isProposalPanel',
+        'isPanelPSM1',
+        'isSupervisorPSM2',
+        'isPanelPSM2',
+        'isArchivePSM1',
+        'isArchivePSM2',
         'password',
         'role',
     ];

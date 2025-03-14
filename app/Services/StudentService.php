@@ -34,8 +34,8 @@ class StudentService
             ->get();
 
         $students_with_supervisor = StudentPSM1::join('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
-            ->leftJoin('users as panel_users', 'students_psm1.panel2Id', '=', 'panel_users.id')
-            ->leftJoin('users as panel2_users', 'students_psm1.panelId', '=', 'panel2_users.id')
+            ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
+            ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
             ->leftJoin('users as panel_proposal_users', 'students_psm1.panelProposalId', '=', 'panel_proposal_users.id')
             ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name','panel_proposal_users.name as panel_proposal_name')
             ->get();
@@ -45,6 +45,37 @@ class StudentService
         // $totalStudents = StudentPSM1::all();
 
         return $totalStudents;
+    }
+
+    public function getStudentPSM1Archive(){
+
+        $archivedStudents = StudentPSM1::onlyTrashed()
+            ->leftJoin('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
+            ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
+            ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
+            ->leftJoin('users as panel_proposal_users', 'students_psm1.panelProposalId', '=', 'panel_proposal_users.id')
+            ->select(
+                'students_psm1.id', 
+                'students_psm1.name', 
+                'students_psm1.course', 
+                'students_psm1.matric',
+                'students_psm1.title',
+                'students_psm1.project_area',
+                'students_psm1.project_type',
+                'students_psm1.sessionpsm',
+                'students_psm1.cohort',
+                'students_psm1.phone',
+                'students_psm1.email',
+                'sv.name as sv_name', 
+                'panel_users.name as panel_name',
+                'panel2_users.name as panel2_name',
+                'panel_proposal_users.name as panel_proposal_name',
+                'students_psm1.deleted_at' // To check when it was deleted
+            )
+            ->get();
+
+        return $archivedStudents;
+
     }
 
     public function getStudentPSM2(){
@@ -65,6 +96,35 @@ class StudentService
         $totalstudents = $students->concat($students_with_supervisor);
         // return $students_with_supervisor;
         return $totalstudents;
+    }
+
+    public function getStudentPSM2Archive(){
+
+        $archivedStudents = StudentPSM2::onlyTrashed()
+            ->leftJoin('users as sv', 'students_psm2.supervisorId', '=', 'sv.id')
+            ->leftJoin('users as panel_users', 'students_psm2.panelId', '=', 'panel_users.id')
+            ->leftJoin('users as panel2_users', 'students_psm2.panel2Id', '=', 'panel2_users.id')
+            ->select(
+                'students_psm2.id', 
+                'students_psm2.name', 
+                'students_psm2.course', 
+                'students_psm2.matric',
+                'students_psm2.title',
+                'students_psm2.project_area',
+                'students_psm2.project_type',
+                'students_psm2.sessionpsm',
+                'students_psm2.cohort',
+                'students_psm2.phone',
+                'students_psm2.email',
+                'sv.name as sv_name', 
+                'panel_users.name as panel_name',
+                'panel2_users.name as panel2_name',
+                'students_psm2.deleted_at' // To check when it was deleted
+            )
+            ->get();
+
+        return $archivedStudents;
+
     }
 
     public function getStudentSupervisor(){

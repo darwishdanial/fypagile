@@ -611,6 +611,7 @@ export default function ListStudents() {
             <ImportStudentModal
                 isOpen={isImportModalOpen}
                 onClose={() => setIsImoprtModalOpen(false)}
+                studentType = {studentType}
             />
 
             <ImportErrorModal 
