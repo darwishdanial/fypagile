@@ -77,6 +77,7 @@ class PanelService
     }
 
     public function getPanelPSM1Archive() {
+
         $panelPSM1 = User::where('isArchivePSM1', '1')
             ->leftJoin('students_psm1 as students_sv', 'users.id', '=', 'students_sv.supervisorId')
             ->leftJoin('students_psm1 as students_proposal', 'users.id', '=', 'students_proposal.panelProposalId')
@@ -110,7 +111,76 @@ class PanelService
     
         return $panelPSM1;
     }
+
+    public function getPanelPSM2(){
+
+        $panelPSM2 = User::where('isArchivePSM2', '0')
+            ->leftJoin('students_psm2 as students_sv', 'users.id', '=', 'students_sv.supervisorId')
+            ->leftJoin('students_psm2 as students_panel1', 'users.id', '=', 'students_panel1.panelId')
+            ->leftJoin('students_psm2 as students_panel2', 'users.id', '=', 'students_panel2.panel2Id')
+            ->select(
+                'users.id', 
+                'users.matricNo',
+                'users.name',
+                'users.username',
+                'users.email', 
+                'users.isSupervisorPSM2',
+                'users.isPanelPSM2',
+                'users.isArchivePSM2',
+                DB::raw('GROUP_CONCAT(DISTINCT students_sv.name) as students_sv_names'),
+                DB::raw('GROUP_CONCAT(DISTINCT students_panel1.name) as students_panel1_names'),
+                DB::raw('GROUP_CONCAT(DISTINCT students_panel2.name) as students_panel2_names')
+            )
+            ->groupBy('users.id', 'users.matricNo', 'users.name', 'users.username', 'users.email', 'users.isSupervisorPSM2', 'users.isPanelPSM2', 'users.isArchivePSM2')
+            ->get();
     
+        // Convert comma-separated student names into arrays
+        $panelPSM2->transform(function ($panel) {
+            $panel->students_sv_names = $panel->students_sv_names ? explode(',', $panel->students_sv_names) : [];
+            $panel->students_panel1_names = $panel->students_panel1_names ? explode(',', $panel->students_panel1_names) : [];
+            $panel->students_panel2_names = $panel->students_panel2_names ? explode(',', $panel->students_panel2_names) : [];
+            return $panel;
+        });
+
+        //dd($panelPSM1->first());
+    
+        return $panelPSM2;
+    }
+    
+    public function getPanelPSM2Archive(){
+
+        $panelPSM2 = User::where('isArchivePSM2', '1')
+            ->leftJoin('students_psm2 as students_sv', 'users.id', '=', 'students_sv.supervisorId')
+            ->leftJoin('students_psm2 as students_panel1', 'users.id', '=', 'students_panel1.panelId')
+            ->leftJoin('students_psm2 as students_panel2', 'users.id', '=', 'students_panel2.panel2Id')
+            ->select(
+                'users.id', 
+                'users.matricNo',
+                'users.name',
+                'users.username',
+                'users.email', 
+                'users.isSupervisorPSM2',
+                'users.isPanelPSM2',
+                'users.isArchivePSM2',
+                DB::raw('GROUP_CONCAT(DISTINCT students_sv.name) as students_sv_names'),
+                DB::raw('GROUP_CONCAT(DISTINCT students_panel1.name) as students_panel1_names'),
+                DB::raw('GROUP_CONCAT(DISTINCT students_panel2.name) as students_panel2_names')
+            )
+            ->groupBy('users.id', 'users.matricNo', 'users.name', 'users.username', 'users.email', 'users.isSupervisorPSM2', 'users.isPanelPSM2', 'users.isArchivePSM2')
+            ->get();
+    
+        // Convert comma-separated student names into arrays
+        $panelPSM2->transform(function ($panel) {
+            $panel->students_sv_names = $panel->students_sv_names ? explode(',', $panel->students_sv_names) : [];
+            $panel->students_panel1_names = $panel->students_panel1_names ? explode(',', $panel->students_panel1_names) : [];
+            $panel->students_panel2_names = $panel->students_panel2_names ? explode(',', $panel->students_panel2_names) : [];
+            return $panel;
+        });
+
+        //dd($panelPSM1->first());
+    
+        return $panelPSM2;
+    }
 
 
     public function getPanel(){
@@ -193,14 +263,14 @@ class PanelService
         }
     }
 
-    public function getPanelPSM2(){
+    // public function getPanelPSM2(){
 
-        $panels = DB::table('users')
-            ->where('isPanel','=', '1')
-            ->get();
+    //     $panels = DB::table('users')
+    //         ->where('isPanel','=', '1')
+    //         ->get();
 
-        return $panels;
-    }
+    //     return $panels;
+    // }
     public function getStudentsPSM2($panelType, $panelId)
     {
         $students = collect();

@@ -3,16 +3,14 @@ import { router, useForm, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { X } from "lucide-react";
 
-interface ImportStudentModalProps {
+interface ImportPanelsModalProps {
     isOpen: boolean;
     onClose: () => void;
-    studentType: string;
 }
 
-const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
+const ImportPanelsModal: React.FC<ImportPanelsModalProps> = ({
     isOpen,
     onClose,
-    studentType,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -46,12 +44,7 @@ const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
         const formData = new FormData();
         formData.append("file", data.file as Blob);
 
-        const route_path =
-            studentType === "PSM1"
-                ? "coordinator.PSM1.students.import"
-                : "coordinator.PSM2.students.import";
-
-        router.post(route(route_path), formData, {
+        router.post(route("coordinator.PSM1.panels.import"), formData, {
             onStart: () => {
                 setIsProcessing(true);
             },
@@ -78,7 +71,7 @@ const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center py-2 px-4">
-                    <h2 className="text-lg font-semibold">Import Students</h2>
+                    <h2 className="text-lg font-semibold">Import Panels</h2>
                     <button
                         title="close"
                         type="button"
@@ -96,7 +89,7 @@ const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
                         </label>
                         <input
                             type="file"
-                            name="importStudentPSM1"
+                            name="importPanel"
                             title="import file"
                             accept=".xlsx,.csv"
                             onChange={handleFileChange}
@@ -109,7 +102,7 @@ const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
 
                         <div className="text-center mt-2">
                             <a
-                                href={route("coordinator.PSM1.students.sample")}
+                                href={route("coordinator.PSM1.panels.sample")}
                                 className="text-blue-600 hover:underline"
                                 download
                             >
@@ -145,4 +138,4 @@ const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
     );
 };
 
-export default ImportStudentModal;
+export default ImportPanelsModal;

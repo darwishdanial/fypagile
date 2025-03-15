@@ -10,6 +10,8 @@ use App\Http\Controllers\PanelController;
 use App\Http\Controllers\MLController;
 use App\Http\Middleware\EnsureCoordinator;
 use App\Http\Middleware\EnsurePanel;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,13 +59,45 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/students/import', [CoordinatorController::class, 'PSM1ImportStudent'])->name('students.import');
 
-        Route::post('/students/bulk-archive', [CoordinatorController::class, 'PSM1BulkArchive'])->name('students.bulkArchive');
+        Route::post('/students/bulk-archive', [CoordinatorController::class, 'PSM1BulkArchiveStudent'])->name('students.bulkArchive');
+
+        Route::get('/students/sample', function () {
+            $filePath = 'import_student_sample_data.xlsx'; // Update to CSV if needed
+        
+            if (!Storage::disk('public')->exists($filePath)) {
+                abort(404);
+            }
+        
+            return response()->download(storage_path("app/public/$filePath"));
+        })->name('students.sample');
 
         Route::get('/list-panels', [CoordinatorController::class, 'PSM1ListPanels'])->name('listPanels');
 
         Route::post('/panels/{id}/archive', [CoordinatorController::class, 'PSM1ArchivePanel'])->name('panels.archive');
 
         Route::post('/panels/{id}/restore', [CoordinatorController::class, 'PSM1RestorePanel'])->name('panels.restore');
+
+        Route::post('/panels/store', [CoordinatorController::class, 'PSM1StorePanel'])->name('panels.store');
+
+        Route::put('/panels/{id}/update', [CoordinatorController::class, 'PSM1UpdatePanel'])->name('panels.update');
+
+        Route::delete('/panels/{id}/delete', [CoordinatorController::class, 'PSM1DeletePanel'])->name('panels.delete');
+
+        Route::post('/panels/bulk-archive', [CoordinatorController::class, 'PSM1BulkArchivePanel'])->name('panels.bulkArchive');
+
+        Route::post('/panels/import', [CoordinatorController::class, 'ImportPanels'])->name('panels.import');
+
+        Route::get('/panels/sample', function () {
+            $filePath = 'import_panels_sample_data.xlsx'; // Update to CSV if needed
+        
+            if (!Storage::disk('public')->exists($filePath)) {
+                abort(404);
+            }
+        
+            return response()->download(storage_path("app/public/$filePath"));
+        })->name('panels.sample');
+
+
 
         Route::get('/assign-supervisor', [CoordinatorController::class, 'PSM1AssignSupervisor'])->name('assignSupervisor');
 
@@ -104,6 +138,19 @@ Route::middleware( EnsureCoordinator::class)
         Route::post('/students/bulk-archive', [CoordinatorController::class, 'PSM2BulkArchive'])->name('students.bulkArchive');
 
         Route::get('/list-panels', [CoordinatorController::class, 'PSM2ListPanels'])->name('listPanels');
+
+        Route::post('/panels/{id}/archive', [CoordinatorController::class, 'PSM2ArchivePanel'])->name('panels.archive');
+
+        Route::post('/panels/{id}/restore', [CoordinatorController::class, 'PSM2RestorePanel'])->name('panels.restore');
+
+        Route::delete('/panels/{id}/delete', [CoordinatorController::class, 'PSM2DeletePanel'])->name('panels.delete');
+
+        Route::post('/panels/bulk-archive', [CoordinatorController::class, 'PSM2BulkArchivePanel'])->name('panels.bulkArchive');
+
+        Route::post('/panels/store', [CoordinatorController::class, 'PSM2StorePanel'])->name('panels.store');
+
+        Route::put('/panels/{id}/update', [CoordinatorController::class, 'PSM2UpdatePanel'])->name('panels.update');
+
 
         Route::get('/assign-PSM2-panel', [CoordinatorController::class, 'PSM2AssignPanel'])->name('assignPSM2Panel');
 

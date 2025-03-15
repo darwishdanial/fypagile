@@ -16,9 +16,10 @@ use Inertia\Inertia;
 use Illuminate\Validation\Rule;
 use App\Imports\PSM1StudentsImport;
 use App\Imports\PSM2StudentsImport;
+use App\Imports\PanelsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
-
+use Illuminate\Support\Facades\Hash;
 
 class CoordinatorController extends Controller
 {
@@ -44,11 +45,16 @@ class CoordinatorController extends Controller
         $userName = Auth::user()->name;
         $studentsPSM1 = $this->studentService->getStudentPSM1()->count();
         $studentsPSM2 = $this->studentService->getStudentPSM2()->count();
+        $panelsPSM1 = $this->panelService->getPanelPSM1()->count();
+        $panelsPSM2 = $this->panelService->getPanelPSM2()->count();
 
         return Inertia::render('Coordinator/Home/Index',[
             'userName' => $userName,
             'studentsPSM1' => $studentsPSM1,
-            'studentsPSM2' => $studentsPSM2
+            'studentsPSM2' => $studentsPSM2,
+            'panelsPSM1' => $panelsPSM1,
+            'panelsPSM2' => $panelsPSM2
+
         ]);
     }
 
@@ -161,7 +167,7 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Student imported successfully!');
     }
 
-    public function PSM1BulkArchive(Request $request){
+    public function PSM1BulkArchiveStudent(Request $request){
 
         StudentPSM1::whereIn('id', $request->ids)->delete();
 
@@ -213,6 +219,99 @@ class CoordinatorController extends Controller
 
         return back()->with('success', 'Panel restore successfully.');
     }
+
+    public function PSM1StorePanel(Request $request)
+    {
+        //dd( $request->all());
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'matricNo' => 'required|string|unique:users,matricNo|max:50',
+            'email' => 'required|unique:users,email|max:255',
+            'username' => 'required|string|unique:users,username|max:100',
+            'password' => 'required|string|max:255',
+            'isSupervisorPSM1' => 'required|boolean',
+            'isProposalPanel' => 'required|boolean',
+            'isPanelPSM1' => 'required|boolean',
+            'isArchivePSM1' => 'required|boolean',
+            'isSupervisorPSM2' => 'required|boolean',
+            'isPanelPSM2' => 'required|boolean',
+            'isArchivePSM2' => 'required|boolean',
+            'role' => 'required',
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        User::create($validated);
+
+        return redirect()->back()->with('success', 'Panel added successfully!');
+    }
+
+    public function PSM1UpdatePanel(Request $request, $id)
+    {
+        //dd( $request->all());
+
+        $panel = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'matricNo' => 'required|string|max:50|unique:users,matricNo,'. $id,
+            'email' => 'required|max:255|unique:users,email,'. $id,
+            'username' => 'required|string|max:100|unique:users,username,'. $id,
+            'isSupervisorPSM1' => 'required|boolean',
+            'isProposalPanel' => 'required|boolean',
+            'isPanelPSM1' => 'required|boolean',
+            'password' => 'nullable|string|max:255',
+        ]);        
+
+        if (!$request->filled('password')) {
+            unset($validated['password']);
+        } else {
+            $validated['password'] = bcrypt($validated['password']);
+        }
+
+        $panel->update($validated);
+
+        return redirect()->back()->with('success', 'Panel added successfully!');
+    }
+
+    public function PSM1DeletePanel($id)
+    {
+        $panel = User::findOrFail($id);
+        $panel->forceDelete(); 
+        return redirect()->back()->with('success', 'Panel deleted successfully.');
+    }
+
+    public function PSM1BulkArchivePanel(Request $request){
+
+        User::whereIn('id', $request->ids)->update([
+            'isArchivePSM1' => 1,
+            'isSupervisorPSM1' => 0,
+            'isProposalPanel' => 0,
+            'isPanelPSM1' => 0,
+        ]);
+
+        return redirect()->back()->with('success', 'Selected panels have been archived successfully!');
+    }
+
+    public function ImportPanels(Request $request)
+    {
+        $import = new PanelsImport();
+        Excel::import($import, $request->file('file'));
+
+        $failures = Cache::get('panels_import_failures', []);
+
+        if($failures){
+            Cache::forget('panels_import_failures');
+            //dd($failures);
+            return redirect()->back()->with('warning', $failures);
+        }
+
+        return redirect()->back()->with('success', 'Panels imported successfully!');
+    }
+
+
+
 
     public function PSM1AssignSupervisor()
     {
@@ -386,12 +485,123 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Selected students have been archived successfully!');
     }
 
+    //Panel Management
+
     public function PSM2ListPanels()
     {
         $this->authorize('view psm2 list panels table');
 
-        return Inertia::render('Coordinator/PSM2/ListPanels');
+        $panelActive = $this->panelService->getPanelPSM2();
+
+        $panelArchive = $this->panelService->getPanelPSM2Archive();
+
+        //dd($panelActive);
+
+        return Inertia::render('Coordinator/PSM2/ListPanels',[
+            'panels' => $panelActive,
+            'archivedPanels' => $panelArchive
+        ]);
     }
+
+    public function PSM2ArchivePanel($id)
+    {
+        $panel = User ::findOrFail($id);
+
+        //dd($panel);
+
+        $panel->update([
+            'isArchivePSM2' => 1,
+            'isSupervisorPSM2' => 0,
+            'isPanelPSM2' => 0,
+        ]);
+
+        return redirect()->back()->with('success', 'Panel archived successfully.');
+    }
+
+    public function PSM2RestorePanel($id)
+    {
+        $panel = User ::findOrFail($id);
+
+        $panel->update([
+            'isArchivePSM2' => 0,
+        ]);
+
+        return back()->with('success', 'Panel restore successfully.');
+    }
+
+    public function PSM2DeletePanel($id)
+    {
+        $panel = User::findOrFail($id);
+        $panel->forceDelete(); 
+        return redirect()->back()->with('success', 'Panel deleted successfully.');
+    }
+
+    public function PSM2BulkArchivePanel(Request $request){
+
+        User::whereIn('id', $request->ids)->update([
+            'isArchivePSM2' => 1,
+            'isSupervisorPSM2' => 0,
+            'isPanelPSM2' => 0,
+        ]);
+
+        return redirect()->back()->with('success', 'Selected panels have been archived successfully!');
+    }
+
+    public function PSM2StorePanel(Request $request)
+    {
+        //dd( $request->all());
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'matricNo' => 'required|string|unique:users,matricNo|max:50',
+            'email' => 'required|unique:users,email|max:255',
+            'username' => 'required|string|unique:users,username|max:100',
+            'password' => 'required|string|max:255',
+            'isSupervisorPSM1' => 'required|boolean',
+            'isProposalPanel' => 'required|boolean',
+            'isPanelPSM1' => 'required|boolean',
+            'isArchivePSM1' => 'required|boolean',
+            'isSupervisorPSM2' => 'required|boolean',
+            'isPanelPSM2' => 'required|boolean',
+            'isArchivePSM2' => 'required|boolean',
+            'role' => 'required',
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        User::create($validated);
+
+        return redirect()->back()->with('success', 'Panel added successfully!');
+    }
+
+    public function PSM2UpdatePanel(Request $request, $id)
+    {
+        //dd( $request->all());
+
+        $panel = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'matricNo' => 'required|string|max:50|unique:users,matricNo,'. $id,
+            'email' => 'required|max:255|unique:users,email,'. $id,
+            'username' => 'required|string|max:100|unique:users,username,'. $id,
+            'isSupervisorPSM2' => 'required|boolean',
+            'isPanelPSM2' => 'required|boolean',
+            'password' => 'nullable|string|max:255',
+        ]);        
+
+        if (!$request->filled('password')) {
+            unset($validated['password']);
+        } else {
+            $validated['password'] = bcrypt($validated['password']);
+        }
+
+        $panel->update($validated);
+
+        return redirect()->back()->with('success', 'Panel added successfully!');
+    }
+
+
 
     public function PSM2AssignPanel()
     {

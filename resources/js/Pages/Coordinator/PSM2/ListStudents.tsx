@@ -354,7 +354,7 @@ export default function ListStudents() {
 
                 {/* Selection status and controls for all-pages selection */}
                 {!showArchived && (
-                    <div className="flex items-center mx-4 mb-3">
+                    <div className="flex items-center mx-4">
                         <button
                             type="button"
                             className={`text-sm underline ${selectAllPages ? 'text-red-600' : 'text-blue-600'} mr-2`}
@@ -367,11 +367,11 @@ export default function ListStudents() {
                                 {selectedStudents.length} of {totalActiveStudents} students selected
                             </span>
                         )}
-                    </div>
+                    </div> 
                 )}
 
                 {/* Table */}
-                <table className="w-full border-collapse border-t border-b border-gray-300">
+                <table className="w-full border-collapse border-t border-b border-gray-300 mt-3">
                     <thead className="bg-gray-200">
                         <tr>
                             {!showArchived && (

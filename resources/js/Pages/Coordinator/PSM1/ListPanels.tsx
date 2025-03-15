@@ -11,28 +11,10 @@ import {
     X
 } from "lucide-react";
 import { route } from "ziggy-js";
-import AddStudentModal from "../../../Components/AddStudentModal";
-import EditStudentModal from "../../../Components/EditStudentModal";
-import ImportStudentModal from "../../../Components/ImportStudentModal";
+import AddPanelModal from "../../../Components/AddPanelModal";
+import EditPanelModal from "../../../Components/EditPanelModal";
+import ImportPanelsModal from "../../../Components/ImportPanelsModal";
 import ImportErrorModal from "../../../Components/ImportErrorModal";
-
-// interface Student {
-//     id: number;
-//     name: string;
-//     matric: string;
-//     course: string;
-//     title: string;
-//     project_area: string;
-//     project_type: string;
-//     sessionpsm: string;
-//     cohort: string;
-//     phone: string;
-//     email: string;
-//     sv_name?: string; // Supervisor Name
-//     panel_name?: string; // Panel 1 Name
-//     panel2_name?: string; // Panel 2 Name
-//     panel_proposal_name?: string; // Proposal Panel Name
-// }
 
 interface Panel {
     id: number;
@@ -43,6 +25,8 @@ interface Panel {
     isSupervisorPSM1: boolean;
     isProposalPanel: boolean;
     isPanelPSM1: boolean;
+    isSupervisorPSM2: boolean;
+    isPanelPSM2: boolean;
     students_sv_names?: string[];
     students_proposal_names?: string[];
     students_panel1_names?: string[];
@@ -97,7 +81,7 @@ export default function ListPanels() {
 
         if (isConfirmed) {
             router.post(
-                route("coordinator.PSM1.students.bulkArchive"),
+                route("coordinator.PSM1.panels.bulkArchive"),
                 { ids: selectedPanels },
                 {
                     preserveScroll: true,
@@ -125,7 +109,7 @@ export default function ListPanels() {
         );
 
         if (isConfirmed) {
-            router.delete(route("coordinator.PSM1.students.delete", id), {
+            router.delete(route("coordinator.PSM1.panels.delete", id), {
                 preserveScroll: true,
             });
         }
@@ -136,7 +120,7 @@ export default function ListPanels() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Filter students based on search query
+    // Filter panels based on search query
     const filteredPanels = (showArchived ? archivedPanels : panels).filter(
         (panel) =>
             panel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -149,7 +133,7 @@ export default function ListPanels() {
     // Calculate total pages after filtering
     const totalPages = Math.ceil(filteredPanels.length / rowsPerPage);
 
-    // Paginate filtered students
+    // Paginate filtered panels
     const paginatedPanels = filteredPanels.slice(
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
@@ -178,7 +162,7 @@ export default function ListPanels() {
         }
     };
 
-    // Handle selecting all students across all pages
+    // Handle selecting all panels across all pages
     const handleSelectAllPages = () => {
         if (selectAllPages) {
             // Deselect all
@@ -295,7 +279,7 @@ export default function ListPanels() {
                     </div>
 
                     <div className="flex">
-                        {/* Show bulk archive button when students are selected */}
+                        {/* Show bulk archive button when panels are selected */}
                         {selectedPanels.length > 0 && !showArchived && (
                             <button
                                 type="button"
@@ -366,7 +350,7 @@ export default function ListPanels() {
 
                 {/* Selection status and controls for all-pages selection */}
                 {!showArchived && (
-                    <div className="flex items-center mx-4 mb-3">
+                    <div className="flex items-center mx-4 ">
                         <button
                             type="button"
                             className={`text-sm underline ${
@@ -390,7 +374,7 @@ export default function ListPanels() {
                 )}
 
                 {/* Table */}
-                <table className="w-full border-collapse border-t border-b border-gray-300">
+                <table className="w-full border-collapse border-t border-b border-gray-300 mt-3">
                     <thead className="bg-gray-200">
                         <tr>
                             {!showArchived && (
@@ -446,7 +430,7 @@ export default function ListPanels() {
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <input
-                                                title="select this student"
+                                                title="select this panels"
                                                 type="checkbox"
                                                 checked={selectedPanels.includes(
                                                     panel.id
@@ -602,7 +586,7 @@ export default function ListPanels() {
                                                     setSelectedPanel(panel);
                                                     setIsEditModalOpen(true);
                                                 }}
-                                                title="Edit Student"
+                                                title="Edit Panels"
                                             >
                                                 <Pencil
                                                     size={20}
@@ -620,7 +604,7 @@ export default function ListPanels() {
                                                                 panel.id
                                                             );
                                                         }}
-                                                        title="Archive Student"
+                                                        title="Archive Panels"
                                                     >
                                                         <Archive
                                                             size={20}
@@ -639,7 +623,7 @@ export default function ListPanels() {
                                                                 panel.id
                                                             );
                                                         }}
-                                                        title="Restore Student"
+                                                        title="Restore Panels"
                                                     >
                                                         <ArchiveRestore
                                                             size={20}
@@ -656,7 +640,7 @@ export default function ListPanels() {
                                                                 panel.id
                                                             );
                                                         }}
-                                                        title="Delete Student"
+                                                        title="Delete Panels"
                                                     >
                                                         <Trash
                                                             size={20}
@@ -827,33 +811,32 @@ export default function ListPanels() {
                 </div>
             </div>
 
-            {/* <AddStudentModal
+            <AddPanelModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
-                studentType = {panelType}
+                panelType = {panelType}
             />
 
-            <EditStudentModal
+            
+            <EditPanelModal
                 isOpen={isEditModalOpen}
                 onClose={() => {
                     setIsEditModalOpen(false);
                     setSelectedPanel(null);
                 }}
-                student={selectedPanel}
-                studentType = {panelType}
+                panel={selectedPanel}
+                panelType = {panelType}
             />
-
-            <ImportStudentModal
+            <ImportPanelsModal
                 isOpen={isImportModalOpen}
                 onClose={() => setIsImoprtModalOpen(false)}
-                studentType = {panelType}
             />
 
             <ImportErrorModal 
                 isOpen={isImportErrorModalOpen} 
                 onClose={() => setIsImportErrorModalOpen(false)} 
                 message={props.flash?.warning}
-            /> */}
+            /> 
         </div>
     );
 }

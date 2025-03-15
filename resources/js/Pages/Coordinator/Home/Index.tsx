@@ -6,6 +6,8 @@ interface Props  {
     userName: string;
     studentsPSM1: number;
     studentsPSM2: number
+    panelsPSM1: number
+    panelsPSM2: number
 }
 
 interface Flash {
@@ -13,7 +15,7 @@ interface Flash {
     success?: string;
 }
 
-export default function Index({ userName, studentsPSM1, studentsPSM2 }: Props) {
+export default function Index({ userName, studentsPSM1, studentsPSM2, panelsPSM1, panelsPSM2 }: Props) {
 
     const { props } = usePage<{
         flash: Flash;
@@ -46,8 +48,8 @@ export default function Index({ userName, studentsPSM1, studentsPSM2 }: Props) {
 
             <p className="pl-5 pt-5">Welcome, {userName}</p>
             <div className="w-full flex flex-col items-center justify-center space-y-6 px-15">
-                <StatsCard studentCount={studentsPSM1} panelCount={110} studentText="PSM1 Students" panelText="PSM1 Panels"/>
-                <StatsCard studentCount={studentsPSM2} panelCount={110} studentText="PSM2 Students" panelText="PSM2 Panels"/>
+                <StatsCard studentCount={studentsPSM1} panelCount={panelsPSM1} studentText="PSM1 Students" panelText="PSM1 Panels"/>
+                <StatsCard studentCount={studentsPSM2} panelCount={panelsPSM2} studentText="PSM2 Students" panelText="PSM2 Panels"/>
             </div>
         </div>
     );
