@@ -44,12 +44,12 @@ export function CoordinatorSidebar() {
         {
             icon: <UserPlus />,
             label: "Assign Supervisor",
-            link: route('coordinator.PSM1.assignSupervisor'),
+            link: route('coordinator.PSM1.listSupervisor'),
         },
         {
             icon: <UserPlus />,
             label: "Assign Proposal Panel",
-            link: route('coordinator.PSM1.assignProposalPanel'),
+            link: route('coordinator.PSM1.listProposalPanel'),
         },
         {
             icon: <UserPlus />,
@@ -147,7 +147,7 @@ export function CoordinatorSidebar() {
                     {menuItems.map(({ icon, label, link }, index) => {
                         const isActive = url === new URL(link, window.location.origin).pathname;
                         const iconColor = isActive
-                            ? "text-[#6D2323] font-semibold"
+                            ? "text-[#6D2323] font-semibold bg-gray-100"
                             : "text-[#808080]";
 
                         return (

@@ -3,11 +3,19 @@
 namespace App\Services;
 
 use App\Models\Supervisor;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Session;
-
+use Illuminate\Support\Facades\Session;
 
 class SupervisorService {
+
+    public function getSupervisorPSM1() {
+
+        $SupervisorPSM1 = User::where('isSupervisorPSM1', '1')->select('id', 'matricNo', 'name', 'username', 'email')->get();
+    
+        return $SupervisorPSM1;
+    }
+
 
     public function totalSupervisor(){
         

@@ -112,6 +112,20 @@ class PanelService
         return $panelPSM1;
     }
 
+    public function getAssignProposalPanel() {
+
+        $panelPSM1 = User::where('isProposalPanel', '1')->select('id', 'matricNo', 'name', 'username', 'email')->get();
+    
+        return $panelPSM1;
+    }
+
+    public function getAssignPanelPSM1() {
+
+        $panelPSM1 = User::where('isPanelPSM1', '1')->select('id', 'matricNo', 'name', 'username', 'email')->get();
+    
+        return $panelPSM1;
+    }
+
     public function getPanelPSM2(){
 
         $panelPSM2 = User::where('isArchivePSM2', '0')

@@ -97,13 +97,25 @@ Route::middleware( EnsureCoordinator::class)
             return response()->download(storage_path("app/public/$filePath"));
         })->name('panels.sample');
 
+        Route::get('/list-supervisor', [CoordinatorController::class, 'PSM1ListSupervisor'])->name('listSupervisor');
+
+        Route::get('/list-student-supervisor/{id}', [CoordinatorController::class, 'PSM1SupervisorStudentList'])->name('supervisor.studentList');
+
+        Route::post('/assign-supervisor', [CoordinatorController::class, 'PSM1SAssignSupervisor'])->name('supervisor.assign');
+
+        Route::post('/unassign-supervisor/{id}', [CoordinatorController::class, 'PSM1UnassignSupervisor'])->name('supervisor.unassign');
 
 
-        Route::get('/assign-supervisor', [CoordinatorController::class, 'PSM1AssignSupervisor'])->name('assignSupervisor');
 
-        Route::get('/assign-proposal-panel', [CoordinatorController::class, 'PSM1AssignProposalPanel'])->name('assignProposalPanel');
 
-        Route::get('/assign-PSM1-panel', [CoordinatorController::class, 'PSM1AssignPanel'])->name('assignPSM1Panel');
+
+
+
+        Route::get('/list-proposal-panel', [CoordinatorController::class, 'PSM1ListProposalPanel'])->name('listProposalPanel');
+
+        Route::get('/assign-PSM1-panel', [CoordinatorController::class, 'PSM1listAssignPanel'])->name('assignPSM1Panel');
+
+
 
         Route::get('/view-result', [CoordinatorController::class, 'PSM1ViewResult'])->name('viewResult');
 

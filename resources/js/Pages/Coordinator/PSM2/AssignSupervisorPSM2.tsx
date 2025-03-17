@@ -27,7 +27,7 @@ interface Flash {
     warning?: string[][];
 }
 
-export default function AssignSupervisor() {
+export default function AssignSupervisorPSM2() {
     const { props } = usePage<{
         supervisor: Supervisor[];
         flash?: Flash;

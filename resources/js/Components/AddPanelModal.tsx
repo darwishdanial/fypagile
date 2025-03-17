@@ -134,7 +134,7 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
 
                 <hr className="border-t-1 border-gray-300"></hr>
 
-                <div className="overflow-y-auto  max-h-[80vh]">
+                <div className="overflow-y-auto">
                     <form id="PSM1AddPanelForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">

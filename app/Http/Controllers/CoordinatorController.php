@@ -9,6 +9,7 @@ use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
 use App\Services\StudentService;
 use App\Services\PanelService;
+use App\Services\SupervisorService;
 use App\Services\CompareMachineLearningService;
 use App\Jobs\EmailPanelAssignmentCompleteJob;
 use Illuminate\Support\Facades\Auth;
@@ -26,14 +27,17 @@ class CoordinatorController extends Controller
     protected $coordinatorService;
     protected $studentService;
     protected $panelService;
+    protected $supervisorService;
 
-    public function __construct(CoordinatorService $coordinatorService, StudentService $studentService, PanelService $panelService){
+    public function __construct(CoordinatorService $coordinatorService, StudentService $studentService, PanelService $panelService, SupervisorService $supervisorService){
 
         $this->coordinatorService = $coordinatorService;
 
         $this->studentService = $studentService;
 
         $this->panelService = $panelService;
+
+        $this->supervisorService = $supervisorService;
     }
 
     //Home
@@ -310,28 +314,64 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Panels imported successfully!');
     }
 
-
-
-
-    public function PSM1AssignSupervisor()
+    public function PSM1ListSupervisor()
     {
         $this->authorize('view psm1 assign supervisor table');
 
-        return Inertia::render('Coordinator/PSM1/AssignSupervisor');
+        $supervisors = $this->supervisorService->getSupervisorPSM1();
+
+        //dd($supervisors);
+
+        return Inertia::render('Coordinator/PSM1/AssignSupervisor',[
+            'supervisor' => $supervisors
+        ]);
     }
 
-    public function PSM1AssignProposalPanel()
+    public function PSM1ListProposalPanel()
     {
         $this->authorize('view psm1 assign proposal panel table');
 
-        return Inertia::render('Coordinator/PSM1/AssignProposalPanel');
+        $panels = $this->panelService->getAssignProposalPanel();
+
+
+        return Inertia::render('Coordinator/PSM1/AssignProposalPanel',[
+            'panel' => $panels
+        ]);
     }
 
-    public function PSM1AssignPanel()
+    public function PSM1SupervisorStudentList($id)
+    {
+        $students = $this->studentService->getStudentsSupervisorPSM1($id);
+
+        return $students;
+    }
+
+    public function PSM1SAssignSupervisor(Request $request)
+    {
+        $studentId = $request->input('studentId');
+        $supervisorId = $request->input('supervisorId');
+        
+        $this->studentService->assignStudentsSupervisorPSM1($studentId, $supervisorId);
+    }
+
+    public function PSM1UnassignSupervisor($studentId)
+    {
+        $this->studentService->unassignStudentsSupervisorPSM1($studentId);
+    }
+
+
+
+
+
+    public function PSM1listAssignPanel()
     {
         $this->authorize('view psm1 assign panel table');
 
-        return Inertia::render('Coordinator/PSM1/AssignPSM1Panel');
+        $panels = $this->panelService->getAssignPanelPSM1();
+
+        return Inertia::render('Coordinator/PSM1/AssignPSM1Panel',[
+            'panel' => $panels
+        ]);
     }
 
     public function PSM1ViewResult()

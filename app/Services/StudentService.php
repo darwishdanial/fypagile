@@ -127,6 +127,53 @@ class StudentService
 
     }
 
+    public function getStudentsSupervisorPSM1(?int $supervisorId){
+
+        $unassignedStudents = StudentPSM1::whereNull('supervisorId')->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
+            $student->assigned = false;
+            return $student;
+        });
+        
+        $assignedStudents = StudentPSM1::where('supervisorId', $supervisorId)->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
+            $student->assigned = true;
+            return $student;
+        });
+        $students = $assignedStudents->merge($unassignedStudents);
+
+        return $students;
+    }
+
+    public function assignStudentsSupervisorPSM1($studentId, $supervisorId){
+
+        StudentPSM1::whereId($studentId)
+            ->update(['supervisorId' => $supervisorId]);
+    }
+
+    public function unassignStudentsSupervisorPSM1($studentId){
+
+        StudentPSM1::whereId($studentId)
+            ->update(['supervisorId' => null ]);
+    }
+
+
+
+    public function getStudentsSupervisorLama(?int $supervisorId){
+
+        $unassignedStudents = StudentPSM1::whereNull('supervisorId')->get(['id','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
+            $student->assigned = false;
+            return $student;
+        });
+        
+        $assignedStudents = StudentPSM1::where('supervisorId', $supervisorId)->get(['id','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
+            $student->assigned = true;
+            return $student;
+        });
+        $students = $assignedStudents->merge($unassignedStudents);
+
+        return $students;
+    }
+
+
     public function getStudentSupervisor(){
 
         $students = studentPSM1::get()->where('supervisorId', '=', Session::get('id'));
@@ -174,27 +221,13 @@ class StudentService
         return $supervisors;
     }
 
-    public function getStudents(?int $supervisorId){
+    
 
-        $unassignedStudents = StudentPSM1::whereNull('supervisorId')->get(['id','course' ,'name'])->map(function ($student){
-            $student->assigned = false;
-            return $student;
-        });
-        
-        $assignedStudents = StudentPSM1::where('supervisorId', $supervisorId)->get(['id', 'course','name'])->map(function ($student){
-            $student->assigned = true;
-            return $student;
-        });
-        $students = $assignedStudents->merge($unassignedStudents);
+    // public function assignStudent($studentId, $supervisorId){
 
-        return $students;
-    }
-
-    public function assignStudent($studentId, $supervisorId){
-
-        StudentPSM1::whereId($studentId)
-            ->update(['supervisorId' => $supervisorId]);
-    }
+    //     StudentPSM1::whereId($studentId)
+    //         ->update(['supervisorId' => $supervisorId]);
+    // }
 
     public function unassignStudent($studentId){
 
