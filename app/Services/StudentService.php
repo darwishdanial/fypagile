@@ -155,6 +155,63 @@ class StudentService
             ->update(['supervisorId' => null ]);
     }
 
+    public function getStudentsProposalPanel(?int $panelId, int $type){
+
+        $assignedStudents = ($type == 1) 
+            ? StudentPSM1::where('panelProposalId', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panelProposalId'])->map(function ($student){
+            $student->assigned = true;
+            return $student;
+            })
+            : StudentPSM1::where('panelProposal2Id', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panelProposal2Id'])->map(function ($student){
+            $student->assigned = true;
+            return $student;
+            });
+        
+        logger($assignedStudents);
+        
+        $unassignedStudents = ($type == 1) 
+            ? StudentPSM1::whereNull('panelProposalId')->get(['id','name','title' ,'project_area', 'project_type','panelProposalId'])->map(function ($student){
+            $student->assigned = true;
+            return $student;
+            })
+            : StudentPSM1::whereNull('panelProposal2Id')->get(['id','name','title' ,'project_area', 'project_type','panelProposal2Id'])->map(function ($student){
+            $student->assigned = true;
+            return $student;
+            });
+        
+        logger($unassignedStudents);
+            
+        $students = $assignedStudents->merge($unassignedStudents);
+
+        return $students;
+    }
+
+    public function assignStudentsProposalPanel1PSM1($studentId, $panelId){
+
+
+        StudentPSM1::whereId($studentId)
+            ->update(['panelProposalId' => $panelId]);
+    }
+
+    public function assignStudentsProposalPanel2PSM1($studentId, $panelId){
+
+
+        StudentPSM1::whereId($studentId)
+            ->update(['panelProposal2Id' => $panelId]);
+    }
+
+    public function unassignStudentsProposalPanel1PSM1($studentId){
+
+        StudentPSM1::whereId($studentId)
+            ->update(['panelProposalId' => null ]);
+    }
+
+    public function unassignStudentsProposalPanel2PSM1($studentId){
+
+        StudentPSM1::whereId($studentId)
+            ->update(['panelProposal2Id' => null ]);
+    }
+
 
 
     public function getStudentsSupervisorLama(?int $supervisorId){

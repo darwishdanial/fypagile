@@ -9,7 +9,10 @@ interface Student {
     title: string;
     project_area: string;
     project_type: string;
+    panelProposalId: number | null;
+    panelProposal2Id: number | null;
     panelId: number | null;
+    panel2Id: number | null;
     assigned: boolean;
 }
 
@@ -24,7 +27,7 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
     isOpen,
     onClose,
     panelId,
-    panelType
+    panelType,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -49,11 +52,32 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
     }, [isOpen, panelId]);
 
     const fetchStudents = () => {
+        let route_path = "";
+        let panelTypeValue = 1;
+        if (panelType === "PSM1ProposalPanel1") {
+            route_path = "coordinator.PSM1.panelProposal.studentList";
+            panelTypeValue = 1;
+        } else if (panelType === "PSM1ProposalPanel2") {
+            route_path = "coordinator.PSM1.panelProposal.studentList";
+            panelTypeValue = 2;
+        } else if (panelType === "PSM1Panel1") {
+            route_path = "coordinator.PSM1.panel.studentList";
+            panelTypeValue = 1;
+        } else if (panelType === "PSM1Panel2") {
+            route_path = "coordinator.PSM1.panel.studentList";
+            panelTypeValue = 2;
+        } else if (panelType === "PSM2Panel1") {
+            route_path = "coordinator.PSM2.panel.studentList";
+            panelTypeValue = 1;
+        } else if (panelType === "PSM2Panel2") {
+            route_path = "coordinator.PSM2.panel.studentList";
+            panelTypeValue = 2;
+        }
+
         setLoading(true);
+
         axios
-            .get(
-                route("coordinator.PSM1.supervisor.list", { id: panelId })
-            )
+            .get(route(route_path, { panelId, panelTypeValue }))
             .then((response) => {
                 setStudents(response.data);
             })
@@ -66,9 +90,26 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
     };
 
     const handleAssign = (studentId: number, panelId: number) => {
+        let route_path = "";
+        if (panelType === "PSM1ProposalPanel1") {
+            route_path = "coordinator.PSM1.panelProposal1.assign";
+        } else if (panelType === "PSM1ProposalPanel2") {
+            route_path = "coordinator.PSM1.panelProposal2.assign";
+        } else if (panelType === "PSM1Panel1") {
+            route_path = "coordinator.PSM1.panel.studentList";
+        } else if (panelType === "PSM1Panel2") {
+            route_path = "coordinator.PSM1.panel.studentList";
+        } else if (panelType === "PSM2Panel1") {
+            route_path = "coordinator.PSM2.panel.studentList";
+        } else if (panelType === "PSM2Panel2") {
+            route_path = "coordinator.PSM2.panel.studentList";
+        }
+
+        console.log(studentId, panelId, route_path);
+
         axios
             .post(
-                route("coordinator.PSM1.supervisor.assign", {
+                route(route_path, {
                     studentId,
                     panelId,
                 })
@@ -76,10 +117,23 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
             .then(() => {
                 //fetchStudents();
                 setStudents((prevStudents) =>
-                    prevStudents.map((student) =>
-                        student.id === studentId
-                            ? { ...student, panelId, assigned: true }
-                            : student
+                    prevStudents.map((student) =>{
+                        if (student.id === studentId) {
+                            if (panelType === "PSM1ProposalPanel1") {
+                                return { ...student, panelProposalId: panelId, assigned: true };
+                            }
+                            if (panelType === "PSM1ProposalPanel2") {
+                                return { ...student, panelProposal2Id: panelId, assigned: true };
+                            }
+                            if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
+                                return { ...student, panelId, assigned: true };
+                            }
+                            if (panelType === "PSM2Panel2" || panelType === "PSM2Panel2") {
+                                return { ...student, panel2Id: panelId, assigned: true };
+                            }
+                        }
+                        return student;
+                        }
                     )
                 );
             })
@@ -89,19 +143,44 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
     };
 
     const handleUnassign = (studentId: number) => {
+        let route_path = "";
+        if (panelType === "PSM1ProposalPanel1") {
+            route_path = "coordinator.PSM1.panelProposal1.unassign";
+        } else if (panelType === "PSM1ProposalPanel2") {
+            route_path = "coordinator.PSM1.panelProposal2.unassign";
+        } else if (panelType === "PSM1Panel1") {
+            route_path = "coordinator.PSM1.panel.studentList";
+        } else if (panelType === "PSM1Panel2") {
+            route_path = "coordinator.PSM1.panel.studentList";
+        } else if (panelType === "PSM2Panel1") {
+            route_path = "coordinator.PSM2.panel.studentList";
+        } else if (panelType === "PSM2Panel2") {
+            route_path = "coordinator.PSM2.panel.studentList";
+        }
+
         axios
-            .post(route("coordinator.PSM1.supervisor.unassign", studentId))
+            .post(route(route_path, studentId))
             .then(() => {
                 //fetchStudents();
                 setStudents((prevStudents) =>
                     prevStudents.map((student) =>
-                        student.id === studentId
-                            ? {
-                                  ...student,
-                                  supervisorId: null,
-                                  assigned: false,
-                              }
-                            : student
+                        {
+                            if (student.id === studentId) {
+                                if (panelType === "PSM1ProposalPanel1") {
+                                    return { ...student, panelProposalId: null, assigned: true };
+                                }
+                                if (panelType === "PSM1ProposalPanel2") {
+                                    return { ...student, panelProposal2Id: null, assigned: true };
+                                }
+                                if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
+                                    return { ...student, panelId: null, assigned: true };
+                                }
+                                if (panelType === "PSM2Panel2" || panelType === "PSM2Panel2") {
+                                    return { ...student, panel2Id: null, assigned: true };
+                                }
+                            }
+                            return student;
+                            }
                     )
                 );
             })
@@ -132,7 +211,7 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center py-2 px-4">
-                    <h2 className="text-lg font-semibold">Assign Supervisor</h2>
+                    <h2 className="text-lg font-semibold">Assign Panel</h2>
                     <button
                         title="close"
                         type="button"
@@ -218,20 +297,30 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                                                     {student.name}
                                                 </td>
                                                 <td className="px-4 py-2">
-                                                    {student.panelId ? (
-                                                        <button
-                                                            type="button"
-                                                            className="px-3 py-1 bg-red-400 text-white rounded hover:bg-red-500 transition"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleUnassign(
-                                                                    student.id
-                                                                );
-                                                            }}
-                                                        >
-                                                            Unassign
-                                                        </button>
-                                                    ) : (
+                                                    {(panelType ===
+                                                        "PSM1ProposalPanel1" &&
+                                                        student.panelProposalId ===
+                                                            null) ||
+                                                    (panelType ===
+                                                        "PSM1ProposalPanel2" &&
+                                                        student.panelProposal2Id ===
+                                                            null) ||
+                                                    (panelType ===
+                                                        "PSM1Panel1" &&
+                                                        student.panelId ===
+                                                            null) ||
+                                                    (panelType ===
+                                                        "PSM2Panel1" &&
+                                                        student.panelId ===
+                                                            null) ||
+                                                    (panelType ===
+                                                        "PSM2Panel1" &&
+                                                        student.panel2Id ===
+                                                            null) ||
+                                                    (panelType ===
+                                                        "PSM2Panel2" &&
+                                                        student.panel2Id ===
+                                                            null) ? (
                                                         <button
                                                             type="button"
                                                             className="px-3 py-1 bg-blue-400 text-white rounded hover:bg-blue-500 transition"
@@ -244,6 +333,19 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                                                             }}
                                                         >
                                                             Assign
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            className="px-3 py-1 bg-red-400 text-white rounded hover:bg-red-500 transition"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleUnassign(
+                                                                    student.id
+                                                                );
+                                                            }}
+                                                        >
+                                                            Unassign
                                                         </button>
                                                     )}
                                                 </td>

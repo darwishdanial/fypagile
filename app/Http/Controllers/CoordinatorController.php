@@ -359,6 +359,42 @@ class CoordinatorController extends Controller
         $this->studentService->unassignStudentsSupervisorPSM1($studentId);
     }
 
+    public function PSM1ProposalPanelStudentList(Request $request)
+    {
+        $panelId = $request->input('panelId');
+        $type = $request->input('panelTypeValue');
+
+        $students = $this->studentService->getStudentsProposalPanel($panelId, $type);
+
+        return $students;
+    }
+
+    public function PSM1SAssignProposalPanel1(Request $request)
+    {
+        $studentId = $request->input('studentId');
+        $panelId = $request->input('panelId');
+        
+        $this->studentService->assignStudentsProposalPanel1PSM1($studentId, $panelId);
+    }
+
+    public function PSM1SAssignProposalPanel2(Request $request)
+    {
+        $studentId = $request->input('studentId');
+        $panelId = $request->input('panelId');
+        
+        $this->studentService->assignStudentsProposalPanel2PSM1($studentId, $panelId);
+    }
+
+    public function PSM1UnassignProposalPanel1($studentId)
+    {
+        $this->studentService->unassignStudentsProposalPanel1PSM1($studentId);
+    }
+
+    public function PSM1UnassignProposalPanel2($studentId)
+    {
+        $this->studentService->unassignStudentsProposalPanel2PSM1($studentId);
+    }
+
 
 
 

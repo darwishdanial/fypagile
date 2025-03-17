@@ -97,6 +97,8 @@ Route::middleware( EnsureCoordinator::class)
             return response()->download(storage_path("app/public/$filePath"));
         })->name('panels.sample');
 
+        //supervisor
+
         Route::get('/list-supervisor', [CoordinatorController::class, 'PSM1ListSupervisor'])->name('listSupervisor');
 
         Route::get('/list-student-supervisor/{id}', [CoordinatorController::class, 'PSM1SupervisorStudentList'])->name('supervisor.studentList');
@@ -107,11 +109,21 @@ Route::middleware( EnsureCoordinator::class)
 
 
 
-
-
-
+        //panel proposal
 
         Route::get('/list-proposal-panel', [CoordinatorController::class, 'PSM1ListProposalPanel'])->name('listProposalPanel');
+
+        Route::get('/list-student-panel-proposal', [CoordinatorController::class, 'PSM1ProposalPanelStudentList'])->name('panelProposal.studentList');
+
+        Route::post('/assign-proposal-panel-1', [CoordinatorController::class, 'PSM1SAssignProposalPanel1'])->name('panelProposal1.assign');
+
+        Route::post('/assign-proposal-panel-2', [CoordinatorController::class, 'PSM1SAssignProposalPanel2'])->name('panelProposal2.assign');
+
+        Route::post('/unassign-proposal-panel-1/{id}', [CoordinatorController::class, 'PSM1UnassignProposalPanel1'])->name('panelProposal1.unassign');
+
+        Route::post('/unassign-proposal-panel-2/{id}', [CoordinatorController::class, 'PSM1UnassignProposalPanel2'])->name('panelProposal2.unassign');
+
+
 
         Route::get('/assign-PSM1-panel', [CoordinatorController::class, 'PSM1listAssignPanel'])->name('assignPSM1Panel');
 

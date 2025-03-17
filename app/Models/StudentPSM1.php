@@ -29,7 +29,9 @@ class StudentPSM1 extends Model
         'title',
         'supervisorId',
         'panelId',
-        'panel2Id'
+        'panel2Id',
+        'panelProposalId',
+        'panelProposal2Id'
     ];
 
     public function supervisor()
