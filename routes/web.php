@@ -124,8 +124,18 @@ Route::middleware( EnsureCoordinator::class)
         Route::post('/unassign-proposal-panel-2/{id}', [CoordinatorController::class, 'PSM1UnassignProposalPanel2'])->name('panelProposal2.unassign');
 
 
+        //panel PSM1
+        Route::get('/list-PSM1-panel', [CoordinatorController::class, 'PSM1listAssignPanel'])->name('listPSM1Panel');
 
-        Route::get('/assign-PSM1-panel', [CoordinatorController::class, 'PSM1listAssignPanel'])->name('assignPSM1Panel');
+        Route::get('/list-student-panel-PSM1', [CoordinatorController::class, 'PSM1PanelStudentList'])->name('panel.studentList');
+
+        Route::post('/assign-PSM1-panel-1', [CoordinatorController::class, 'PSM1SAssignPanel1'])->name('panel1.assign');
+
+        Route::post('/assign-PSM1-panel-2', [CoordinatorController::class, 'PSM1SAssignPanel2'])->name('panel2.assign');
+
+        Route::post('/unassign-PSM1-panel-1/{id}', [CoordinatorController::class, 'PSM1UnassignPSMPanel1'])->name('panel1.unassign');
+
+        Route::post('/unassign-PSM1-panel-2/{id}', [CoordinatorController::class, 'PSM1UnassignPSMPanel2'])->name('panel2.unassign');
 
 
 

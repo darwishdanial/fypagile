@@ -395,10 +395,6 @@ class CoordinatorController extends Controller
         $this->studentService->unassignStudentsProposalPanel2PSM1($studentId);
     }
 
-
-
-
-
     public function PSM1listAssignPanel()
     {
         $this->authorize('view psm1 assign panel table');
@@ -409,6 +405,45 @@ class CoordinatorController extends Controller
             'panel' => $panels
         ]);
     }
+
+    public function PSM1PanelStudentList(Request $request)
+    {
+        $panelId = $request->input('panelId');
+        $type = $request->input('panelTypeValue');
+
+        $students = $this->studentService->getStudentsPSM1lPanel($panelId, $type);
+
+        return $students;
+    }
+
+    public function PSM1SAssignPanel1(Request $request)
+    {
+        $studentId = $request->input('studentId');
+        $panelId = $request->input('panelId');
+        
+        $this->studentService->assignStudentsPSMPanel1PSM1($studentId, $panelId);
+    }
+
+    public function PSM1SAssignPanel2(Request $request)
+    {
+        $studentId = $request->input('studentId');
+        $panelId = $request->input('panelId');
+        
+        $this->studentService->assignStudentsPSMPanel2PSM1($studentId, $panelId);
+    }
+
+    public function PSM1UnassignPSMPanel1($studentId)
+    {
+        $this->studentService->unassignStudentsPSMPanel1PSM1($studentId);
+    }
+
+    public function PSM1UnassignPSMPanel2($studentId)
+    {
+        $this->studentService->unassignStudentsPSMPanel2PSM1($studentId);
+    }
+
+
+
 
     public function PSM1ViewResult()
     {

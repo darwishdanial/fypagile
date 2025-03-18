@@ -96,9 +96,9 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
         } else if (panelType === "PSM1ProposalPanel2") {
             route_path = "coordinator.PSM1.panelProposal2.assign";
         } else if (panelType === "PSM1Panel1") {
-            route_path = "coordinator.PSM1.panel.studentList";
+            route_path = "coordinator.PSM1.panel1.assign";
         } else if (panelType === "PSM1Panel2") {
-            route_path = "coordinator.PSM1.panel.studentList";
+            route_path = "coordinator.PSM1.panel2.assign";
         } else if (panelType === "PSM2Panel1") {
             route_path = "coordinator.PSM2.panel.studentList";
         } else if (panelType === "PSM2Panel2") {
@@ -128,7 +128,7 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                             if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
                                 return { ...student, panelId, assigned: true };
                             }
-                            if (panelType === "PSM2Panel2" || panelType === "PSM2Panel2") {
+                            if (panelType === "PSM1Panel2" || panelType === "PSM2Panel2") {
                                 return { ...student, panel2Id: panelId, assigned: true };
                             }
                         }
@@ -149,9 +149,9 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
         } else if (panelType === "PSM1ProposalPanel2") {
             route_path = "coordinator.PSM1.panelProposal2.unassign";
         } else if (panelType === "PSM1Panel1") {
-            route_path = "coordinator.PSM1.panel.studentList";
+            route_path = "coordinator.PSM1.panel1.unassign";
         } else if (panelType === "PSM1Panel2") {
-            route_path = "coordinator.PSM1.panel.studentList";
+            route_path = "coordinator.PSM1.panel2.unassign";
         } else if (panelType === "PSM2Panel1") {
             route_path = "coordinator.PSM2.panel.studentList";
         } else if (panelType === "PSM2Panel2") {
@@ -175,7 +175,7 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                                 if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
                                     return { ...student, panelId: null, assigned: true };
                                 }
-                                if (panelType === "PSM2Panel2" || panelType === "PSM2Panel2") {
+                                if (panelType === "PSM1Panel2" || panelType === "PSM2Panel2") {
                                     return { ...student, panel2Id: null, assigned: true };
                                 }
                             }
@@ -258,7 +258,7 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                     {loading ? (
                         <p className="text-center">Loading students...</p>
                     ) : (
-                        <div className="max-h-[400px] xl:max-h-[700px] overflow-y-auto">
+                        <div className="max-h-[350px] xl:max-h-[700px] overflow-y-auto">
                             <table className="w-full border-collapse border-t border-b border-gray-300 mt-3">
                                 <thead className="bg-gray-200">
                                     <tr>
@@ -297,30 +297,11 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                                                     {student.name}
                                                 </td>
                                                 <td className="px-4 py-2">
-                                                    {(panelType ===
-                                                        "PSM1ProposalPanel1" &&
-                                                        student.panelProposalId ===
-                                                            null) ||
-                                                    (panelType ===
-                                                        "PSM1ProposalPanel2" &&
-                                                        student.panelProposal2Id ===
-                                                            null) ||
-                                                    (panelType ===
-                                                        "PSM1Panel1" &&
-                                                        student.panelId ===
-                                                            null) ||
-                                                    (panelType ===
-                                                        "PSM2Panel1" &&
-                                                        student.panelId ===
-                                                            null) ||
-                                                    (panelType ===
-                                                        "PSM2Panel1" &&
-                                                        student.panel2Id ===
-                                                            null) ||
-                                                    (panelType ===
-                                                        "PSM2Panel2" &&
-                                                        student.panel2Id ===
-                                                            null) ? (
+                                                    {(panelType === "PSM1ProposalPanel1" && student.panelProposalId === null) ||
+                                                    (panelType === "PSM1ProposalPanel2" && student.panelProposal2Id === null) ||
+                                                    (["PSM1Panel1", "PSM2Panel1"].includes(panelType) && student.panelId === null) ||
+                                                    (["PSM1Panel2", "PSM2Panel2"].includes(panelType) && student.panel2Id === null)
+                                                             ? (
                                                         <button
                                                             type="button"
                                                             className="px-3 py-1 bg-blue-400 text-white rounded hover:bg-blue-500 transition"

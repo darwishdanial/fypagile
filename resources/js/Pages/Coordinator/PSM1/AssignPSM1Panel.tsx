@@ -15,6 +15,7 @@ import AddPanelModal from "../../../Components/AddPanelModal";
 import EditPanelModal from "../../../Components/EditPanelModal";
 import ImportPanelsModal from "../../../Components/ImportPanelsModal";
 import ImportErrorModal from "../../../Components/ImportErrorModal";
+import AssignPanelModal from "../../../Components/AssignPanelModal";
 
 interface Panel {
     id: number;
@@ -37,6 +38,19 @@ export default function AssignPSM1Panel() {
     }>();
 
     const panel = props.panel ?? [];
+    const [selectedPanel, setSelectedPanel] = useState<number | null>(null);
+    const [isPanel1ModalOpen, setIsPanel1ModalOpen] = useState(false);
+    const [isPanel2ModalOpen, setIsPanel2ModalOpen] = useState(false);
+
+    const handleOpenPanel1Modal = (id: number) => {
+        setSelectedPanel(id);
+        setIsPanel1ModalOpen(true);
+    };
+
+    const handleOpenPanel2Modal = (id: number) => {
+        setSelectedPanel(id);
+        setIsPanel2ModalOpen(true);
+    };
 
     // State for pagination & search
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -186,7 +200,9 @@ export default function AssignPSM1Panel() {
                                                 title="Assign Student"
                                                 className="p-2 px-3 bg-blue-400 text-white rounded hover:bg-blue-500 transition my-2 ml-2 font-semibold"
                                                 onClick={() =>
-                                                    console.log("Edit clicked")
+                                                    handleOpenPanel1Modal(
+                                                        panel.id
+                                                    )
                                                 }
                                             >
                                                 <div className="flex">
@@ -200,7 +216,9 @@ export default function AssignPSM1Panel() {
                                                 title="Assign Student"
                                                 className="p-2 px-3 bg-blue-400 text-white rounded hover:bg-blue-500 transition my-2 ml-2 font-semibold"
                                                 onClick={() =>
-                                                    console.log("Edit clicked")
+                                                    handleOpenPanel2Modal(
+                                                        panel.id
+                                                    )
                                                 }
                                             >
                                                 <div className="flex">
@@ -242,7 +260,23 @@ export default function AssignPSM1Panel() {
                 </div>
             </div>
 
-            {/* Assign student supervisor Modal */}
+            {isPanel1ModalOpen && selectedPanel !== null && (
+                <AssignPanelModal
+                    isOpen={isPanel1ModalOpen}
+                    panelId={selectedPanel}
+                    panelType="PSM1Panel1"
+                    onClose={() => setIsPanel1ModalOpen(false)}
+                />
+            )}
+
+            {isPanel2ModalOpen && selectedPanel !== null && (
+                <AssignPanelModal
+                    isOpen={isPanel2ModalOpen}
+                    panelId={selectedPanel}
+                    panelType="PSM1Panel2"
+                    onClose={() => setIsPanel2ModalOpen(false)}
+                />
+            )}
         </div>
     );
 }

@@ -197,7 +197,7 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
                     {loading ? (
                         <p className="text-center">Loading students...</p>
                     ) : (
-                        <div className="max-h-[400px] xl:max-h-[700px] overflow-y-auto">
+                        <div className="max-h-[350px] xl:max-h-[700px] overflow-y-auto">
                             <table className="w-full border-collapse border-t border-b border-gray-300 mt-3">
                                 <thead className="bg-gray-200">
                                     <tr>

@@ -54,7 +54,7 @@ export function CoordinatorSidebar() {
         {
             icon: <UserPlus />,
             label: "Assign PSM1 Panel",
-            link: route('coordinator.PSM1.assignPSM1Panel'),
+            link: route('coordinator.PSM1.listPSM1Panel'),
         },
         {
             icon: <FileText />,
