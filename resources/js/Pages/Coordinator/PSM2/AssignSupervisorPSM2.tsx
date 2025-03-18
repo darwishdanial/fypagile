@@ -242,7 +242,7 @@ export default function AssignSupervisorPSM2() {
                 <AssignSupervisorModal
                     isOpen={isModalOpen}
                     supervisorId={selectedSupervisor}
-                    supervisorType="PSM1"
+                    supervisorType="PSM2"
                     onClose={() => setIsModalOpen(false)}
                 />
             )}

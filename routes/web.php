@@ -185,8 +185,30 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::put('/panels/{id}/update', [CoordinatorController::class, 'PSM2UpdatePanel'])->name('panels.update');
 
+        //supervisor
+        Route::get('/list-supervisor', [CoordinatorController::class, 'PSM2ListSupervisor'])->name('listSupervisor');
 
-        Route::get('/assign-PSM2-panel', [CoordinatorController::class, 'PSM2AssignPanel'])->name('assignPSM2Panel');
+        Route::get('/list-student-supervisor/{id}', [CoordinatorController::class, 'PSM2SupervisorStudentList'])->name('supervisor.studentList');
+
+        Route::post('/assign-supervisor', [CoordinatorController::class, 'PSM2SAssignSupervisor'])->name('supervisor.assign');
+
+        Route::post('/unassign-supervisor/{id}', [CoordinatorController::class, 'PSM2UnassignSupervisor'])->name('supervisor.unassign');
+
+
+
+        //panel PSM2
+        Route::get('/list-PSM2-panel', [CoordinatorController::class, 'PSM2ListPanel'])->name('listPSM2Panel');
+        
+        Route::get('/list-student-panel-PSM2', [CoordinatorController::class, 'PSM2PanelStudentList'])->name('panel.studentList');
+
+        Route::post('/assign-PSM2-panel-1', [CoordinatorController::class, 'PSM2SAssignPanel1'])->name('panel1.assign');
+
+        Route::post('/assign-PSM2-panel-2', [CoordinatorController::class, 'PSM2SAssignPanel2'])->name('panel2.assign');
+
+        Route::post('/unassign-PSM2-panel-1/{id}', [CoordinatorController::class, 'PSM2UnassignPSMPanel1'])->name('panel1.unassign');
+
+        Route::post('/unassign-PSM2-panel-2/{id}', [CoordinatorController::class, 'PSM2UnassignPSMPanel2'])->name('panel2.unassign');
+
 
         Route::get('/view-result', [CoordinatorController::class, 'PSM2ViewResult'])->name('viewResult');
 

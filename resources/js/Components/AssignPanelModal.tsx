@@ -100,12 +100,12 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
         } else if (panelType === "PSM1Panel2") {
             route_path = "coordinator.PSM1.panel2.assign";
         } else if (panelType === "PSM2Panel1") {
-            route_path = "coordinator.PSM2.panel.studentList";
+            route_path = "coordinator.PSM2.panel1.assign";
         } else if (panelType === "PSM2Panel2") {
-            route_path = "coordinator.PSM2.panel.studentList";
+            route_path = "coordinator.PSM2.panel2.assign";
         }
 
-        console.log(studentId, panelId, route_path);
+        // console.log(studentId, panelId, route_path);
 
         axios
             .post(
@@ -153,9 +153,9 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
         } else if (panelType === "PSM1Panel2") {
             route_path = "coordinator.PSM1.panel2.unassign";
         } else if (panelType === "PSM2Panel1") {
-            route_path = "coordinator.PSM2.panel.studentList";
+            route_path = "coordinator.PSM2.panel1.unassign";
         } else if (panelType === "PSM2Panel2") {
-            route_path = "coordinator.PSM2.panel.studentList";
+            route_path = "coordinator.PSM2.panel2.unassign";
         }
 
         axios

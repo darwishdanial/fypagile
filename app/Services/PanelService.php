@@ -126,6 +126,13 @@ class PanelService
         return $panelPSM1;
     }
 
+    public function getAssignPanelPSM2() {
+
+        $panelPSM1 = User::where('isPanelPSM2', '1')->select('id', 'matricNo', 'name', 'username', 'email')->get();
+    
+        return $panelPSM1;
+    }
+
     public function getPanelPSM2(){
 
         $panelPSM2 = User::where('isArchivePSM2', '0')

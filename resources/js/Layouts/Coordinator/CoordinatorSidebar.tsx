@@ -96,8 +96,13 @@ export function CoordinatorSidebar() {
         },
         {
             icon: <UserPlus />,
+            label: "Assign Supervisor",
+            link: route('coordinator.PSM2.listSupervisor'),
+        },
+        {
+            icon: <UserPlus />,
             label: "Assign PSM2 Panel",
-            link: route('coordinator.PSM2.assignPSM2Panel'),
+            link: route('coordinator.PSM2.listPSM2Panel'),
         },
         {
             icon: <FileText />,

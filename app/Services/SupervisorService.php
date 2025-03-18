@@ -15,6 +15,12 @@ class SupervisorService {
     
         return $SupervisorPSM1;
     }
+    public function getSupervisorPSM2() {
+
+        $SupervisorPSM2 = User::where('isSupervisorPSM2', '1')->select('id', 'matricNo', 'name', 'username', 'email')->get();
+    
+        return $SupervisorPSM2;
+    }
 
 
     public function totalSupervisor(){

@@ -333,7 +333,6 @@ class CoordinatorController extends Controller
 
         $panels = $this->panelService->getAssignProposalPanel();
 
-
         return Inertia::render('Coordinator/PSM1/AssignProposalPanel',[
             'panel' => $panels
         ]);
@@ -712,14 +711,91 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Panel added successfully!');
     }
 
+    public function PSM2ListSupervisor()
+    {
+        $supervisors = $this->supervisorService->getSupervisorPSM2();
 
+        //dd($supervisors);
 
-    public function PSM2AssignPanel()
+        return Inertia::render('Coordinator/PSM2/AssignSupervisorPSM2',[
+            'supervisor' => $supervisors
+        ]);
+    }
+
+    public function PSM2SupervisorStudentList($id)
+    {
+        $students = $this->studentService->getStudentsSupervisorPSM2($id);
+
+        return $students;
+    }
+
+    public function PSM2SAssignSupervisor(Request $request)
+    {
+        $studentId = $request->input('studentId');
+        $supervisorId = $request->input('supervisorId');
+        
+        $this->studentService->assignStudentsSupervisorPSM2($studentId, $supervisorId);
+    }
+
+    public function PSM2UnassignSupervisor($studentId)
+    {
+        $this->studentService->unassignStudentsSupervisorPSM2($studentId);
+    }
+
+    //panel 
+    public function PSM2ListPanel()
     {
         $this->authorize('view psm2 assign panel table');
 
-        return Inertia::render('Coordinator/PSM2/AssignPSM2Panel');
+        $panels = $this->panelService->getAssignPanelPSM2();
+
+        return Inertia::render('Coordinator/PSM2/AssignPSM2Panel',[
+            'panel' => $panels
+        ]);
     }
+    public function PSM2PanelStudentList(Request $request)
+    {
+        $panelId = $request->input('panelId');
+        $type = $request->input('panelTypeValue');
+
+        $students = $this->studentService->getStudentsPSM2lPanel($panelId, $type);
+
+        return $students;
+    }
+
+    public function PSM2SAssignPanel1(Request $request)
+    {
+        $studentId = $request->input('studentId');
+        $panelId = $request->input('panelId');
+        
+        $this->studentService->assignStudentsPSMPanel1PSM2($studentId, $panelId);
+    }
+
+    public function PSM2SAssignPanel2(Request $request)
+    {
+        $studentId = $request->input('studentId');
+        $panelId = $request->input('panelId');
+        
+        $this->studentService->assignStudentsPSMPanel2PSM2($studentId, $panelId);
+    }
+
+    public function PSM2UnassignPSMPanel1($studentId)
+    {
+        $this->studentService->unassignStudentsPSMPanel1PSM2($studentId);
+    }
+
+    public function PSM2UnassignPSMPanel2($studentId)
+    {
+        $this->studentService->unassignStudentsPSMPanel2PSM2($studentId);
+    }
+
+
+
+
+
+
+
+
 
     public function PSM2ViewResult()
     {
