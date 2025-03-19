@@ -399,7 +399,7 @@ const EditPanelModal: React.FC<EditPanelModalProps> = ({
                         type="submit"
                         form="PSM1UpdatePanelForm"
                         disabled={processing}
-                        className={`px-4 py-2 bg-[#6D2323] text-white rounded hover:bg-[#5a1d1d] transition ${
+                        className={`px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition ${
                             processing ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                     >

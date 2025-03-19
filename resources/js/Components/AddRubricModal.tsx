@@ -3,16 +3,16 @@ import { router, useForm, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { X } from "lucide-react";
 
-interface AddPanelModalProps {
+interface AddRubricModalProps {
     isOpen: boolean;
     onClose: () => void;
-    panelType: string;
+    psmType: string;
 }
 
-const AddPanelModal: React.FC<AddPanelModalProps> = ({
+const AddRubricModal: React.FC<AddRubricModalProps> = ({
     isOpen,
     onClose,
-    panelType,
+    psmType,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -28,18 +28,13 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
 
     const { data, setData } = useForm({
         name: "",
-        matricNo: "",
-        username: "",
-        password: "",
-        email: "",
+        total_weight: "",
+        psmTypee: psmType,
         isSupervisorPSM1: false,
-        isProposalPanel: false,
         isPanelPSM1: false,
         isArchivePSM1: false,
         isSupervisorPSM2: false,
         isPanelPSM2: false,
-        isArchivePSM2: false,
-        role: "2",
     });
 
     const [processing, setIsProcessing] = useState(false);
@@ -73,7 +68,7 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
         e.preventDefault();
 
         const route_path =
-            panelType === "PSM1"
+            psmType === "PSM1"
                 ? "coordinator.PSM1.panels.store"
                 : "coordinator.PSM2.panels.store";
 
@@ -92,18 +87,13 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                 // Reset form
                 setData({
                     name: "",
-                    matricNo: "",
-                    username: "",
-                    password: "",
-                    email: "",
+                    total_weight: "",
+                    psmTypee: psmType,
                     isSupervisorPSM1: false,
-                    isProposalPanel: false,
                     isPanelPSM1: false,
                     isArchivePSM1: false,
                     isSupervisorPSM2: false,
                     isPanelPSM2: false,
-                    isArchivePSM2: false,
-                    role: "2",
                 });
             },
         });
@@ -121,7 +111,7 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center py-2 px-4">
-                    <h2 className="text-lg font-semibold">Add Panel</h2>
+                    <h2 className="text-lg font-semibold">Add Rubric</h2>
                     <button
                         title="close"
                         type="button"
@@ -135,10 +125,10 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                 <hr className="border-t-1 border-gray-300"></hr>
 
                 <div className="overflow-y-auto">
-                    <form id="PSM1AddPanelForm" onSubmit={handleSubmit}>
+                    <form id="PSM1AddRubricForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
-                                Panel Information
+                                Rubric Information
                             </h3>
                             <div className="grid grid-cols-5 mb-4 items-center">
                                 <label className="col-span-1 font-medium">
@@ -161,80 +151,20 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                             </div>
                             <div className="grid grid-cols-5 mb-4 items-center">
                                 <label className="col-span-1 font-medium">
-                                    Matric no:
+                                    Total Weight:
                                 </label>
                                 <input
-                                    title="Matric no"
-                                    type="text"
-                                    name="matricNo"
-                                    value={data.matricNo}
+                                    title="Total Weight"
+                                    type="number"
+                                    name="total_weight"
+                                    value={data.total_weight}
                                     onChange={handleChange}
                                     className="col-span-4 border border-gray-300 rounded p-2 w-full"
                                     required
                                 />
-                                {errors.matricNo && (
+                                {errors.total_weight && (
                                     <p className="text-red-500 col-start-2 col-span-4">
-                                        {errors.matricNo}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="grid grid-cols-5 mb-4 items-center">
-                                <label className="col-span-1 font-medium">
-                                    Email:
-                                </label>
-                                <input
-                                    title="Email"
-                                    type="text"
-                                    name="email"
-                                    value={data.email}
-                                    onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
-                                    required
-                                />
-                                {errors.email && (
-                                    <p className="text-red-500 col-start-2 col-span-5">
-                                        {errors.email}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="grid grid-cols-5 mb-4 items-center">
-                                <label className="col-span-1 font-medium">
-                                    Username:
-                                </label>
-                                <input
-                                    title="Username"
-                                    type="text"
-                                    name="username"
-                                    value={data.username}
-                                    onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
-                                    required
-                                />
-                                {errors.username && (
-                                    <p className="text-red-500 col-start-2 col-span-5">
-                                        {errors.username}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="grid grid-cols-5 mb-4 items-center">
-                                <label className="col-span-1 font-medium">
-                                    Password:
-                                </label>
-                                <input
-                                    title="Password"
-                                    type="text"
-                                    name="password"
-                                    value={data.password}
-                                    onChange={handleChange}
-                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
-                                    required
-                                />
-                                {errors.password && (
-                                    <p className="text-red-500 col-start-2 col-span-5">
-                                        {errors.password}
+                                        {errors.total_weight}
                                     </p>
                                 )}
                             </div>
@@ -244,11 +174,10 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Role Selection
                             </h3>
-                            {panelType === "PSM1" ? (
-                            
+                            {psmType === "PSM1" ? (
                                 <div className="space-y-4">
                                     <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-32">
+                                        <label className="font-medium text-gray-700 w-25">
                                             Supervisor:
                                         </label>
                                         <input
@@ -270,29 +199,7 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                                     </div>
 
                                     <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-32">
-                                            Panel Proposal:
-                                        </label>
-                                        <input
-                                            title="ProposalPanel"
-                                            id="isProposalPanel"
-                                            type="checkbox"
-                                            name="isProposalPanel"
-                                            checked={Boolean(
-                                                data.isProposalPanel
-                                            )}
-                                            onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                        />
-                                        {errors.isProposalPanel && (
-                                            <p className="text-red-500 ml-2">
-                                                {errors.isProposalPanel}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-32">
+                                        <label className="font-medium text-gray-700 w-25">
                                             Panel PSM1:
                                         </label>
                                         <input
@@ -312,7 +219,6 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                                     </div>
                                 </div>
                             ) : (
-
                                 <div className="space-y-4">
                                     <div className="flex items-center">
                                         <label className="font-medium text-gray-700 w-32">
@@ -356,7 +262,6 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                                         )}
                                     </div>
                                 </div>
-
                             )}
                         </div>
                     </form>
@@ -374,7 +279,7 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                     </button>
                     <button
                         type="submit"
-                        form="PSM1AddPanelForm"
+                        form="PSM1AddRubricForm"
                         disabled={processing}
                         className={`px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition ${
                             processing ? "opacity-50 cursor-not-allowed" : ""
@@ -388,4 +293,4 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
     );
 };
 
-export default AddPanelModal;
+export default AddRubricModal;
