@@ -265,7 +265,7 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                                         <th className="px-4 py-2 border-b border-gray-300">
                                             No
                                         </th>
-                                        <th className="px-4 py-2 border-b border-gray-300">
+                                        <th className="text-left px-4 py-2 border-b border-gray-300">
                                             Name
                                         </th>
                                         <th className="px-4 py-2 border-b border-gray-300">

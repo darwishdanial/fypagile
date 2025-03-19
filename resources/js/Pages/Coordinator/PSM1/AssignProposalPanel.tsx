@@ -9,6 +9,7 @@ import {
     CirclePlus,
     Check,
     X,
+    Bot
 } from "lucide-react";
 import { route } from "ziggy-js";
 import AddPanelModal from "../../../Components/AddPanelModal";
@@ -131,9 +132,23 @@ export default function AssignProposalPanel() {
                         </label>
                     </div>
 
-                    <input
+                    <div className="flex">
+
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded  mr-2 font-semibold"
+                            onClick={() => console.log("AI Panel")}
+                            title="Suggest Panels using AI"
+                        >
+                            <div className="flex">
+                                <Bot className="mr-2" />
+                                AI Suggestions
+                            </div>
+                        </button>
+
+                        <input
                         type="text"
-                        className="border border-gray-300 rounded p-2 w-1/5 bg-white hover:border-[#6D2323]"
+                        className="border border-gray-300 rounded p-2  bg-white hover:border-[#6D2323]"
                         placeholder="Search "
                         value={searchQuery}
                         onChange={(e) => {
@@ -141,6 +156,9 @@ export default function AssignProposalPanel() {
                             setCurrentPage(1); // Reset to first page on search
                         }}
                     />
+                    </div>
+
+                    
                 </div>
 
                 {/* Table */}

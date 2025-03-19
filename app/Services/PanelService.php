@@ -42,6 +42,7 @@ class PanelService
         $panelPSM1 = User::where('isArchivePSM1', '0')
             ->leftJoin('students_psm1 as students_sv', 'users.id', '=', 'students_sv.supervisorId')
             ->leftJoin('students_psm1 as students_proposal', 'users.id', '=', 'students_proposal.panelProposalId')
+            ->leftJoin('students_psm1 as students_proposal2', 'users.id', '=', 'students_proposal2.panelProposal2Id')
             ->leftJoin('students_psm1 as students_panel1', 'users.id', '=', 'students_panel1.panelId')
             ->leftJoin('students_psm1 as students_panel2', 'users.id', '=', 'students_panel2.panel2Id')
             ->select(
@@ -56,6 +57,7 @@ class PanelService
                 'users.isArchivePSM1',
                 DB::raw('GROUP_CONCAT(DISTINCT students_sv.name) as students_sv_names'),
                 DB::raw('GROUP_CONCAT(DISTINCT students_proposal.name) as students_proposal_names'),
+                DB::raw('GROUP_CONCAT(DISTINCT students_proposal2.name) as students_proposal2_names'),
                 DB::raw('GROUP_CONCAT(DISTINCT students_panel1.name) as students_panel1_names'),
                 DB::raw('GROUP_CONCAT(DISTINCT students_panel2.name) as students_panel2_names')
             )
@@ -66,6 +68,7 @@ class PanelService
         $panelPSM1->transform(function ($panel) {
             $panel->students_sv_names = $panel->students_sv_names ? explode(',', $panel->students_sv_names) : [];
             $panel->students_proposal_names = $panel->students_proposal_names ? explode(',', $panel->students_proposal_names) : [];
+            $panel->students_proposal2_names = $panel->students_proposal2_names ? explode(',', $panel->students_proposal2_names) : [];
             $panel->students_panel1_names = $panel->students_panel1_names ? explode(',', $panel->students_panel1_names) : [];
             $panel->students_panel2_names = $panel->students_panel2_names ? explode(',', $panel->students_panel2_names) : [];
             return $panel;

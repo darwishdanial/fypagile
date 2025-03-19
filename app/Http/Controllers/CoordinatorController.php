@@ -197,6 +197,17 @@ class CoordinatorController extends Controller
 
     }
 
+    public function PSM1autoAssignPanelsToStudents(){
+
+        $user = Auth::user();
+        $email = $user->email;
+        $psmType = 'PSM1';
+        $this->coordinatorService->autoAssignPanelsToStudents($psmType, $email);
+
+        return redirect()->back()->with(['success' => 'AI Panel assignment process has started....']);
+
+    }
+
     public function PSM1ArchivePanel($id)
     {
         $panel = User ::findOrFail($id);
@@ -997,14 +1008,7 @@ class CoordinatorController extends Controller
         ]);
     }
 
-    public function autoAssignPanelsToStudentsPSM1(){
 
-        $user = Auth::user();
-        $email = $user->email;
-        $psmType = 'PSM1';
-        return $this->coordinatorService->autoAssignPanelsToStudents($psmType, $email);
-
-    }
 
     public function deleteAllAssignedPanels(){
 

@@ -137,6 +137,8 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/unassign-PSM1-panel-2/{id}', [CoordinatorController::class, 'PSM1UnassignPSMPanel2'])->name('panel2.unassign');
 
+        Route::post('/auto-assign-PSM1-panel', [CoordinatorController::class, 'PSM1autoAssignPanelsToStudents'])->name('panel.autoAssign');
+
 
 
         Route::get('/view-result', [CoordinatorController::class, 'PSM1ViewResult'])->name('viewResult');

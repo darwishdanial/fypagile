@@ -325,7 +325,7 @@ class CoordinatorService
 
         AssignPanelsToStudentsJob::dispatch($psmType, $email);
 
-        return response()->json(['message' => 'AI Panel assignment process has started....']);
+        //return response()->json(['message' => 'AI Panel assignment process has started....']);
     }
 
     public function deleteAllAssignedPanels(){

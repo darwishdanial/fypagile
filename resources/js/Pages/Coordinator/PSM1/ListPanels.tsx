@@ -8,7 +8,7 @@ import {
     FileDown,
     CirclePlus,
     Check,
-    X
+    X,
 } from "lucide-react";
 import { route } from "ziggy-js";
 import AddPanelModal from "../../../Components/AddPanelModal";
@@ -29,6 +29,7 @@ interface Panel {
     isPanelPSM2: boolean;
     students_sv_names?: string[];
     students_proposal_names?: string[];
+    students_proposal2_names?: string[];
     students_panel1_names?: string[];
     students_panel2_names?: string[];
 }
@@ -252,13 +253,13 @@ export default function ListPanels() {
             <div className="w-full">
                 <div className="flex items-center justify-between">
                     <div className="mx-4 my-4">
-                        <div className="flex border rounded overflow-hidden font-semibold">
+                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
                             <button
                                 type="button"
                                 className={`p-1 px-3 transition  text-center ${
                                     !showArchived
-                                        ? "bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white"
-                                        : "bg-white hover:bg-gray-100 border-r "
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                        : "bg-white hover:bg-gray-100"
                                 }`}
                                 onClick={() => setShowArchived(false)}
                             >
@@ -268,7 +269,7 @@ export default function ListPanels() {
                                 type="button"
                                 className={`p-1 px-3 transition text-center ${
                                     showArchived
-                                        ? "bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white"
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100"
                                 }`}
                                 onClick={() => setShowArchived(true)}
@@ -283,8 +284,9 @@ export default function ListPanels() {
                         {selectedPanels.length > 0 && !showArchived && (
                             <button
                                 type="button"
-                                className="p-2 px-3 bg-red-600 hover:bg-red-700 transition text-white rounded my-4 ml-2 font-semibold"
+                                className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded my-4 ml-2 font-semibold"
                                 onClick={handleBulkArchive}
+                                title="Archive Selected Panels"
                             >
                                 <div className="flex">
                                     <Archive className="mr-2" />
@@ -294,8 +296,9 @@ export default function ListPanels() {
                         )}
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded my-4 ml-2 font-semibold"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded my-4 ml-2 font-semibold"
                             onClick={() => setIsAddModalOpen(true)}
+                            title="Add Panels"
                         >
                             <div className="flex">
                                 <CirclePlus className="mr-2" />
@@ -304,8 +307,9 @@ export default function ListPanels() {
                         </button>
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded ml-2 mr-4 my-4 font-semibold"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 my-4 font-semibold"
                             onClick={() => setIsImoprtModalOpen(true)}
+                            title="Import Panels"
                         >
                             <div className="flex">
                                 <FileDown className="mr-2" />
@@ -316,7 +320,7 @@ export default function ListPanels() {
                 </div>
 
                 {/* Search Input */}
-                <div className="flex justify-between mx-4 mt-2">
+                <div className="flex justify-between mx-4">
                     <div className="flex">
                         <label className="font-semibold">
                             Rows per page:
@@ -513,10 +517,10 @@ export default function ListPanels() {
                                             </div>
                                         ) : (
                                             <div className="flex items-center justify-center">
-                                                    <X
-                                                        size={20}
-                                                        className="text-green-600"
-                                                    />
+                                                <X
+                                                    size={20}
+                                                    className="text-green-600"
+                                                />
                                             </div>
                                         )}
                                     </td>
@@ -541,10 +545,10 @@ export default function ListPanels() {
                                             </div>
                                         ) : (
                                             <div className="flex items-center justify-center">
-                                                    <X
-                                                        size={20}
-                                                        className="text-green-600"
-                                                    />
+                                                <X
+                                                    size={20}
+                                                    className="text-green-600"
+                                                />
                                             </div>
                                         )}
                                     </td>
@@ -569,10 +573,10 @@ export default function ListPanels() {
                                             </div>
                                         ) : (
                                             <div className="flex items-center justify-center">
-                                                    <X
-                                                        size={20}
-                                                        className="text-green-600"
-                                                    />
+                                                <X
+                                                    size={20}
+                                                    className="text-green-600"
+                                                />
                                             </div>
                                         )}
                                     </td>
@@ -653,14 +657,15 @@ export default function ListPanels() {
                                     </td>
                                 </tr>
                                 {expandedRow === panel.id && (
-        
                                     <tr className="bg-gray-50 border-b border-gray-300">
-                                        
                                         <td
                                             colSpan={showArchived ? 8 : 9}
                                             className="px-4 py-2 text-left"
                                         >
-                                            <p className="my-1"><strong> Email: </strong> {panel.email}</p>
+                                            <p className="my-1">
+                                                <strong> Email: </strong>{" "}
+                                                {panel.email}
+                                            </p>
 
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
@@ -691,50 +696,54 @@ export default function ListPanels() {
                                                         </p>
                                                     )}
 
-                                                    <strong className="mt-3 block">
-                                                        Students as Panel 1:
-                                                    </strong>
-                                                    {panel.students_panel1_names
-                                                        ?.length ? (
-                                                        <ul className="list-disc pl-5 mt-1">
-                                                            {panel.students_panel1_names.map(
-                                                                (
-                                                                    student,
-                                                                    i
-                                                                ) => (
-                                                                    <li
-                                                                        key={`panel1-${i}`}
-                                                                    >
-                                                                        {
-                                                                            student
-                                                                        }
-                                                                    </li>
-                                                                )
-                                                            )}
-                                                        </ul>
-                                                    ) : (
-                                                        <p className="text-gray-500 italic ml-2 mt-1">
-                                                            None assigned
-                                                        </p>
-                                                    )}
+                                                    <div className="mt-3">
+                                                        <strong>
+                                                            Students as Proposal
+                                                            Panel 1:
+                                                        </strong>
+                                                        {panel
+                                                            .students_proposal_names
+                                                            ?.length ? (
+                                                            <ul className="list-disc pl-5 mt-1">
+                                                                {panel.students_proposal_names.map(
+                                                                    (
+                                                                        student,
+                                                                        i
+                                                                    ) => (
+                                                                        <li
+                                                                            key={`proposal-${i}`}
+                                                                        >
+                                                                            {
+                                                                                student
+                                                                            }
+                                                                        </li>
+                                                                    )
+                                                                )}
+                                                            </ul>
+                                                        ) : (
+                                                            <p className="text-gray-500 italic ml-2 mt-1">
+                                                                None assigned
+                                                            </p>
+                                                        )}
+                                                    </div>
                                                 </div>
 
                                                 <div>
                                                     <strong>
                                                         Students as Proposal
-                                                        Panel:
+                                                        Panel 2:
                                                     </strong>
                                                     {panel
-                                                        .students_proposal_names
+                                                        .students_proposal2_names
                                                         ?.length ? (
                                                         <ul className="list-disc pl-5 mt-1">
-                                                            {panel.students_proposal_names.map(
+                                                            {panel.students_proposal2_names.map(
                                                                 (
                                                                     student,
                                                                     i
                                                                 ) => (
                                                                     <li
-                                                                        key={`proposal-${i}`}
+                                                                        key={`proposal2-${i}`}
                                                                     >
                                                                         {
                                                                             student
@@ -750,7 +759,8 @@ export default function ListPanels() {
                                                     )}
 
                                                     <strong className="mt-3 block">
-                                                        Students as Panel 2:
+                                                        Students as PSM1 Panel
+                                                        2:
                                                     </strong>
                                                     {panel.students_panel2_names
                                                         ?.length ? (
@@ -777,6 +787,28 @@ export default function ListPanels() {
                                                     )}
                                                 </div>
                                             </div>
+
+                                            <strong className="mt-3 block">
+                                                Students as PSM1 Panel 1:
+                                            </strong>
+                                            {panel.students_panel1_names
+                                                ?.length ? (
+                                                <ul className="list-disc pl-5 mt-1">
+                                                    {panel.students_panel1_names.map(
+                                                        (student, i) => (
+                                                            <li
+                                                                key={`panel1-${i}`}
+                                                            >
+                                                                {student}
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            ) : (
+                                                <p className="text-gray-500 italic ml-2 mt-1">
+                                                    None assigned
+                                                </p>
+                                            )}
                                         </td>
                                     </tr>
                                 )}
@@ -814,10 +846,9 @@ export default function ListPanels() {
             <AddPanelModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
-                panelType = {panelType}
+                panelType={panelType}
             />
 
-            
             <EditPanelModal
                 isOpen={isEditModalOpen}
                 onClose={() => {
@@ -825,18 +856,18 @@ export default function ListPanels() {
                     setSelectedPanel(null);
                 }}
                 panel={selectedPanel}
-                panelType = {panelType}
+                panelType={panelType}
             />
             <ImportPanelsModal
                 isOpen={isImportModalOpen}
                 onClose={() => setIsImoprtModalOpen(false)}
             />
 
-            <ImportErrorModal 
-                isOpen={isImportErrorModalOpen} 
-                onClose={() => setIsImportErrorModalOpen(false)} 
+            <ImportErrorModal
+                isOpen={isImportErrorModalOpen}
+                onClose={() => setIsImportErrorModalOpen(false)}
                 message={props.flash?.warning}
-            /> 
+            />
         </div>
     );
 }

@@ -254,12 +254,12 @@ export default function ListStudents() {
             <div className="w-full">
                 <div className="flex items-center justify-between">
                     <div className="mx-4 my-4">
-                        <div className="flex border rounded overflow-hidden font-semibold">
+                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
                             <button
                                 type="button"
                                 className={`p-1 px-3 transition  text-center ${
                                     !showArchived
-                                        ? "bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white"
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100 border-r "
                                 }`}
                                 onClick={() => setShowArchived(false)}
@@ -270,7 +270,7 @@ export default function ListStudents() {
                                 type="button"
                                 className={`p-1 px-3 transition text-center ${
                                     showArchived
-                                        ? "bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white"
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100"
                                 }`}
                                 onClick={() => setShowArchived(true)}
@@ -285,8 +285,9 @@ export default function ListStudents() {
                         {selectedStudents.length > 0 && !showArchived && (
                             <button
                                 type="button"
-                                className="p-2 px-3 bg-red-600 hover:bg-red-700 transition text-white rounded my-4 ml-2 font-semibold"
+                                className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded my-4 ml-2 font-semibold"
                                 onClick={handleBulkArchive}
+                                title="Archive Selected Panels"
                             >
                                 <div className="flex">
                                     <Archive className="mr-2"/> 
@@ -296,8 +297,9 @@ export default function ListStudents() {
                         )}
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded my-4 ml-2 font-semibold"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded my-4 ml-2 font-semibold"
                             onClick={() => setIsAddModalOpen(true)}
+                            title="Add Student"
                         >
                            <div className="flex">
                                 <CirclePlus className="mr-2"/> 
@@ -306,8 +308,9 @@ export default function ListStudents() {
                         </button>
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded ml-2 mr-4 my-4 font-semibold"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 my-4 font-semibold"
                             onClick={() => setIsImoprtModalOpen(true)}
+                            title="Import Students"
                         >
                             <div className="flex">
                                 <FileDown className="mr-2"/> 
@@ -318,7 +321,7 @@ export default function ListStudents() {
                 </div>
 
                 {/* Search Input */}
-                <div className="flex justify-between mx-4 mt-2">
+                <div className="flex justify-between mx-4">
                     <div className="flex">
                         <label className="font-semibold">
                             Rows per page:

@@ -9,6 +9,7 @@ import {
     CirclePlus,
     Check,
     X,
+    Bot,
 } from "lucide-react";
 import { route } from "ziggy-js";
 import AddPanelModal from "../../../Components/AddPanelModal";
@@ -41,6 +42,14 @@ export default function AssignPSM1Panel() {
     const [selectedPanel, setSelectedPanel] = useState<number | null>(null);
     const [isPanel1ModalOpen, setIsPanel1ModalOpen] = useState(false);
     const [isPanel2ModalOpen, setIsPanel2ModalOpen] = useState(false);
+
+     const handleAISuggestions = () => {
+            router.post(
+                route("coordinator.PSM1.panel.autoAssign"),
+                {},
+                { preserveScroll: true }
+            );
+        };
 
     const handleOpenPanel1Modal = (id: number) => {
         setSelectedPanel(id);
@@ -131,16 +140,30 @@ export default function AssignPSM1Panel() {
                         </label>
                     </div>
 
-                    <input
-                        type="text"
-                        className="border border-gray-300 rounded p-2 w-1/5 bg-white hover:border-[#6D2323]"
-                        placeholder="Search "
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setCurrentPage(1); // Reset to first page on search
-                        }}
-                    />
+                    <div className="flex">
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded  mr-2 font-semibold"
+                            onClick={() => handleAISuggestions()}
+                            title="Suggest Panels using AI"
+                        >
+                            <div className="flex">
+                                <Bot className="mr-2" />
+                                AI Suggestions
+                            </div>
+                        </button>
+
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded p-2  bg-white hover:border-[#6D2323]"
+                            placeholder="Search "
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setCurrentPage(1); // Reset to first page on search
+                            }}
+                        />
+                    </div>
                 </div>
 
                 {/* Table */}

@@ -252,12 +252,12 @@ export default function ListPanels() {
             <div className="w-full">
                 <div className="flex items-center justify-between">
                     <div className="mx-4 my-4">
-                        <div className="flex border rounded overflow-hidden font-semibold">
+                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
                             <button
                                 type="button"
                                 className={`p-1 px-3 transition  text-center ${
                                     !showArchived
-                                        ? "bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white"
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100 border-r "
                                 }`}
                                 onClick={() => setShowArchived(false)}
@@ -268,7 +268,7 @@ export default function ListPanels() {
                                 type="button"
                                 className={`p-1 px-3 transition text-center ${
                                     showArchived
-                                        ? "bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white"
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100"
                                 }`}
                                 onClick={() => setShowArchived(true)}
@@ -283,8 +283,9 @@ export default function ListPanels() {
                         {selectedPanels.length > 0 && !showArchived && (
                             <button
                                 type="button"
-                                className="p-2 px-3 bg-red-600 hover:bg-red-700 transition text-white rounded my-4 ml-2 font-semibold"
+                                className="p-2 px-3bg-blue-400 hover:bg-blue-500 transition text-white rounded my-4 ml-2 font-semibold"
                                 onClick={handleBulkArchive}
+                                title="Archive Selected Panels"
                             >
                                 <div className="flex">
                                     <Archive className="mr-2" />
@@ -294,8 +295,9 @@ export default function ListPanels() {
                         )}
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded my-4 ml-2 font-semibold"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded my-4 ml-2 font-semibold"
                             onClick={() => setIsAddModalOpen(true)}
+                            title="Add Panel"
                         >
                             <div className="flex">
                                 <CirclePlus className="mr-2" />
@@ -304,8 +306,9 @@ export default function ListPanels() {
                         </button>
                         <button
                             type="button"
-                            className="p-2 px-3 bg-[#6D2323] hover:bg-[#5a1d1d] transition text-white rounded ml-2 mr-4 my-4 font-semibold"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 my-4 font-semibold"
                             onClick={() => setIsImoprtModalOpen(true)}
+                            title="Import Panels"
                         >
                             <div className="flex">
                                 <FileDown className="mr-2" />
@@ -661,7 +664,7 @@ export default function ListPanels() {
                                                     )}
 
                                                     <strong className="mt-3 block">
-                                                        Students as Panel 1:
+                                                        Students as PSM2 Panel 1:
                                                     </strong>
                                                     {panel.students_panel1_names
                                                         ?.length ? (
@@ -689,37 +692,8 @@ export default function ListPanels() {
                                                 </div>
 
                                                 <div>
-                                                    <strong>
-                                                        Students as Proposal
-                                                        Panel:
-                                                    </strong>
-                                                    {panel
-                                                        .students_proposal_names
-                                                        ?.length ? (
-                                                        <ul className="list-disc pl-5 mt-1">
-                                                            {panel.students_proposal_names.map(
-                                                                (
-                                                                    student,
-                                                                    i
-                                                                ) => (
-                                                                    <li
-                                                                        key={`proposal-${i}`}
-                                                                    >
-                                                                        {
-                                                                            student
-                                                                        }
-                                                                    </li>
-                                                                )
-                                                            )}
-                                                        </ul>
-                                                    ) : (
-                                                        <p className="text-gray-500 italic ml-2 mt-1">
-                                                            None assigned
-                                                        </p>
-                                                    )}
-
                                                     <strong className="mt-3 block">
-                                                        Students as Panel 2:
+                                                        Students as PSM2 Panel 2:
                                                     </strong>
                                                     {panel.students_panel2_names
                                                         ?.length ? (

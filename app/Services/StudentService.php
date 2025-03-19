@@ -170,6 +170,7 @@ class StudentService
         $unassignedStudents = ($type == 1) 
         ? StudentPSM1::whereNull('panelProposalId')
             ->where(function ($query) use ($panelId) {
+                $query->where('supervisorId')->orWhere('supervisorId', '!=', $panelId);
                 $query->whereNull('panelProposal2Id')->orWhere('panelProposal2Id', '!=', $panelId);
             })
             ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panelProposalId'])
@@ -179,6 +180,7 @@ class StudentService
             })
         : StudentPSM1::whereNull('panelProposal2Id')
             ->where(function ($query) use ($panelId) {
+                $query->where('supervisorId')->orWhere('supervisorId', '!=', $panelId);
                 $query->whereNull('panelProposalId')->orWhere('panelProposalId', '!=', $panelId);
             })
             ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panelProposal2Id'])
@@ -232,6 +234,7 @@ class StudentService
         $unassignedStudents = ($type == 1) 
         ? StudentPSM1::whereNull('panelId')
             ->where(function ($query) use ($panelId) {
+                $query->where('supervisorId')->orWhere('supervisorId', '!=', $panelId);
                 $query->whereNull('panel2Id')->orWhere('panel2Id', '!=', $panelId);
             })
             ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panelId'])
@@ -242,6 +245,7 @@ class StudentService
         : StudentPSM1::whereNull('panel2Id')
             ->where(function ($query) use ($panelId) {
                 $query->whereNull('panelId')->orWhere('panelId', '!=', $panelId);
+                $query->where('supervisorId')->orWhere('supervisorId', '!=', $panelId);
             })
             ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panel2Id'])
             ->map(function ($student) {
@@ -271,6 +275,7 @@ class StudentService
         $unassignedStudents = ($type == 1) 
         ? StudentPSM2::whereNull('panelId')
             ->where(function ($query) use ($panelId) {
+                $query->where('supervisorId')->orWhere('supervisorId', '!=', $panelId);
                 $query->whereNull('panel2Id')->orWhere('panel2Id', '!=', $panelId);
             })
             ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panelId'])
@@ -280,6 +285,7 @@ class StudentService
             })
         : StudentPSM2::whereNull('panel2Id')
             ->where(function ($query) use ($panelId) {
+                $query->where('supervisorId')->orWhere('supervisorId', '!=', $panelId);
                 $query->whereNull('panelId')->orWhere('panelId', '!=', $panelId);
             })
             ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panel2Id'])
