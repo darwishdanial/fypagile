@@ -145,6 +145,12 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/evaluation-rubric', [CoordinatorController::class, 'PSM1EvaluationRurbric'])->name('evaluationRubric');
 
+        Route::post('/evaluation-rubric/store', [CoordinatorController::class, 'PSM1StoreEvaluationRurbric'])->name('evaluationRubric.store');
+
+        Route::post('/evaluation-critertia/store', [CoordinatorController::class, 'PSM1StoreEvaluationCriteria'])->name('evaluationCriteria.store');
+
+
+
         Route::get('/grade-supervision', [CoordinatorController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
 
         Route::get('/grade-proposal', [CoordinatorController::class, 'PSM1GradeProposal'])->name('gradeProposal');

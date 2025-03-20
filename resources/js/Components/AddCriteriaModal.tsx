@@ -64,8 +64,8 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
 
         const route_path =
             psmType === "PSM1"
-                ? "coordinator.PSM1.panels.store"
-                : "coordinator.PSM2.panels.store";
+                ? "coordinator.PSM1.evaluationCriteria.store"
+                : "coordinator.PSM2.evaluationCriteria.store";
 
         router.post(route(route_path), data, {
             onStart: () => {
@@ -126,7 +126,7 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                                 </label>
                                 <input
                                     title="Rubric ID"
-                                    type="text"
+                                    type="integer"
                                     name="rubric_id"
                                     value={data.rubric_id}
                                     onChange={handleChange}
@@ -164,7 +164,7 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                                 </label>
                                 <input
                                     title="Weight"
-                                    type="number"
+                                    type="decimal"
                                     name="weight"
                                     value={data.weight}
                                     onChange={handleChange}

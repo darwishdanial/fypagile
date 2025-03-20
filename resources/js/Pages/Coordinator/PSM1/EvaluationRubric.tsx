@@ -78,6 +78,18 @@ export default function EvaluationRubric() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
+            {flashMessage && (
+                <div
+                    className={`fixed bottom-5 right-5 px-4 py-3 rounded shadow-lg text-white ${
+                        flashMessage.type === "success"
+                            ? "bg-green-600"
+                            : "bg-red-600"
+                    }`}
+                >
+                    {flashMessage.message}
+                </div>
+            )}
+
             <div className="w-full">
                 <div className="flex items-center justify-between">
                     <div className="mx-4 my-4">
@@ -152,10 +164,10 @@ export default function EvaluationRubric() {
                                     <th className="px-4 py-2 border-b border-gray-300">
                                         Rubric ID
                                     </th>
-                                    <th className="text-left px-4 py-2 border-b border-gray-300">
+                                    <th className="t px-4 py-2 border-b border-gray-300">
                                         Name
                                     </th>
-                                    <th className="px-4 py-2 text-left border-b border-gray-300">
+                                    <th className="px-4 py-2  border-b border-gray-300">
                                         Total Weight
                                     </th>
                                     <th className="px-4 py-2 border-b border-gray-300">
@@ -313,46 +325,46 @@ export default function EvaluationRubric() {
                                                     </button>
                                                 </div>
                                             </td>
-                                            {expandedRow === rubric.id && (
-                                                <tr className="bg-gray-50 border-b border-gray-300">
-                                                    <td
-                                                        colSpan={7}
-                                                        className="px-4 py-2 text-left"
-                                                    >
-                                                        <strong className="mt-3 block">
-                                                            Students as PSM1
-                                                            Panel 1:
-                                                        </strong>
-                                                        {rubric.criteria
-                                                            ?.length ? (
-                                                            <ul className="list-disc pl-5 mt-1">
-                                                                {rubric.criteria.map(
-                                                                    (
-                                                                        criteria,
-                                                                        i
-                                                                    ) => (
-                                                                        <li
-                                                                            key={`criteria-${i}`}
-                                                                        >
-                                                                            {
-                                                                                criteria.name
-                                                                            }
-                                                                            {
-                                                                                criteria.weight
-                                                                            }
-                                                                        </li>
-                                                                    )
-                                                                )}
-                                                            </ul>
-                                                        ) : (
-                                                            <p className="text-gray-500 italic ml-2 mt-1">
-                                                                None assigned
-                                                            </p>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            )}
                                         </tr>
+                                        {expandedRow === rubric.id && (
+                                            <tr className="bg-gray-50 border-b border-gray-300">
+                                                <td
+                                                    colSpan={7}
+                                                    className="px-4 py-2 text-left"
+                                                >
+                                                    <strong className="mt-3 block">
+                                                        Criteria:
+                                                    </strong>
+                                                    {rubric.criteria?.length ? (
+                                                        <ul className="list-disc pl-5 mt-1">
+                                                            {rubric.criteria.map(
+                                                                (
+                                                                    criteria,
+                                                                    i
+                                                                ) => (
+                                                                    <li
+                                                                        key={`criteria-${i}`}
+                                                                    >
+                                                                        {
+                                                                            criteria.name
+                                                                        }{" "}
+                                                                        (
+                                                                        {
+                                                                            criteria.weight
+                                                                        }
+                                                                        )
+                                                                    </li>
+                                                                )
+                                                            )}
+                                                        </ul>
+                                                    ) : (
+                                                        <p className="text-gray-500 italic ml-2 mt-1">
+                                                            None assigned
+                                                        </p>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        )}
                                     </React.Fragment>
                                 ))}
                             </tbody>

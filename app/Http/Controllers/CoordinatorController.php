@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
 use App\Models\User;
+use App\Models\Rubric;
+use App\Models\Criteria;
 use Illuminate\Http\Request;
 use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
@@ -452,6 +454,56 @@ class CoordinatorController extends Controller
         $this->studentService->unassignStudentsPSMPanel2PSM1($studentId);
     }
 
+    public function PSM1EvaluationRurbric()
+    {
+        $this->authorize('view psm1 evaluation rubric');
+
+        $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    // ->where('PSMType', 'Proposal')
+                    // ->orWhere('PSMType', 'PSM1')
+                    ->whereIn('PSMType', ['Proposal', 'PSM1'])
+                    ->get();
+
+        return Inertia::render('Coordinator/PSM1/EvaluationRubric',[
+            'rubrics' => $rubrics
+        ]);
+    }
+
+    public function PSM1StoreEvaluationRurbric(Request $request)
+    {
+        //dd( $request->all());
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'PSMType' => 'required|string|max:255',
+            'total_weight' => 'required|decimal:0,2|max:255',
+            'isSupervisorPSM1' => 'required|boolean',
+            'isPanelPSM1' => 'required|boolean',
+            'isSupervisorPSM2' => 'required|boolean',
+            'isPanelPSM2' => 'required|boolean',
+        ]);
+
+        Rubric::create($validated);
+
+        return redirect()->back()->with('success', 'Rubric added successfully!');
+    }
+
+    public function PSM1StoreEvaluationCriteria(Request $request)
+    {
+        //dd( $request->all());
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'rubric_id' => 'required|integer|exists:rubrics,id',
+            'weight' => 'required|decimal:0,2|max:100',
+        ]);
+
+        Criteria::create($validated);
+
+        return redirect()->back()->with('success', 'Criteria added successfully!');
+    }
+
+
 
 
 
@@ -462,12 +514,6 @@ class CoordinatorController extends Controller
         return Inertia::render('Coordinator/PSM1/ViewResult');
     }
 
-    public function PSM1EvaluationRurbric()
-    {
-        $this->authorize('view psm1 evaluation rubric');
-
-        return Inertia::render('Coordinator/PSM1/EvaluationRubric');
-    }
 
     public function PSM1GradeSupervision()
     {

@@ -28,11 +28,10 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
 
     const { data, setData } = useForm({
         name: "",
-        total_weight: "",
-        psmTypee: psmType,
+        total_weight: 0,
+        PSMType: psmType,
         isSupervisorPSM1: false,
         isPanelPSM1: false,
-        isArchivePSM1: false,
         isSupervisorPSM2: false,
         isPanelPSM2: false,
     });
@@ -68,9 +67,9 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         e.preventDefault();
 
         const route_path =
-            psmType === "PSM1"
-                ? "coordinator.PSM1.panels.store"
-                : "coordinator.PSM2.panels.store";
+        psmType === "PSM1"
+                ? "coordinator.PSM1.evaluationRubric.store"
+                : "coordinator.PSM2.evaluationRubric.store";
 
         router.post(route(route_path), data, {
             onStart: () => {
@@ -87,11 +86,10 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                 // Reset form
                 setData({
                     name: "",
-                    total_weight: "",
-                    psmTypee: psmType,
+                    total_weight: 0,
+                    PSMType: psmType,
                     isSupervisorPSM1: false,
                     isPanelPSM1: false,
-                    isArchivePSM1: false,
                     isSupervisorPSM2: false,
                     isPanelPSM2: false,
                 });
@@ -130,6 +128,33 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Rubric Information
                             </h3>
+
+                            <div className="grid grid-cols-5 mb-4 items-center">
+                                <label className="col-span-1 font-medium">
+                                    PSM Type:
+                                </label>
+                                <select
+                                    title="PSM Type"
+                                    name="psmType"
+                                    value={data.PSMType}
+                                    onChange={handleChange}
+                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    required
+                                >
+                                    <option value="">
+                                        Select PSM Type
+                                    </option>
+                                    <option value="Proposal">
+                                        Proposal
+                                    </option>
+                                    <option value="PSM1">Others</option>
+                                </select>
+                                {errors.psmType && (
+                                    <p className="text-red-500 col-start-2 col-span-5">
+                                        {errors.psmType}
+                                    </p>
+                                )}
+                            </div>
                             <div className="grid grid-cols-5 mb-4 items-center">
                                 <label className="col-span-1 font-medium">
                                     Name:
@@ -155,7 +180,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                 </label>
                                 <input
                                     title="Total Weight"
-                                    type="number"
+                                    type="decimal"
                                     name="total_weight"
                                     value={data.total_weight}
                                     onChange={handleChange}
