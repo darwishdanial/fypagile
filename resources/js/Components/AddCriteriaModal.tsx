@@ -6,13 +6,15 @@ import { X } from "lucide-react";
 interface AddCriteriaModalProps {
     isOpen: boolean;
     onClose: () => void;
-    psmType: string;
+    psmType: string | null;
+    rubricID: number | null;
 }
 
 const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
     isOpen,
     onClose,
     psmType,
+    rubricID,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -26,8 +28,18 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
         };
     }, [isOpen]);
 
+    useEffect(() => {
+        // Update form data when rubricID changes
+        if (rubricID) {
+            setData(prev => ({
+                ...prev,
+                rubric_id: rubricID
+            }));
+        }
+    }, [rubricID]);
+
     const { data, setData } = useForm({
-        rubric_id: "",
+        rubric_id: rubricID,
         name: "",
         weight: "",
     });
@@ -81,7 +93,7 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                 onClose();
                 // Reset form
                 setData({
-                    rubric_id: "",
+                    rubric_id: rubricID,
                     name: "",
                     weight: "",
                 });
@@ -120,7 +132,7 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Rubric Information
                             </h3>
-                            <div className="grid grid-cols-5 mb-4 items-center">
+                            {/* <div className="grid grid-cols-5 mb-4 items-center">
                                 <label className="col-span-1 font-medium">
                                     Rubric ID:
                                 </label>
@@ -138,7 +150,7 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                                         {errors.rubric_id}
                                     </p>
                                 )}
-                            </div>
+                            </div> */}
                             <div className="grid grid-cols-5 mb-4 items-center">
                                 <label className="col-span-1 font-medium">
                                     Name:
