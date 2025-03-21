@@ -202,17 +202,14 @@ export default function EvaluationRubric() {
                             setCurrentPage(1); // Reset to first page on search
                         }}
                     />
-
-                    
                 </div>
 
                 <div className="ml-2">
                     <span className="ml-2 text-sm text-gray-600">
-                        Current weight:{" "}
+                        Current total weight:{" "}
                         {calculateCurrentRubricWeight(rubrics)}
                         /100
-                        {calculateCurrentRubricWeight(rubrics) !==
-                            100 && (
+                        {calculateCurrentRubricWeight(rubrics) !== 100 && (
                             <span className="ml-1 text-red-500">
                                 (Unbalanced)
                             </span>
@@ -227,9 +224,7 @@ export default function EvaluationRubric() {
                                 <th className="px-4 py-2 border-b border-gray-300">
                                     No
                                 </th>
-                                <th className="px-4 py-2 border-b border-gray-300">
-                                    Rubric ID
-                                </th>
+
                                 <th className="t px-4 py-2 border-b border-gray-300">
                                     Name
                                 </th>
@@ -267,20 +262,9 @@ export default function EvaluationRubric() {
                                         >
                                             {index + 1}
                                         </td>
+
                                         <td
                                             className="px-4 py-2 cursor-pointer"
-                                            onClick={() =>
-                                                setExpandedRow(
-                                                    expandedRow === rubric.id
-                                                        ? null
-                                                        : rubric.id
-                                                )
-                                            }
-                                        >
-                                            {rubric.id}
-                                        </td>
-                                        <td
-                                            className="px-4 py-2 cursor-pointer text-left"
                                             onClick={() =>
                                                 setExpandedRow(
                                                     expandedRow === rubric.id
