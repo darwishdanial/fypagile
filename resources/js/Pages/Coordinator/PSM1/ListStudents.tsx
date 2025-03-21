@@ -521,7 +521,7 @@ export default function ListStudents() {
 
                                                     <button
                                                         type="button"
-                                                        className="p-1 text-green-600 hover:text-green-800 transition pl-2"
+                                                        className="p-1 text-red-600 hover:text-red-800 transition pl-2"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleDelete(

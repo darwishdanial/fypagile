@@ -140,6 +140,7 @@ Route::middleware( EnsureCoordinator::class)
         Route::post('/auto-assign-PSM1-panel', [CoordinatorController::class, 'PSM1autoAssignPanelsToStudents'])->name('panel.autoAssign');
 
 
+        //Rurbic and Criteria
 
         Route::get('/view-result', [CoordinatorController::class, 'PSM1ViewResult'])->name('viewResult');
 
@@ -147,8 +148,15 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/evaluation-rubric/store', [CoordinatorController::class, 'PSM1StoreEvaluationRurbric'])->name('evaluationRubric.store');
 
+        Route::put('/evaluation-rubric/{id}/update', [CoordinatorController::class, 'PSM1UpdateEvaluationRurbric'])->name('evaluationRubric.update');
+
+        Route::delete('/evaluation-rubric/{id}/delete', [CoordinatorController::class, 'PSM1DeleteEvaluationRurbric'])->name('evaluationRubric.delete');
+
         Route::post('/evaluation-critertia/store', [CoordinatorController::class, 'PSM1StoreEvaluationCriteria'])->name('evaluationCriteria.store');
 
+        Route::put('/evaluation-critertia/{id}/update', [CoordinatorController::class, 'PSM1UpdateEvaluationCriteria'])->name('evaluationCriteria.update');
+
+        Route::delete('/evaluation-critertia/{id}/delete', [CoordinatorController::class, 'PSM1DeleteEvaluationCriteria'])->name('evaluationCriteria.delete');
 
 
         Route::get('/grade-supervision', [CoordinatorController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');

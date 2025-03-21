@@ -3,20 +3,25 @@ import { router, useForm, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { X } from "lucide-react";
 
-interface AddCriteriaModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    psmType: string | null;
-    rubricID: number | null;
-    rubricName: string | null;
+interface Criteria {
+    id: number;
+    rubric_id: number;
+    name: string;
+    weight: number;
 }
 
-const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
+interface EditCriteriaModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    criteria: Criteria | null;
+    psmType: string;
+}
+
+const EditCriteriaModal: React.FC<EditCriteriaModalProps> = ({
     isOpen,
     onClose,
+    criteria,
     psmType,
-    rubricID,
-    rubricName
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -30,21 +35,21 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
         };
     }, [isOpen]);
 
-    useEffect(() => {
-        // Update form data when rubricID changes
-        if (rubricID) {
-            setData((prev) => ({
-                ...prev,
-                rubric_id: rubricID,
-            }));
-        }
-    }, [rubricID]);
-
     const { data, setData } = useForm({
-        rubric_id: rubricID,
-        name: "",
-        weight: "",
+        rubric_id: criteria?.rubric_id || "",
+        name: criteria?.name || "",
+        weight: criteria?.weight || "",
     });
+
+    useEffect(() => {
+        if (criteria) {
+            setData({
+                rubric_id: criteria.rubric_id || "",
+                name: criteria.name || "",
+                weight: criteria.weight || "",
+            });
+        }
+    }, [criteria, setData]);
 
     const [processing, setIsProcessing] = useState(false);
 
@@ -76,12 +81,14 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (!criteria) return;
+
         const route_path =
             psmType === "PSM1"
-                ? "coordinator.PSM1.evaluationCriteria.store"
-                : "coordinator.PSM2.evaluationCriteria.store";
+                ? "coordinator.PSM1.evaluationCriteria.update"
+                : "coordinator.PSM2.evaluationCriteria.update";
 
-        router.post(route(route_path), data, {
+        router.put(route(route_path, criteria.id), data, {
             onStart: () => {
                 setIsProcessing(true);
             },
@@ -95,9 +102,9 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                 onClose();
                 // Reset form
                 setData({
-                    rubric_id: rubricID,
-                    name: "",
-                    weight: "",
+                    rubric_id: criteria?.rubric_id || "",
+                    name: criteria?.name || "",
+                    weight: criteria?.weight || "",
                 });
             },
         });
@@ -115,7 +122,7 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center py-2 px-4">
-                    <h2 className="text-lg font-semibold">Add {rubricName} Criteria</h2>
+                    <h2 className="text-lg font-semibold">Edit Criteria</h2>
                     <button
                         title="close"
                         type="button"
@@ -129,7 +136,7 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                 <hr className="border-t-1 border-gray-300"></hr>
 
                 <div className="overflow-y-auto">
-                    <form id="PSM1AddCriteriaForm" onSubmit={handleSubmit}>
+                    <form id="PSM1EditCriteriaForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Criteria Information
@@ -189,7 +196,7 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
                     </button>
                     <button
                         type="submit"
-                        form="PSM1AddCriteriaForm"
+                        form="PSM1EditCriteriaForm"
                         disabled={processing}
                         className={`px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition ${
                             processing ? "opacity-50 cursor-not-allowed" : ""
@@ -203,4 +210,4 @@ const AddCriteriaModal: React.FC<AddCriteriaModalProps> = ({
     );
 };
 
-export default AddCriteriaModal;
+export default EditCriteriaModal;

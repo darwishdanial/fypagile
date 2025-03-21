@@ -3,16 +3,30 @@ import { router, useForm, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { X } from "lucide-react";
 
-interface AddRubricModalProps {
+interface Rubric {
+    id: number;
+    name: string;
+    total_weight: number;
+    psmType: string;
+    isSupervisorPSM1: boolean;
+    isPanelPSM1: boolean;
+    isArchivePSM1: boolean;
+    isSupervisorPSM2: boolean;
+    isPanelPSM2: boolean;
+}
+
+interface EditRubricModalProps {
     isOpen: boolean;
     onClose: () => void;
     psmType: string;
+    rubric: Rubric | null;
 }
 
-const AddRubricModal: React.FC<AddRubricModalProps> = ({
+const EditRubricModal: React.FC<EditRubricModalProps> = ({
     isOpen,
     onClose,
     psmType,
+    rubric,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -27,14 +41,28 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
     }, [isOpen]);
 
     const { data, setData } = useForm({
-        name: "",
-        total_weight: 0,
-        PSMType: psmType,
-        isSupervisorPSM1: false,
-        isPanelPSM1: false,
-        isSupervisorPSM2: false,
-        isPanelPSM2: false,
+        name: rubric?.name || "",
+        total_weight: rubric?.total_weight || "",
+        PSMType: psmType || "",
+        isSupervisorPSM1: rubric?.isSupervisorPSM1 || "",
+        isPanelPSM1: rubric?.isPanelPSM1 || "",
+        isSupervisorPSM2: rubric?.isSupervisorPSM2 || "",
+        isPanelPSM2: rubric?.isPanelPSM2 || "",
     });
+
+    useEffect(() => {
+        if (rubric) {
+            setData({
+                name: rubric?.name || "",
+                total_weight: rubric?.total_weight || "",
+                PSMType: psmType || "",
+                isSupervisorPSM1: rubric?.isSupervisorPSM1 || "",
+                isPanelPSM1: rubric?.isPanelPSM1 || "",
+                isSupervisorPSM2: rubric?.isSupervisorPSM2 || "",
+                isPanelPSM2: rubric?.isPanelPSM2 || "",
+            });
+        }
+    }, [rubric, setData]);
 
     const [processing, setIsProcessing] = useState(false);
 
@@ -67,9 +95,9 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         e.preventDefault();
 
         const route_path =
-        psmType === "PSM1"
-                ? "coordinator.PSM1.evaluationRubric.store"
-                : "coordinator.PSM2.evaluationRubric.store";
+            psmType === "PSM1"
+                ? "coordinator.PSM1.evaluationRubric.update"
+                : "coordinator.PSM2.evaluationRubric.update";
 
         router.post(route(route_path), data, {
             onStart: () => {
@@ -85,13 +113,13 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                 onClose();
                 // Reset form
                 setData({
-                    name: "",
-                    total_weight: 0,
-                    PSMType: psmType,
-                    isSupervisorPSM1: false,
-                    isPanelPSM1: false,
-                    isSupervisorPSM2: false,
-                    isPanelPSM2: false,
+                    name: rubric?.name || "",
+                    total_weight: rubric?.total_weight || "",
+                    PSMType: psmType || "",
+                    isSupervisorPSM1: rubric?.isSupervisorPSM1 || "",
+                    isPanelPSM1: rubric?.isPanelPSM1 || "",
+                    isSupervisorPSM2: rubric?.isSupervisorPSM2 || "",
+                    isPanelPSM2: rubric?.isPanelPSM2 || "",
                 });
             },
         });
@@ -123,12 +151,12 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                 <hr className="border-t-1 border-gray-300"></hr>
 
                 <div className="overflow-y-auto">
-                    <form id="PSM1AddRubricForm" onSubmit={handleSubmit}>
+                    <form id="PSM1EditRubricForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Rubric Information
                             </h3>
-
+                            
                             <div className="grid grid-cols-5 mb-4 items-center">
                                 <label className="col-span-1 font-medium">
                                     Name:
@@ -278,7 +306,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                     </button>
                     <button
                         type="submit"
-                        form="PSM1AddRubricForm"
+                        form="PSM1EditRubricForm"
                         disabled={processing}
                         className={`px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition ${
                             processing ? "opacity-50 cursor-not-allowed" : ""
@@ -292,4 +320,4 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
     );
 };
 
-export default AddRubricModal;
+export default EditRubricModal;

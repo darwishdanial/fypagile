@@ -503,6 +503,57 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Criteria added successfully!');
     }
 
+    public function PSM1UpdateEvaluationRurbric(Request $request, $id)
+    {
+        $rubric = Rubric::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'PSMType' => 'required|string|max:255',
+            'total_weight' => 'required|decimal:0,2|max:255',
+            'isSupervisorPSM1' => 'required|boolean',
+            'isPanelPSM1' => 'required|boolean',
+            'isSupervisorPSM2' => 'required|boolean',
+            'isPanelPSM2' => 'required|boolean',
+        ]);
+
+        $rubric->update($validated);
+
+        return redirect()->back()->with('success', 'Rubric updated successfully!');
+    }
+
+
+    public function PSM1UpdateEvaluationCriteria(Request $request, $id)
+    {
+        //dd( $request->all());
+
+        $criteria = Criteria::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'rubric_id' => 'required|integer|exists:rubrics,id',
+            'weight' => 'required|decimal:0,2|max:100',
+        ]);
+
+        $criteria->update($validated);
+
+        return redirect()->back()->with('success', 'Criteria updated successfully!');
+    }
+
+    public function PSM1DeleteEvaluationRurbric($id)
+    {
+        $rubric = Rubric::findOrFail($id);
+        $rubric->delete(); // Soft delete
+        return redirect()->back()->with('success', 'Rubric deleted successfully.');
+    }
+
+    public function PSM1DeleteEvaluationCriteria($id)
+    {
+        $criteria = Criteria::findOrFail($id);
+        $criteria->delete(); // Soft delete
+        return redirect()->back()->with('success', 'Criteria deleted successfully.');
+    }
+
 
 
 
