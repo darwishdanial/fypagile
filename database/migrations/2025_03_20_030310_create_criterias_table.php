@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('criterias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('rubric_id')->nullable()->references('id')->on('rubrics');
+            $table->foreignId('rubric_id')
+                ->constrained('rubrics')
+                ->onDelete('cascade');
             $table->string('name');
             $table->decimal('weight');
             $table->timestamps();
