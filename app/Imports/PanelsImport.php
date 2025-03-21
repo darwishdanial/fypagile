@@ -21,11 +21,11 @@ class PanelsImport implements ToModel, WithValidation, SkipsOnFailure, WithHeadi
         return new User([
         'matricNo'        => $row['matric_no'] ?? '',
         'name'            => $row['name'] ?? '',
+        'role'            => strtolower($row['is_coordinator'] ?? '') === 'yes',
         'username'        => $row['username'] ?? '',
         'email'           => $row['email'] ?? '',
         'password'        => Hash::make($row['password']),
         'isSupervisorPSM1'=> strtolower($row['is_supervisor_psm1'] ?? '') === 'yes',
-        'isProposalPanel' => strtolower($row['is_proposal_panel'] ?? '') === 'yes',
         'isPanelPSM1'     => strtolower($row['is_panel_psm1'] ?? '') === 'yes',
         'isSupervisorPSM2'=> strtolower($row['is_supervisor_psm2'] ?? '') === 'yes',
         'isPanelPSM2'     => strtolower($row['is_panel_psm2'] ?? '') === 'yes',
@@ -39,11 +39,11 @@ class PanelsImport implements ToModel, WithValidation, SkipsOnFailure, WithHeadi
         return [
         'matric_no'          => 'required|string|max:50|unique:users,matricNo', 
         'name'               => 'required|string|max:255',
+        'is_coordinator'     => 'required|string|in:yes,no',
         'username'           => 'required|string|max:100|unique:users,username',
         'email'              => 'required|email|max:255|unique:users,email',
         'password'           => 'required|string',
         'is_supervisor_psm1' => 'nullable|string|in:yes,no',
-        'is_proposal_panel'  => 'nullable|string|in:yes,no',
         'is_panel_psm1'      => 'nullable|string|in:yes,no',
         'is_supervisor_psm2' => 'nullable|string|in:yes,no',
         'is_panel_psm2'      => 'nullable|string|in:yes,no',
@@ -77,8 +77,10 @@ class PanelsImport implements ToModel, WithValidation, SkipsOnFailure, WithHeadi
             'password.required' => 'Password is required.',
             'password.string' => 'Password must be a valid string.',
 
+            'is_coordinator.required' => 'is_coordinator is required.',
+
+            'is_coordinator.in' => 'Supervisor PSM1 must be either "yes" or "no".',
             'is_supervisor_psm1.in' => 'Supervisor PSM1 must be either "yes" or "no".',
-            'is_proposal_panel.in' => 'Proposal Panel must be either "yes" or "no".',
             'is_panel_psm1.in' => 'Panel PSM1 must be either "yes" or "no".',
             'is_supervisor_psm2.in' => 'Supervisor PSM2 must be either "yes" or "no".',
             'is_panel_psm2.in' => 'Panel PSM2 must be either "yes" or "no".',

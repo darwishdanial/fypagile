@@ -38,7 +38,6 @@ class UserSeederNew extends Seeder
                 'email' => $email,
                 'role' => $role,
                 'isSupervisorPSM1' => 1,
-                'isProposalPanel' => 1,
                 'isPanelPSM1' => 1,
                 'isSupervisorPSM2' => 1,
                 'isPanelPSM2' => 1,

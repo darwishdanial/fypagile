@@ -19,9 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->unique()->nullable();
             $table->string('email')->unique();
-            $table->string('role')->nullable();
+            $table->unsignedTinyInteger('role')->nullable();
             $table->boolean('isSupervisorPSM1')->nullable();
-            $table->boolean('isProposalPanel')->nullable();
             $table->boolean('isPanelPSM1')->nullable();
             $table->boolean('isSupervisorPSM2')->nullable();
             $table->boolean('isPanelPSM2')->nullable();

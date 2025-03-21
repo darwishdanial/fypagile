@@ -20,10 +20,10 @@ interface Panel {
     id: number;
     matricNo: string;
     name: string;
+    role: number;
     username: string;
     email: string;
     isSupervisorPSM1: boolean;
-    isProposalPanel: boolean;
     isPanelPSM1: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
@@ -404,11 +404,11 @@ export default function ListPanels() {
                             <th className="px-4 py-2 text-left border-b border-gray-300">
                                 Username
                             </th>
-                            <th className="px-4 py-2 border-b border-gray-300">
-                                Supervisor
+                            <th className="px-4 py-2 text-left border-b border-gray-300">
+                                Coordinator
                             </th>
                             <th className="px-4 py-2 border-b border-gray-300">
-                                Proposal Panel
+                                Supervisor
                             </th>
                             <th className="px-4 py-2 border-b border-gray-300">
                                 PSM1 Panel
@@ -506,7 +506,7 @@ export default function ListPanels() {
                                             )
                                         }
                                     >
-                                        {panel.isSupervisorPSM1 ? (
+                                        {panel.role === 1 ? (
                                             <div className="flex items-center justify-center">
                                                 {panel.isSupervisorPSM1 && (
                                                     <Check
@@ -534,9 +534,9 @@ export default function ListPanels() {
                                             )
                                         }
                                     >
-                                        {panel.isProposalPanel ? (
+                                        {panel.isSupervisorPSM1 ? (
                                             <div className="flex items-center justify-center">
-                                                {panel.isProposalPanel && (
+                                                {panel.isSupervisorPSM1 && (
                                                     <Check
                                                         size={20}
                                                         className="text-green-600"
@@ -589,6 +589,7 @@ export default function ListPanels() {
                                                     e.stopPropagation();
                                                     setSelectedPanel(panel);
                                                     setIsEditModalOpen(true);
+                                                    console.log("role", panel.role);
                                                 }}
                                                 title="Edit Panels"
                                             >
@@ -696,54 +697,20 @@ export default function ListPanels() {
                                                         </p>
                                                     )}
 
-                                                    <div className="mt-3">
-                                                        <strong>
-                                                            Students as Proposal
-                                                            Panel 1:
-                                                        </strong>
-                                                        {panel
-                                                            .students_proposal_names
-                                                            ?.length ? (
-                                                            <ul className="list-disc pl-5 mt-1">
-                                                                {panel.students_proposal_names.map(
-                                                                    (
-                                                                        student,
-                                                                        i
-                                                                    ) => (
-                                                                        <li
-                                                                            key={`proposal-${i}`}
-                                                                        >
-                                                                            {
-                                                                                student
-                                                                            }
-                                                                        </li>
-                                                                    )
-                                                                )}
-                                                            </ul>
-                                                        ) : (
-                                                            <p className="text-gray-500 italic ml-2 mt-1">
-                                                                None assigned
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <strong>
-                                                        Students as Proposal
-                                                        Panel 2:
+                                                    <strong className="mt-3 block">
+                                                        Students as PSM1 Panel
+                                                        1:
                                                     </strong>
-                                                    {panel
-                                                        .students_proposal2_names
+                                                    {panel.students_panel1_names
                                                         ?.length ? (
                                                         <ul className="list-disc pl-5 mt-1">
-                                                            {panel.students_proposal2_names.map(
+                                                            {panel.students_panel1_names.map(
                                                                 (
                                                                     student,
                                                                     i
                                                                 ) => (
                                                                     <li
-                                                                        key={`proposal2-${i}`}
+                                                                        key={`panel1-${i}`}
                                                                     >
                                                                         {
                                                                             student
@@ -757,8 +724,10 @@ export default function ListPanels() {
                                                             None assigned
                                                         </p>
                                                     )}
+                                                </div>
 
-                                                    <strong className="mt-3 block">
+                                                <div>
+                                                    <strong className=" block">
                                                         Students as PSM1 Panel
                                                         2:
                                                     </strong>
@@ -787,28 +756,6 @@ export default function ListPanels() {
                                                     )}
                                                 </div>
                                             </div>
-
-                                            <strong className="mt-3 block">
-                                                Students as PSM1 Panel 1:
-                                            </strong>
-                                            {panel.students_panel1_names
-                                                ?.length ? (
-                                                <ul className="list-disc pl-5 mt-1">
-                                                    {panel.students_panel1_names.map(
-                                                        (student, i) => (
-                                                            <li
-                                                                key={`panel1-${i}`}
-                                                            >
-                                                                {student}
-                                                            </li>
-                                                        )
-                                                    )}
-                                                </ul>
-                                            ) : (
-                                                <p className="text-gray-500 italic ml-2 mt-1">
-                                                    None assigned
-                                                </p>
-                                            )}
                                         </td>
                                     </tr>
                                 )}

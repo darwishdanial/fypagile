@@ -8,7 +8,7 @@ import {
     FileDown,
     CirclePlus,
     Check,
-    X
+    X,
 } from "lucide-react";
 import { route } from "ziggy-js";
 import AddPanelModal from "../../../Components/AddPanelModal";
@@ -20,6 +20,7 @@ interface Panel {
     id: number;
     matricNo: string;
     name: string;
+    role: number;
     username: string;
     email: string;
     isSupervisorPSM1: boolean;
@@ -403,6 +404,9 @@ export default function ListPanels() {
                             <th className="px-4 py-2 text-left border-b border-gray-300">
                                 Username
                             </th>
+                            <th className="px-4 py-2 text-left border-b border-gray-300">
+                                Coordinator
+                            </th>
                             <th className="px-4 py-2 border-b border-gray-300">
                                 Supervisor
                             </th>
@@ -502,6 +506,34 @@ export default function ListPanels() {
                                             )
                                         }
                                     >
+                                        {panel.role === 1 ? (
+                                            <div className="flex items-center justify-center">
+                                                {panel.role && (
+                                                    <Check
+                                                        size={20}
+                                                        className="text-green-600"
+                                                    />
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center justify-center">
+                                                <X
+                                                    size={20}
+                                                    className="text-green-600"
+                                                />
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td
+                                        className="px-4 py-2 cursor-pointer "
+                                        onClick={() =>
+                                            setExpandedRow(
+                                                expandedRow === panel.id
+                                                    ? null
+                                                    : panel.id
+                                            )
+                                        }
+                                    >
                                         {panel.isSupervisorPSM2 ? (
                                             <div className="flex items-center justify-center">
                                                 {panel.isSupervisorPSM2 && (
@@ -513,10 +545,10 @@ export default function ListPanels() {
                                             </div>
                                         ) : (
                                             <div className="flex items-center justify-center">
-                                                    <X
-                                                        size={20}
-                                                        className="text-green-600"
-                                                    />
+                                                <X
+                                                    size={20}
+                                                    className="text-green-600"
+                                                />
                                             </div>
                                         )}
                                     </td>
@@ -541,10 +573,10 @@ export default function ListPanels() {
                                             </div>
                                         ) : (
                                             <div className="flex items-center justify-center">
-                                                    <X
-                                                        size={20}
-                                                        className="text-green-600"
-                                                    />
+                                                <X
+                                                    size={20}
+                                                    className="text-green-600"
+                                                />
                                             </div>
                                         )}
                                     </td>
@@ -625,14 +657,15 @@ export default function ListPanels() {
                                     </td>
                                 </tr>
                                 {expandedRow === panel.id && (
-        
                                     <tr className="bg-gray-50 border-b border-gray-300">
-                                        
                                         <td
                                             colSpan={showArchived ? 8 : 9}
                                             className="px-4 py-2 text-left"
                                         >
-                                            <p className="my-1"><strong> Email: </strong> {panel.email}</p>
+                                            <p className="my-1">
+                                                <strong> Email: </strong>{" "}
+                                                {panel.email}
+                                            </p>
 
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
@@ -664,7 +697,8 @@ export default function ListPanels() {
                                                     )}
 
                                                     <strong className="mt-3 block">
-                                                        Students as PSM2 Panel 1:
+                                                        Students as PSM2 Panel
+                                                        1:
                                                     </strong>
                                                     {panel.students_panel1_names
                                                         ?.length ? (
@@ -693,7 +727,8 @@ export default function ListPanels() {
 
                                                 <div>
                                                     <strong className="mt-3 block">
-                                                        Students as PSM2 Panel 2:
+                                                        Students as PSM2 Panel
+                                                        2:
                                                     </strong>
                                                     {panel.students_panel2_names
                                                         ?.length ? (
@@ -757,10 +792,9 @@ export default function ListPanels() {
             <AddPanelModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
-                panelType = {panelType}
+                panelType={panelType}
             />
 
-            
             <EditPanelModal
                 isOpen={isEditModalOpen}
                 onClose={() => {
@@ -768,18 +802,18 @@ export default function ListPanels() {
                     setSelectedPanel(null);
                 }}
                 panel={selectedPanel}
-                panelType = {panelType}
+                panelType={panelType}
             />
             <ImportPanelsModal
                 isOpen={isImportModalOpen}
                 onClose={() => setIsImoprtModalOpen(false)}
             />
 
-            <ImportErrorModal 
-                isOpen={isImportErrorModalOpen} 
-                onClose={() => setIsImportErrorModalOpen(false)} 
+            <ImportErrorModal
+                isOpen={isImportErrorModalOpen}
+                onClose={() => setIsImportErrorModalOpen(false)}
                 message={props.flash?.warning}
-            /> 
+            />
         </div>
     );
 }

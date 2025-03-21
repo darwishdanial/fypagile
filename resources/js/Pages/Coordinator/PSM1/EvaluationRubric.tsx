@@ -190,6 +190,20 @@ export default function EvaluationRubric() {
                                 <option value={50}>50</option>
                             </select>
                         </label>
+
+                        <div className="ml-2 mt-2">
+                            <span className="ml-2 text-sm text-gray-600">
+                                Current total weight:{" "}
+                                {calculateCurrentRubricWeight(rubrics)}
+                                /100
+                                {calculateCurrentRubricWeight(rubrics) !==
+                                    100 && (
+                                    <span className="ml-1 text-red-500">
+                                        (Unbalanced)
+                                    </span>
+                                )}
+                            </span>
+                        </div>
                     </div>
 
                     <input
@@ -202,19 +216,6 @@ export default function EvaluationRubric() {
                             setCurrentPage(1); // Reset to first page on search
                         }}
                     />
-                </div>
-
-                <div className="ml-2">
-                    <span className="ml-2 text-sm text-gray-600">
-                        Current total weight:{" "}
-                        {calculateCurrentRubricWeight(rubrics)}
-                        /100
-                        {calculateCurrentRubricWeight(rubrics) !== 100 && (
-                            <span className="ml-1 text-red-500">
-                                (Unbalanced)
-                            </span>
-                        )}
-                    </span>
                 </div>
 
                 <div className="w-full">

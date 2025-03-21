@@ -33,13 +33,12 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
         password: "",
         email: "",
         isSupervisorPSM1: false,
-        isProposalPanel: false,
         isPanelPSM1: false,
         isArchivePSM1: false,
         isSupervisorPSM2: false,
         isPanelPSM2: false,
         isArchivePSM2: false,
-        role: "2",
+        role: 2,
     });
 
     const [processing, setIsProcessing] = useState(false);
@@ -57,10 +56,17 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
 
         if (type === "checkbox") {
             const isChecked = (e.target as HTMLInputElement).checked;
-            setData((prev) => ({
-                ...prev,
-                [name]: isChecked,
-            }));
+            if (name === "role") {
+                setData((prev) => ({
+                    ...prev,
+                    [name]: isChecked ? 1 : 2,
+                }));
+            } else {
+                setData((prev) => ({
+                    ...prev,
+                    [name]: isChecked,
+                }));
+            }
         } else {
             setData((prev) => ({
                 ...prev,
@@ -97,13 +103,12 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                     password: "",
                     email: "",
                     isSupervisorPSM1: false,
-                    isProposalPanel: false,
                     isPanelPSM1: false,
                     isArchivePSM1: false,
                     isSupervisorPSM2: false,
                     isPanelPSM2: false,
                     isArchivePSM2: false,
-                    role: "2",
+                    role: 2,
                 });
             },
         });
@@ -134,7 +139,7 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
 
                 <hr className="border-t-1 border-gray-300"></hr>
 
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto max-h-[80vh]">
                     <form id="PSM1AddPanelForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
@@ -244,8 +249,28 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Role Selection
                             </h3>
+
+                            <div className="flex items-center mb-4">
+                                <label className="font-medium text-gray-700 w-32">
+                                    Coordinator:
+                                </label>
+                                <input
+                                    title="Role"
+                                    id="role"
+                                    type="checkbox"
+                                    name="role"
+                                    checked={data.role === 1}
+                                    onChange={handleChange}
+                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                />
+                                {errors.role && (
+                                    <p className="text-red-500 ml-2">
+                                        {errors.role}
+                                    </p>
+                                )}
+                            </div>
                             {panelType === "PSM1" ? (
-                            
+
                                 <div className="space-y-4">
                                     <div className="flex items-center">
                                         <label className="font-medium text-gray-700 w-32">
@@ -265,28 +290,6 @@ const AddPanelModal: React.FC<AddPanelModalProps> = ({
                                         {errors.isSupervisorPSM1 && (
                                             <p className="text-red-500 ml-2">
                                                 {errors.isSupervisorPSM1}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-32">
-                                            Panel Proposal:
-                                        </label>
-                                        <input
-                                            title="ProposalPanel"
-                                            id="isProposalPanel"
-                                            type="checkbox"
-                                            name="isProposalPanel"
-                                            checked={Boolean(
-                                                data.isProposalPanel
-                                            )}
-                                            onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                        />
-                                        {errors.isProposalPanel && (
-                                            <p className="text-red-500 ml-2">
-                                                {errors.isProposalPanel}
                                             </p>
                                         )}
                                     </div>

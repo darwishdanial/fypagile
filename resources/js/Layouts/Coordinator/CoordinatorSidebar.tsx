@@ -48,11 +48,6 @@ export function CoordinatorSidebar() {
         },
         {
             icon: <UserPlus />,
-            label: "Assign Proposal Panel",
-            link: route('coordinator.PSM1.listProposalPanel'),
-        },
-        {
-            icon: <UserPlus />,
             label: "Assign PSM1 Panel",
             link: route('coordinator.PSM1.listPSM1Panel'),
         },

@@ -7,10 +7,10 @@ interface Panel {
     id: number;
     matricNo: string;
     name: string;
+    role: number;
     username: string;
     email: string;
     isSupervisorPSM1: boolean;
-    isProposalPanel: boolean;
     isPanelPSM1: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
@@ -47,11 +47,11 @@ const EditPanelModal: React.FC<EditPanelModalProps> = ({
 
     const { data, setData } = useForm({
         name: panel?.name || "",
+        role: panel?.role || "",
         matricNo: panel?.matricNo || "",
         username: panel?.username || "",
         email: panel?.email || "",
         isSupervisorPSM1: panel?.isSupervisorPSM1 || false,
-        isProposalPanel: panel?.isProposalPanel || false,
         isPanelPSM1: panel?.isPanelPSM1 || false,
         isSupervisorPSM2: panel?.isSupervisorPSM2 || false,
         isPanelPSM2: panel?.isPanelPSM2 || false,
@@ -70,16 +70,18 @@ const EditPanelModal: React.FC<EditPanelModalProps> = ({
         if (panel) {
             setData({
                 name: panel.name || "",
+                role: panel?.role || "",
                 matricNo: panel.matricNo || "",
                 username: panel.username || "",
                 email: panel.email || "",
                 isSupervisorPSM1: panel.isSupervisorPSM1 || false,
-                isProposalPanel: panel.isProposalPanel || false,
                 isPanelPSM1: panel.isPanelPSM1 || false,
                 isSupervisorPSM2: panel?.isSupervisorPSM2 || false,
                 isPanelPSM2: panel?.isPanelPSM2 || false,
                 password: "",
             });
+
+            console.log(panel?.role);
         }
     }, [panel, setData]);
 
@@ -90,10 +92,17 @@ const EditPanelModal: React.FC<EditPanelModalProps> = ({
 
         if (type === "checkbox") {
             const isChecked = (e.target as HTMLInputElement).checked;
-            setData((prev) => ({
-                ...prev,
-                [name]: isChecked,
-            }));
+            if (name === "role") {
+                setData((prev) => ({
+                    ...prev,
+                    [name]: isChecked ? 1 : 2,
+                }));
+            } else {
+                setData((prev) => ({
+                    ...prev,
+                    [name]: isChecked,
+                }));
+            }
         } else {
             setData((prev) => ({
                 ...prev,
@@ -267,120 +276,115 @@ const EditPanelModal: React.FC<EditPanelModalProps> = ({
                                 Role Selection
                             </h3>
 
+                            <div className="flex items-center mb-4">
+                                <label className="font-medium text-gray-700 w-32">
+                                    Coordinator:
+                                </label>
+                                <input
+                                    title="Role"
+                                    id="role"
+                                    type="checkbox"
+                                    name="role"
+                                    checked={data.role === 1}
+                                    onChange={handleChange}
+                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                />
+                                {errors.role && (
+                                    <p className="text-red-500 ml-2">
+                                        {errors.role}
+                                    </p>
+                                )}
+                            </div>
+
                             {panelType === "PSM1" ? (
-                            
-                            <div className="space-y-4">
-                                <div className="flex items-center">
-                                    <label className="font-medium text-gray-700 w-32">
-                                        Supervisor:
-                                    </label>
-                                    <input
-                                        title="SupervisorPSM1"
-                                        id="isSupervisorPSM1"
-                                        type="checkbox"
-                                        name="isSupervisorPSM1"
-                                        checked={Boolean(
-                                            data.isSupervisorPSM1
+                                <div className="space-y-4">
+                                    <div className="flex items-center">
+                                        <label className="font-medium text-gray-700 w-32">
+                                            Supervisor:
+                                        </label>
+                                        <input
+                                            title="SupervisorPSM1"
+                                            id="isSupervisorPSM1"
+                                            type="checkbox"
+                                            name="isSupervisorPSM1"
+                                            checked={Boolean(
+                                                data.isSupervisorPSM1
+                                            )}
+                                            onChange={handleChange}
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        {errors.isSupervisorPSM1 && (
+                                            <p className="text-red-500 ml-2">
+                                                {errors.isSupervisorPSM1}
+                                            </p>
                                         )}
-                                        onChange={handleChange}
-                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    {errors.isSupervisorPSM1 && (
-                                        <p className="text-red-500 ml-2">
-                                            {errors.isSupervisorPSM1}
-                                        </p>
-                                    )}
-                                </div>
+                                    </div>
 
-                                <div className="flex items-center">
-                                    <label className="font-medium text-gray-700 w-32">
-                                        Panel Proposal:
-                                    </label>
-                                    <input
-                                        title="ProposalPanel"
-                                        id="isProposalPanel"
-                                        type="checkbox"
-                                        name="isProposalPanel"
-                                        checked={Boolean(
-                                            data.isProposalPanel
+                                    <div className="flex items-center">
+                                        <label className="font-medium text-gray-700 w-32">
+                                            Panel PSM1:
+                                        </label>
+                                        <input
+                                            title="PanelPSM1"
+                                            id="isPanelPSM1"
+                                            type="checkbox"
+                                            name="isPanelPSM1"
+                                            checked={Boolean(data.isPanelPSM1)}
+                                            onChange={handleChange}
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        {errors.isPanelPSM1 && (
+                                            <p className="text-red-500 ml-2">
+                                                {errors.isPanelPSM1}
+                                            </p>
                                         )}
-                                        onChange={handleChange}
-                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    {errors.isProposalPanel && (
-                                        <p className="text-red-500 ml-2">
-                                            {errors.isProposalPanel}
-                                        </p>
-                                    )}
+                                    </div>
                                 </div>
-
-                                <div className="flex items-center">
-                                    <label className="font-medium text-gray-700 w-32">
-                                        Panel PSM1:
-                                    </label>
-                                    <input
-                                        title="PanelPSM1"
-                                        id="isPanelPSM1"
-                                        type="checkbox"
-                                        name="isPanelPSM1"
-                                        checked={Boolean(data.isPanelPSM1)}
-                                        onChange={handleChange}
-                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    {errors.isPanelPSM1 && (
-                                        <p className="text-red-500 ml-2">
-                                            {errors.isPanelPSM1}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-                        ) : (
-
-                            <div className="space-y-4">
-                                <div className="flex items-center">
-                                    <label className="font-medium text-gray-700 w-32">
-                                        Supervisor:
-                                    </label>
-                                    <input
-                                        title="SupervisorPSM2"
-                                        id="isSupervisorPSM2"
-                                        type="checkbox"
-                                        name="isSupervisorPSM2"
-                                        checked={Boolean(
-                                            data.isSupervisorPSM2
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className="flex items-center">
+                                        <label className="font-medium text-gray-700 w-32">
+                                            Supervisor:
+                                        </label>
+                                        <input
+                                            title="SupervisorPSM2"
+                                            id="isSupervisorPSM2"
+                                            type="checkbox"
+                                            name="isSupervisorPSM2"
+                                            checked={Boolean(
+                                                data.isSupervisorPSM2
+                                            )}
+                                            onChange={handleChange}
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        {errors.isSupervisorPSM1 && (
+                                            <p className="text-red-500 ml-2">
+                                                {errors.isSupervisorPSM2}
+                                            </p>
                                         )}
-                                        onChange={handleChange}
-                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    {errors.isSupervisorPSM1 && (
-                                        <p className="text-red-500 ml-2">
-                                            {errors.isSupervisorPSM2}
-                                        </p>
-                                    )}
-                                </div>
+                                    </div>
 
-                                <div className="flex items-center">
-                                    <label className="font-medium text-gray-700 w-32">
-                                        Panel PSM2:
-                                    </label>
-                                    <input
-                                        title="PanelPSM2"
-                                        id="isPanelPSM2"
-                                        type="checkbox"
-                                        name="isPanelPSM2"
-                                        checked={Boolean(data.isPanelPSM2)}
-                                        onChange={handleChange}
-                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                    />
-                                    {errors.isPanelPSM1 && (
-                                        <p className="text-red-500 ml-2">
-                                            {errors.isPanelPSM2}
-                                        </p>
-                                    )}
+                                    <div className="flex items-center">
+                                        <label className="font-medium text-gray-700 w-32">
+                                            Panel PSM2:
+                                        </label>
+                                        <input
+                                            title="PanelPSM2"
+                                            id="isPanelPSM2"
+                                            type="checkbox"
+                                            name="isPanelPSM2"
+                                            checked={Boolean(data.isPanelPSM2)}
+                                            onChange={handleChange}
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        {errors.isPanelPSM1 && (
+                                            <p className="text-red-500 ml-2">
+                                                {errors.isPanelPSM2}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-
-                        )}
+                            )}
                         </div>
                     </form>
                 </div>

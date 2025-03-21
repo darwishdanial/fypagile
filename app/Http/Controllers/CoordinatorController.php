@@ -219,7 +219,6 @@ class CoordinatorController extends Controller
         $panel->update([
             'isArchivePSM1' => 1,
             'isSupervisorPSM1' => 0,
-            'isProposalPanel' => 0,
             'isPanelPSM1' => 0,
         ]);
 
@@ -243,18 +242,17 @@ class CoordinatorController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'role' => 'required|integer',
             'matricNo' => 'required|string|unique:users,matricNo|max:50',
             'email' => 'required|unique:users,email|max:255',
             'username' => 'required|string|unique:users,username|max:100',
             'password' => 'required|string|max:255',
             'isSupervisorPSM1' => 'required|boolean',
-            'isProposalPanel' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
             'isArchivePSM1' => 'required|boolean',
             'isSupervisorPSM2' => 'required|boolean',
             'isPanelPSM2' => 'required|boolean',
             'isArchivePSM2' => 'required|boolean',
-            'role' => 'required',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -272,11 +270,11 @@ class CoordinatorController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'role' => 'required|integer',
             'matricNo' => 'required|string|max:50|unique:users,matricNo,'. $id,
             'email' => 'required|max:255|unique:users,email,'. $id,
             'username' => 'required|string|max:100|unique:users,username,'. $id,
             'isSupervisorPSM1' => 'required|boolean',
-            'isProposalPanel' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
             'password' => 'nullable|string|max:255',
         ]);        
@@ -304,7 +302,6 @@ class CoordinatorController extends Controller
         User::whereIn('id', $request->ids)->update([
             'isArchivePSM1' => 1,
             'isSupervisorPSM1' => 0,
-            'isProposalPanel' => 0,
             'isPanelPSM1' => 0,
         ]);
 
@@ -340,16 +337,7 @@ class CoordinatorController extends Controller
         ]);
     }
 
-    public function PSM1ListProposalPanel()
-    {
-        $this->authorize('view psm1 assign proposal panel table');
 
-        $panels = $this->panelService->getAssignProposalPanel();
-
-        return Inertia::render('Coordinator/PSM1/AssignProposalPanel',[
-            'panel' => $panels
-        ]);
-    }
 
     public function PSM1SupervisorStudentList($id)
     {
@@ -371,41 +359,9 @@ class CoordinatorController extends Controller
         $this->studentService->unassignStudentsSupervisorPSM1($studentId);
     }
 
-    public function PSM1ProposalPanelStudentList(Request $request)
-    {
-        $panelId = $request->input('panelId');
-        $type = $request->input('panelTypeValue');
 
-        $students = $this->studentService->getStudentsProposalPanel($panelId, $type);
 
-        return $students;
-    }
 
-    public function PSM1SAssignProposalPanel1(Request $request)
-    {
-        $studentId = $request->input('studentId');
-        $panelId = $request->input('panelId');
-        
-        $this->studentService->assignStudentsProposalPanel1PSM1($studentId, $panelId);
-    }
-
-    public function PSM1SAssignProposalPanel2(Request $request)
-    {
-        $studentId = $request->input('studentId');
-        $panelId = $request->input('panelId');
-        
-        $this->studentService->assignStudentsProposalPanel2PSM1($studentId, $panelId);
-    }
-
-    public function PSM1UnassignProposalPanel1($studentId)
-    {
-        $this->studentService->unassignStudentsProposalPanel1PSM1($studentId);
-    }
-
-    public function PSM1UnassignProposalPanel2($studentId)
-    {
-        $this->studentService->unassignStudentsProposalPanel2PSM1($studentId);
-    }
 
     public function PSM1listAssignPanel()
     {
@@ -459,9 +415,7 @@ class CoordinatorController extends Controller
         $this->authorize('view psm1 evaluation rubric');
 
         $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    // ->where('PSMType', 'Proposal')
-                    // ->orWhere('PSMType', 'PSM1')
-                    ->whereIn('PSMType', ['Proposal', 'PSM1'])
+                    ->whereIn('PSMType',  'PSM1')
                     ->get();
 
         return Inertia::render('Coordinator/PSM1/EvaluationRubric',[
@@ -571,13 +525,6 @@ class CoordinatorController extends Controller
         $this->authorize('view psm1 grade supervision table');
 
         return Inertia::render('Coordinator/PSM1/GradeSupervision');
-    }
-
-    public function PSM1GradeProposal()
-    {
-        $this->authorize('view psm1 grade proposal table');
-
-        return Inertia::render('Coordinator/PSM1/GradeProposal');
     }
 
     public function PSM1Grade()
@@ -776,7 +723,6 @@ class CoordinatorController extends Controller
             'username' => 'required|string|unique:users,username|max:100',
             'password' => 'required|string|max:255',
             'isSupervisorPSM1' => 'required|boolean',
-            'isProposalPanel' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
             'isArchivePSM1' => 'required|boolean',
             'isSupervisorPSM2' => 'required|boolean',

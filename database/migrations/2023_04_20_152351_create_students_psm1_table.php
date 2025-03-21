@@ -24,8 +24,6 @@ return new class extends Migration
             $table->string("cohort");
             $table->string("sessionpsm");
             $table->foreignId('supervisorId')->nullable()->references('id')->on('users'); 
-            $table->foreignId('panelProposalId')->nullable()->references('id')->on('users');
-            $table->foreignId('panelProposal2Id')->nullable()->references('id')->on('users');
             $table->foreignId('panelId')->nullable()->references('id')->on('users'); 
             $table->foreignId('panel2Id')->nullable()->references('id')->on('users'); 
             $table->timestamps();
