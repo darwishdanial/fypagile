@@ -22,6 +22,7 @@ interface Rubric {
     name: string;
     total_weight: number;
     psmType: string;
+    isEnable: boolean;
     isSupervisorPSM1: boolean;
     isPanelPSM1: boolean;
     isArchivePSM1: boolean;
@@ -232,6 +233,9 @@ export default function EvaluationRubric() {
                                 <th className="px-4 py-2  border-b border-gray-300">
                                     Total Weight
                                 </th>
+                                <th className="px-4 py-2  border-b border-gray-300">
+                                    Enable
+                                </th>
                                 <th className="px-4 py-2 border-b border-gray-300">
                                     Supervisor
                                 </th>
@@ -287,6 +291,34 @@ export default function EvaluationRubric() {
                                             }
                                         >
                                             {rubric.total_weight}
+                                        </td>
+                                        <td
+                                            className="px-4 py-2 cursor-pointer "
+                                            onClick={() =>
+                                                setExpandedRow(
+                                                    expandedRow === rubric.id
+                                                        ? null
+                                                        : rubric.id
+                                                )
+                                            }
+                                        >
+                                            {rubric.isEnable ? (
+                                                <div className="flex items-center justify-center">
+                                                    {rubric.isEnable && (
+                                                        <Check
+                                                            size={20}
+                                                            className="text-green-600"
+                                                        />
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center justify-center">
+                                                    <X
+                                                        size={20}
+                                                        className="text-green-600"
+                                                    />
+                                                </div>
+                                            )}
                                         </td>
                                         <td
                                             className="px-4 py-2 cursor-pointer "

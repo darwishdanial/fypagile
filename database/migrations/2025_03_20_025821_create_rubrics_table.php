@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('total_weight');
             $table->string(column: 'PSMType');
+            $table->boolean('isEnable');
             $table->boolean('isSupervisorPSM1');
             $table->boolean('isPanelPSM1');
             $table->boolean('isSupervisorPSM2');

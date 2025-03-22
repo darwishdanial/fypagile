@@ -15,6 +15,7 @@ class Rubric extends Model
         'name',
         'PSMType',
         'total_weight',
+        'isEnable',
         'isSupervisorPSM1',
         'isPanelPSM1',
         'isSupervisorPSM2',
@@ -24,6 +25,11 @@ class Rubric extends Model
     public function criteria()
     {
         return $this->hasMany(Criteria::class);
+    }
+
+    public function rubric()
+    {
+        return $this->hasMany(Score::class);
     }
 
 }

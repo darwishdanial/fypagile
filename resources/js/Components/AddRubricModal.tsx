@@ -30,6 +30,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         name: "",
         total_weight: 0,
         PSMType: psmType,
+        isEnable: false,
         isSupervisorPSM1: false,
         isPanelPSM1: false,
         isSupervisorPSM2: false,
@@ -67,7 +68,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         e.preventDefault();
 
         const route_path =
-        psmType === "PSM1"
+            psmType === "PSM1"
                 ? "coordinator.PSM1.evaluationRubric.store"
                 : "coordinator.PSM2.evaluationRubric.store";
 
@@ -88,6 +89,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                     name: "",
                     total_weight: 0,
                     PSMType: psmType,
+                    isEnable: false,
                     isSupervisorPSM1: false,
                     isPanelPSM1: false,
                     isSupervisorPSM2: false,
@@ -164,6 +166,26 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                 {errors.total_weight && (
                                     <p className="text-red-500 col-start-2 col-span-4">
                                         {errors.total_weight}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="flex items-center">
+                                <label className="font-medium text-gray-700 w-25">
+                                    Enable:
+                                </label>
+                                <input
+                                    title="Enable Rubric"
+                                    id="isEnable"
+                                    type="checkbox"
+                                    name="isEnable"
+                                    checked={Boolean(data.isEnable)}
+                                    onChange={handleChange}
+                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                />
+                                {errors.isEnable && (
+                                    <p className="text-red-500 ml-2">
+                                        {errors.isEnable}
                                     </p>
                                 )}
                             </div>

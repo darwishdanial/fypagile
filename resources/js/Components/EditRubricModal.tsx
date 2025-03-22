@@ -8,6 +8,7 @@ interface Rubric {
     name: string;
     total_weight: number;
     psmType: string;
+    isEnable: boolean;
     isSupervisorPSM1: boolean;
     isPanelPSM1: boolean;
     isArchivePSM1: boolean;
@@ -44,10 +45,11 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
         name: rubric?.name || "",
         total_weight: rubric?.total_weight || "",
         PSMType: psmType || "",
-        isSupervisorPSM1: rubric?.isSupervisorPSM1 || "",
-        isPanelPSM1: rubric?.isPanelPSM1 || "",
-        isSupervisorPSM2: rubric?.isSupervisorPSM2 || "",
-        isPanelPSM2: rubric?.isPanelPSM2 || "",
+        isEnable: rubric?.isEnable || false,
+        isSupervisorPSM1: rubric?.isSupervisorPSM1 || false,
+        isPanelPSM1: rubric?.isPanelPSM1 || false,
+        isSupervisorPSM2: rubric?.isSupervisorPSM2 || false,
+        isPanelPSM2: rubric?.isPanelPSM2 || false,
     });
 
     useEffect(() => {
@@ -56,10 +58,11 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                 name: rubric?.name || "",
                 total_weight: rubric?.total_weight || "",
                 PSMType: psmType || "",
-                isSupervisorPSM1: rubric?.isSupervisorPSM1 || "",
-                isPanelPSM1: rubric?.isPanelPSM1 || "",
-                isSupervisorPSM2: rubric?.isSupervisorPSM2 || "",
-                isPanelPSM2: rubric?.isPanelPSM2 || "",
+                isEnable: rubric?.isEnable || false,
+                isSupervisorPSM1: rubric?.isSupervisorPSM1 || false,
+                isPanelPSM1: rubric?.isPanelPSM1 || false,
+                isSupervisorPSM2: rubric?.isSupervisorPSM2 || false,
+                isPanelPSM2: rubric?.isPanelPSM2 || false,
             });
         }
     }, [rubric, setData]);
@@ -94,12 +97,14 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (!rubric) return;
+
         const route_path =
             psmType === "PSM1"
                 ? "coordinator.PSM1.evaluationRubric.update"
                 : "coordinator.PSM2.evaluationRubric.update";
 
-        router.post(route(route_path), data, {
+        router.put(route(route_path, rubric.id), data, {
             onStart: () => {
                 setIsProcessing(true);
             },
@@ -116,10 +121,11 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                     name: rubric?.name || "",
                     total_weight: rubric?.total_weight || "",
                     PSMType: psmType || "",
-                    isSupervisorPSM1: rubric?.isSupervisorPSM1 || "",
-                    isPanelPSM1: rubric?.isPanelPSM1 || "",
-                    isSupervisorPSM2: rubric?.isSupervisorPSM2 || "",
-                    isPanelPSM2: rubric?.isPanelPSM2 || "",
+                    isEnable: rubric?.isEnable || false,
+                    isSupervisorPSM1: rubric?.isSupervisorPSM1 || false,
+                    isPanelPSM1: rubric?.isPanelPSM1 || false,
+                    isSupervisorPSM2: rubric?.isSupervisorPSM2 || false,
+                    isPanelPSM2: rubric?.isPanelPSM2 || false,
                 });
             },
         });
@@ -137,7 +143,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center py-2 px-4">
-                    <h2 className="text-lg font-semibold">Add Rubric</h2>
+                    <h2 className="text-lg font-semibold">Edit Rubric</h2>
                     <button
                         title="close"
                         type="button"
@@ -156,7 +162,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Rubric Information
                             </h3>
-                            
+
                             <div className="grid grid-cols-5 mb-4 items-center">
                                 <label className="col-span-1 font-medium">
                                     Name:
@@ -192,6 +198,26 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                                 {errors.total_weight && (
                                     <p className="text-red-500 col-start-2 col-span-4">
                                         {errors.total_weight}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="flex items-center">
+                                <label className="font-medium text-gray-700 w-25">
+                                    Enable:
+                                </label>
+                                <input
+                                    title="Enable Rubric"
+                                    id="isEnable"
+                                    type="checkbox"
+                                    name="isEnable"
+                                    checked={Boolean(data.isEnable)}
+                                    onChange={handleChange}
+                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                />
+                                {errors.isEnable && (
+                                    <p className="text-red-500 ml-2">
+                                        {errors.isEnable}
                                     </p>
                                 )}
                             </div>

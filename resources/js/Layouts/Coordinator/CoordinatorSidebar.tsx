@@ -68,11 +68,6 @@ export function CoordinatorSidebar() {
         },
         {
             icon: <ListChecks />,
-            label: "Grade Proposal",
-            link: route('coordinator.PSM1.gradeProposal'),
-        },
-        {
-            icon: <ListChecks />,
             label: "Grade PSM1",
             link: route('coordinator.PSM1.gradePSM1'),
         },

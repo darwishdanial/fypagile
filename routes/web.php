@@ -161,7 +161,6 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/grade-supervision', [CoordinatorController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-proposal', [CoordinatorController::class, 'PSM1GradeProposal'])->name('gradeProposal');
 
         Route::get('/grade-PSM1', [CoordinatorController::class, 'PSM1Grade'])->name('gradePSM1');
 

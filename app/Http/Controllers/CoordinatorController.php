@@ -415,7 +415,7 @@ class CoordinatorController extends Controller
         $this->authorize('view psm1 evaluation rubric');
 
         $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->whereIn('PSMType',  'PSM1')
+                    ->where('PSMType',  'PSM1')
                     ->get();
 
         return Inertia::render('Coordinator/PSM1/EvaluationRubric',[
@@ -431,6 +431,7 @@ class CoordinatorController extends Controller
             'name' => 'required|string|max:255',
             'PSMType' => 'required|string|max:255',
             'total_weight' => 'required|decimal:0,2|max:255',
+            'isEnable' => 'required|boolean',
             'isSupervisorPSM1' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
             'isSupervisorPSM2' => 'required|boolean',
@@ -465,10 +466,9 @@ class CoordinatorController extends Controller
             'name' => 'required|string|max:255',
             'PSMType' => 'required|string|max:255',
             'total_weight' => 'required|decimal:0,2|max:255',
+            'isEnable' => 'required|boolean',
             'isSupervisorPSM1' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
-            'isSupervisorPSM2' => 'required|boolean',
-            'isPanelPSM2' => 'required|boolean',
         ]);
 
         $rubric->update($validated);
