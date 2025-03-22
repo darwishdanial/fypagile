@@ -13,7 +13,6 @@ interface Student {
     panelProposal2Id: number | null;
     panelId: number | null;
     panel2Id: number | null;
-    assigned: boolean;
 }
 
 interface AssignPanelModalProps {
@@ -120,16 +119,16 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                     prevStudents.map((student) =>{
                         if (student.id === studentId) {
                             if (panelType === "PSM1ProposalPanel1") {
-                                return { ...student, panelProposalId: panelId, assigned: true };
+                                return { ...student, panelProposalId: panelId};
                             }
                             if (panelType === "PSM1ProposalPanel2") {
-                                return { ...student, panelProposal2Id: panelId, assigned: true };
+                                return { ...student, panelProposal2Id: panelId};
                             }
                             if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
                                 return { ...student, panelId, assigned: true };
                             }
                             if (panelType === "PSM1Panel2" || panelType === "PSM2Panel2") {
-                                return { ...student, panel2Id: panelId, assigned: true };
+                                return { ...student, panel2Id: panelId };
                             }
                         }
                         return student;
@@ -167,16 +166,16 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                         {
                             if (student.id === studentId) {
                                 if (panelType === "PSM1ProposalPanel1") {
-                                    return { ...student, panelProposalId: null, assigned: true };
+                                    return { ...student, panelProposalId: null};
                                 }
                                 if (panelType === "PSM1ProposalPanel2") {
-                                    return { ...student, panelProposal2Id: null, assigned: true };
+                                    return { ...student, panelProposal2Id: null};
                                 }
                                 if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
-                                    return { ...student, panelId: null, assigned: true };
+                                    return { ...student, panelId: null};
                                 }
                                 if (panelType === "PSM1Panel2" || panelType === "PSM2Panel2") {
-                                    return { ...student, panel2Id: null, assigned: true };
+                                    return { ...student, panel2Id: null};
                                 }
                             }
                             return student;

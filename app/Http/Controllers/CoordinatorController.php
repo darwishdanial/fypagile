@@ -508,6 +508,44 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Criteria deleted successfully.');
     }
 
+    public function PSM1GradeSupervision()
+    {
+        $this->authorize('view psm1 grade supervision table');
+
+        $id = Auth::user()->id;
+
+        $students = $this->studentService->getStudentsSupervisorGradePSM1($id);
+
+        $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                ->where('PSMType',  'PSM1')
+                ->where('isSupervisorPSM1',  true)
+                ->get();
+
+        return Inertia::render('Coordinator/PSM1/GradeSupervision',[
+            'students' => $students,
+            'rubrics' => $rubrics
+        ]);
+    }
+
+    public function PSM1GradePanel()
+    {
+        $this->authorize('view psm1 grade table');
+
+        $id = Auth::user()->id;
+
+        $students = $this->studentService->getStudentsPanelGradePSM1($id);
+
+        $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                ->where('PSMType',  'PSM1')
+                 ->where('isPanelPSM1',  true)
+                ->get();
+
+        return Inertia::render('Coordinator/PSM1/GradePSM1',[
+            'students' => $students,
+            'rubrics' => $rubrics
+        ]);
+    }
+
 
 
 
@@ -519,20 +557,6 @@ class CoordinatorController extends Controller
         return Inertia::render('Coordinator/PSM1/ViewResult');
     }
 
-
-    public function PSM1GradeSupervision()
-    {
-        $this->authorize('view psm1 grade supervision table');
-
-        return Inertia::render('Coordinator/PSM1/GradeSupervision');
-    }
-
-    public function PSM1Grade()
-    {
-        $this->authorize('view psm1 grade table');
-
-        return Inertia::render('Coordinator/PSM1/GradePSM1');
-    }
 
     //PSM2
     //Student Management
