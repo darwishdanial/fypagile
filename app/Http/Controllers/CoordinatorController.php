@@ -546,6 +546,17 @@ class CoordinatorController extends Controller
         ]);
     }
 
+    public function PSM1StoreScore(Request $request, $id){
+
+        $totalScore = array_sum($request->criteria);
+
+        $weight = $request->total_weight;
+
+        $finalScore = $weight/100 * $totalScore;
+
+        dd($request->criteria,$request->student_id, $id, $request->comments,$request->total_weight, $totalScore, $finalScore, $request->rubric_id);
+    }
+
 
 
 

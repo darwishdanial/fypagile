@@ -70,7 +70,7 @@ export default function GradePSM1() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isImportErrorModalOpen, setIsImportErrorModalOpen] = useState(false);
-    const [selectedStudent, setSelectedStudent] = useState<Student | null>(
+    const [selectedStudent, setSelectedStudent] = useState<number | null>(
         null
     );
     const [isImportModalOpen, setIsImoprtModalOpen] = useState(false);
@@ -323,6 +323,7 @@ export default function GradePSM1() {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     // Handle rubric editing (you can add your logic here)
+                                                    setSelectedStudent(student.id);
                                                     setSelectedRubric(rubric);
                                                     setIsGradeModalOpen(true);
                                                     console.log(
@@ -424,9 +425,10 @@ export default function GradePSM1() {
                 }}
                 rubric={selectedRubric}
                 psmType="PSM1"
+                studentId={selectedStudent}
             />
 
-            <EditStudentModal
+            {/* <EditStudentModal
                 isOpen={isEditModalOpen}
                 onClose={() => {
                     setIsEditModalOpen(false);
@@ -434,7 +436,7 @@ export default function GradePSM1() {
                 }}
                 student={selectedStudent}
                 studentType={studentType}
-            />
+            /> */}
 
             <ImportStudentModal
                 isOpen={isImportModalOpen}

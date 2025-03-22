@@ -164,6 +164,8 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/grade-PSM1', [CoordinatorController::class, 'PSM1GradePanel'])->name('gradePSM1');
 
+        Route::post('/store-score/{id}', [CoordinatorController::class, 'PSM1StoreScore'])->name('score.store');
+
     });
 
     Route::prefix('PSM2')
