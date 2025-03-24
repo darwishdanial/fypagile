@@ -125,15 +125,36 @@ class StudentService
 
     public function getStudentsSupervisorPSM1(?int $supervisorId){
 
-        $unassignedStudents = StudentPSM1::whereNull('supervisorId')->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
-            $student->assigned = false;
-            return $student;
-        });
+        $unassignedStudents = StudentPSM1::whereNull('supervisorId')
+            ->where(function($query) use ($supervisorId) {
+                $query->whereNull('panel2Id')
+                    ->orWhere('panel2Id', '!=', $supervisorId);
+            })
+            ->where(function($query) use ($supervisorId) {
+                $query->whereNull('panelId')
+                    ->orWhere('panelId', '!=', $supervisorId);
+            })
+            ->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])
+            ->map(function ($student){
+                $student->assigned = false;
+                return $student;
+            });
         
-        $assignedStudents = StudentPSM1::where('supervisorId', $supervisorId)->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
-            $student->assigned = true;
-            return $student;
-        });
+        $assignedStudents = StudentPSM1::where('supervisorId', $supervisorId)
+            ->where(function($query) use ($supervisorId) {
+                $query->whereNull('panel2Id')
+                    ->orWhere('panel2Id', '!=', $supervisorId);
+            })
+            ->where(function($query) use ($supervisorId) {
+                $query->whereNull('panelId')
+                    ->orWhere('panelId', '!=', $supervisorId);
+            })
+            ->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])
+            ->map(function ($student){
+                $student->assigned = true;
+                return $student;
+            });
+
         $students = $assignedStudents->merge($unassignedStudents);
 
         return $students;
@@ -151,30 +172,6 @@ class StudentService
             ->update(['supervisorId' => null ]);
     }
 
-
-    public function assignStudentsProposalPanel1PSM1($studentId, $panelId){
-
-        StudentPSM1::whereId($studentId)
-            ->update(['panelProposalId' => $panelId]);
-    }
-
-    public function assignStudentsProposalPanel2PSM1($studentId, $panelId){
-
-        StudentPSM1::whereId($studentId)
-            ->update(['panelProposal2Id' => $panelId]);
-    }
-
-    public function unassignStudentsProposalPanel1PSM1($studentId){
-
-        StudentPSM1::whereId($studentId)
-            ->update(['panelProposalId' => null ]);
-    }
-
-    public function unassignStudentsProposalPanel2PSM1($studentId){
-
-        StudentPSM1::whereId($studentId)
-            ->update(['panelProposal2Id' => null ]);
-    }
 
     public function getStudentsPSM1lPanel(?int $panelId, int $type){
 
@@ -309,15 +306,36 @@ class StudentService
 
     public function getStudentsSupervisorPSM2(?int $supervisorId){
 
-        $unassignedStudents = StudentPSM2::whereNull('supervisorId')->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
-            $student->assigned = false;
-            return $student;
-        });
+        $unassignedStudents = StudentPSM2::whereNull('supervisorId')
+            ->where(function($query) use ($supervisorId) {
+                $query->whereNull('panel2Id')
+                    ->orWhere('panel2Id', '!=', $supervisorId);
+            })
+            ->where(function($query) use ($supervisorId) {
+                $query->whereNull('panelId')
+                    ->orWhere('panelId', '!=', $supervisorId);
+            })
+            ->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])
+            ->map(function ($student){
+                $student->assigned = false;
+                return $student;
+            });
         
-        $assignedStudents = StudentPSM2::where('supervisorId', $supervisorId)->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
-            $student->assigned = true;
-            return $student;
-        });
+        $assignedStudents = StudentPSM2::where('supervisorId', $supervisorId)
+            ->where(function($query) use ($supervisorId) {
+                $query->whereNull('panel2Id')
+                    ->orWhere('panel2Id', '!=', $supervisorId);
+            })
+            ->where(function($query) use ($supervisorId) {
+                $query->whereNull('panelId')
+                    ->orWhere('panelId', '!=', $supervisorId);
+            })
+            ->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])
+            ->map(function ($student){
+                $student->assigned = true;
+                return $student;
+            });
+
         $students = $assignedStudents->merge($unassignedStudents);
 
         return $students;
@@ -355,9 +373,6 @@ class StudentService
 
         return $assignedStudents;
     }
-
-
-
 
 
 

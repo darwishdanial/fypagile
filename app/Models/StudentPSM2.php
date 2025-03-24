@@ -32,6 +32,10 @@ class StudentPSM2 extends Model
         'panel2Id'
     ];
 
+    public function Score(){
+        return $this->belongsTo(Score::class);
+    }
+
     public function supervisor()
     {
         return $this->belongsTo(Supervisor::class);

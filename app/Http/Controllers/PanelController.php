@@ -11,6 +11,9 @@ use App\Services\StudentService;
 use App\Services\PanelService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\Rubric;
+use App\Models\Criteria;
+use App\Models\Score;
 
 
 class PanelController extends Controller
@@ -54,8 +57,39 @@ class PanelController extends Controller
     public function PSM1Grade(){
 
         $this->authorize('view psm1 grade table');
+        $id = Auth::user()->id;
 
-        return Inertia::render('Panel/PSM1/GradePSM1');
+        $students = $this->studentService->getStudentsPanelGradePSM1($id);
+
+        $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                ->where('PSMType',  'PSM1')
+                ->where('isPanelPSM1',  true)
+                ->get();
+
+        return Inertia::render('Panel/PSM1/GradePSM1',[
+            'students' => $students,
+            'rubrics' => $rubrics
+        ]);
+    }
+
+    public function PSM1StoreScore(Request $request){
+
+        $totalScore = array_sum($request->criteria);
+
+        $weight = $request->total_weight;
+
+        $finalScore = $weight/100 * $totalScore;
+
+        Score::create([
+            'rubric_id' => $request->rubric_id,
+            'student_psm1_id' => $request->student_id,
+            'mark' => $finalScore,
+            'comment' => $request->comments,
+        ]);
+
+        return redirect()->back()->with('success', 'Score successfully stored.');
+
+        // dd($request->criteria,$request->student_id, $id, $request->comments,$request->total_weight, $totalScore, $finalScore, $request->rubric_id);
     }
 
     //PSM2

@@ -16,7 +16,14 @@ return new class extends Migration
             $table->foreignId('rubric_id')
                 ->constrained('rubrics')
                 ->onDelete('cascade');
-            $table->unsignedInteger('student_id');
+            $table->foreignId('student_psm1_id')
+                ->nullable() 
+                ->constrained('students_psm1')
+                ->onDelete('cascade');
+            $table->foreignId('student_psm2_id')
+                ->nullable() 
+                ->constrained('students_psm2')
+                ->onDelete('cascade');
             $table->decimal('mark');
             $table->longText('comment');
             $table->timestamps();

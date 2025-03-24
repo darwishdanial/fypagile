@@ -9,6 +9,7 @@ interface Rubric {
     total_weight: number;
     psmType: string;
     isEnable: boolean;
+    isCoordinatorPSM1: boolean;
     isSupervisorPSM1: boolean;
     isPanelPSM1: boolean;
     isArchivePSM1: boolean;
@@ -29,6 +30,24 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
     psmType,
     rubric,
 }) => {
+    // Determine the initial role type based on the rubric data
+    const determineInitialRoleType = (rubric: Rubric | null, psmType: string): string => {
+        if (!rubric) return "";
+        
+        if (psmType === "PSM1") {
+            if (rubric.isCoordinatorPSM1) return "coordinator";
+            if (rubric.isSupervisorPSM1) return "supervisor";
+            if (rubric.isPanelPSM1) return "panel";
+        } else {
+            // For PSM2
+            if (rubric.isCoordinatorPSM1) return "coordinator"; // Assuming there's a coordinator for PSM2 as well
+            if (rubric.isSupervisorPSM2) return "supervisor";
+            if (rubric.isPanelPSM2) return "panel";
+        }
+        
+        return "";
+    };
+
     useEffect(() => {
         if (isOpen) {
             // Disable scrolling on body when modal is open
@@ -46,10 +65,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
         total_weight: rubric?.total_weight || "",
         PSMType: psmType || "",
         isEnable: rubric?.isEnable || false,
-        isSupervisorPSM1: rubric?.isSupervisorPSM1 || false,
-        isPanelPSM1: rubric?.isPanelPSM1 || false,
-        isSupervisorPSM2: rubric?.isSupervisorPSM2 || false,
-        isPanelPSM2: rubric?.isPanelPSM2 || false,
+        roleType: determineInitialRoleType(rubric, psmType),
     });
 
     useEffect(() => {
@@ -59,13 +75,10 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                 total_weight: rubric?.total_weight || "",
                 PSMType: psmType || "",
                 isEnable: rubric?.isEnable || false,
-                isSupervisorPSM1: rubric?.isSupervisorPSM1 || false,
-                isPanelPSM1: rubric?.isPanelPSM1 || false,
-                isSupervisorPSM2: rubric?.isSupervisorPSM2 || false,
-                isPanelPSM2: rubric?.isPanelPSM2 || false,
+                roleType: determineInitialRoleType(rubric, psmType),
             });
         }
-    }, [rubric, setData]);
+    }, [rubric, setData, psmType]);
 
     const [processing, setIsProcessing] = useState(false);
 
@@ -86,6 +99,11 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                 ...prev,
                 [name]: isChecked,
             }));
+        } else if (type === "radio") {
+            setData((prev) => ({
+                ...prev,
+                roleType: value,
+            }));
         } else {
             setData((prev) => ({
                 ...prev,
@@ -99,12 +117,23 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
 
         if (!rubric) return;
 
+        // Transform the roleType into the expected format for the backend
+        const transformedData = {
+            ...data,
+            isCoordinatorPSM1: psmType === "PSM1" && data.roleType === "coordinator",
+            isSupervisorPSM1: psmType === "PSM1" && data.roleType === "supervisor",
+            isPanelPSM1: psmType === "PSM1" && data.roleType === "panel",
+            isCoordinatorPSM2: psmType === "PSM2" && data.roleType === "coordinator",
+            isSupervisorPSM2: psmType === "PSM2" && data.roleType === "supervisor",
+            isPanelPSM2: psmType === "PSM2" && data.roleType === "panel",
+        };
+
         const route_path =
             psmType === "PSM1"
                 ? "coordinator.PSM1.evaluationRubric.update"
                 : "coordinator.PSM2.evaluationRubric.update";
 
-        router.put(route(route_path, rubric.id), data, {
+        router.put(route(route_path, rubric.id), transformedData, {
             onStart: () => {
                 setIsProcessing(true);
             },
@@ -116,17 +145,6 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
             },
             onSuccess: () => {
                 onClose();
-                // Reset form
-                setData({
-                    name: rubric?.name || "",
-                    total_weight: rubric?.total_weight || "",
-                    PSMType: psmType || "",
-                    isEnable: rubric?.isEnable || false,
-                    isSupervisorPSM1: rubric?.isSupervisorPSM1 || false,
-                    isPanelPSM1: rubric?.isPanelPSM1 || false,
-                    isSupervisorPSM2: rubric?.isSupervisorPSM2 || false,
-                    isPanelPSM2: rubric?.isPanelPSM2 || false,
-                });
             },
         });
     };
@@ -188,7 +206,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                                 </label>
                                 <input
                                     title="Total Weight"
-                                    type="decimal"
+                                    type="number"
                                     name="total_weight"
                                     value={data.total_weight}
                                     onChange={handleChange}
@@ -225,30 +243,40 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
 
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
-                                Role Selection
+                                Role Selection (Select One)
                             </h3>
                             {psmType === "PSM1" ? (
                                 <div className="space-y-4">
                                     <div className="flex items-center">
                                         <label className="font-medium text-gray-700 w-25">
+                                            Coordinator:
+                                        </label>
+                                        <input
+                                            title="Coordinator"
+                                            id="coordinator"
+                                            type="radio"
+                                            name="roleType"
+                                            value="coordinator"
+                                            checked={data.roleType === "coordinator"}
+                                            onChange={handleChange}
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center">
+                                        <label className="font-medium text-gray-700 w-25">
                                             Supervisor:
                                         </label>
                                         <input
-                                            title="SupervisorPSM1"
-                                            id="isSupervisorPSM1"
-                                            type="checkbox"
-                                            name="isSupervisorPSM1"
-                                            checked={Boolean(
-                                                data.isSupervisorPSM1
-                                            )}
+                                            title="Supervisor"
+                                            id="supervisor"
+                                            type="radio"
+                                            name="roleType"
+                                            value="supervisor"
+                                            checked={data.roleType === "supervisor"}
                                             onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
                                         />
-                                        {errors.isSupervisorPSM1 && (
-                                            <p className="text-red-500 ml-2">
-                                                {errors.isSupervisorPSM1}
-                                            </p>
-                                        )}
                                     </div>
 
                                     <div className="flex items-center">
@@ -256,43 +284,49 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                                             Panel PSM1:
                                         </label>
                                         <input
-                                            title="PanelPSM1"
-                                            id="isPanelPSM1"
-                                            type="checkbox"
-                                            name="isPanelPSM1"
-                                            checked={Boolean(data.isPanelPSM1)}
+                                            title="Panel"
+                                            id="panel"
+                                            type="radio"
+                                            name="roleType"
+                                            value="panel"
+                                            checked={data.roleType === "panel"}
                                             onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
                                         />
-                                        {errors.isPanelPSM1 && (
-                                            <p className="text-red-500 ml-2">
-                                                {errors.isPanelPSM1}
-                                            </p>
-                                        )}
                                     </div>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
                                     <div className="flex items-center">
+                                        <label className="font-medium text-gray-700 w-25">
+                                            Coordinator:
+                                        </label>
+                                        <input
+                                            title="Coordinator"
+                                            id="coordinator"
+                                            type="radio"
+                                            name="roleType"
+                                            value="coordinator"
+                                            checked={data.roleType === "coordinator"}
+                                            onChange={handleChange}
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center">
                                         <label className="font-medium text-gray-700 w-32">
                                             Supervisor:
                                         </label>
                                         <input
-                                            title="SupervisorPSM2"
-                                            id="isSupervisorPSM2"
-                                            type="checkbox"
-                                            name="isSupervisorPSM2"
-                                            checked={Boolean(
-                                                data.isSupervisorPSM2
-                                            )}
+                                            title="Supervisor"
+                                            id="supervisor"
+                                            type="radio"
+                                            name="roleType"
+                                            value="supervisor"
+                                            checked={data.roleType === "supervisor"}
                                             onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
                                         />
-                                        {errors.isSupervisorPSM1 && (
-                                            <p className="text-red-500 ml-2">
-                                                {errors.isSupervisorPSM2}
-                                            </p>
-                                        )}
                                     </div>
 
                                     <div className="flex items-center">
@@ -300,21 +334,22 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                                             Panel PSM2:
                                         </label>
                                         <input
-                                            title="PanelPSM2"
-                                            id="isPanelPSM2"
-                                            type="checkbox"
-                                            name="isPanelPSM2"
-                                            checked={Boolean(data.isPanelPSM2)}
+                                            title="Panel"
+                                            id="panel"
+                                            type="radio"
+                                            name="roleType"
+                                            value="panel"
+                                            checked={data.roleType === "panel"}
                                             onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
                                         />
-                                        {errors.isPanelPSM1 && (
-                                            <p className="text-red-500 ml-2">
-                                                {errors.isPanelPSM2}
-                                            </p>
-                                        )}
                                     </div>
                                 </div>
+                            )}
+                            {errors.roleType && (
+                                <p className="text-red-500 mt-2">
+                                    {errors.roleType}
+                                </p>
                             )}
                         </div>
                     </form>

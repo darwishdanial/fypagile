@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('rubrics', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->decimal('total_weight');
+            $table->tinyInteger('total_weight')->unsigned();
             $table->string(column: 'PSMType');
             $table->boolean('isEnable');
+            $table->boolean('isCoordinatorPSM1');
             $table->boolean('isSupervisorPSM1');
             $table->boolean('isPanelPSM1');
+            $table->boolean('isCoordinatorPSM2');
             $table->boolean('isSupervisorPSM2');
             $table->boolean('isPanelPSM2');
             $table->timestamps();

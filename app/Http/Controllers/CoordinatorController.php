@@ -6,6 +6,7 @@ use App\Models\StudentPSM2;
 use App\Models\User;
 use App\Models\Rubric;
 use App\Models\Criteria;
+use App\Models\Score;
 use Illuminate\Http\Request;
 use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
@@ -425,15 +426,17 @@ class CoordinatorController extends Controller
 
     public function PSM1StoreEvaluationRurbric(Request $request)
     {
-        //dd( $request->all());
+        // dd( $request->all());
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'PSMType' => 'required|string|max:255',
-            'total_weight' => 'required|decimal:0,2|max:255',
+            'total_weight' => 'required|integer|min:0|max:100',
             'isEnable' => 'required|boolean',
+            'isCoordinatorPSM1' => 'required|boolean',
             'isSupervisorPSM1' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
+            'isCoordinatorPSM2' => 'required|boolean',
             'isSupervisorPSM2' => 'required|boolean',
             'isPanelPSM2' => 'required|boolean',
         ]);
@@ -465,8 +468,9 @@ class CoordinatorController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'PSMType' => 'required|string|max:255',
-            'total_weight' => 'required|decimal:0,2|max:255',
+            'total_weight' => 'required|integer|min:0|max:100',
             'isEnable' => 'required|boolean',
+            'isCoordinatorPSM1' => 'required|boolean',
             'isSupervisorPSM1' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
         ]);
@@ -485,7 +489,7 @@ class CoordinatorController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'rubric_id' => 'required|integer|exists:rubrics,id',
+            'rubric_id' => 'required|number|exists:rubrics,id',
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
@@ -537,7 +541,7 @@ class CoordinatorController extends Controller
 
         $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                 ->where('PSMType',  'PSM1')
-                 ->where('isPanelPSM1',  true)
+                ->where('isPanelPSM1',  true)
                 ->get();
 
         return Inertia::render('Coordinator/PSM1/GradePSM1',[
@@ -546,7 +550,24 @@ class CoordinatorController extends Controller
         ]);
     }
 
-    public function PSM1StoreScore(Request $request, $id){
+    public function PSM1GradeCoordinator()
+    {
+        $id = Auth::user()->id;
+
+        $students = StudentPSM1::all();
+
+        $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                ->where('PSMType',  'PSM1')
+                ->where('isCoordinatorPSM1',  true)
+                ->get();
+
+        return Inertia::render('Coordinator/PSM1/GradePSM1Coordinator',[
+            'students' => $students,
+            'rubrics' => $rubrics
+        ]);
+    }
+
+    public function PSM1StoreScore(Request $request){
 
         $totalScore = array_sum($request->criteria);
 
@@ -554,19 +575,35 @@ class CoordinatorController extends Controller
 
         $finalScore = $weight/100 * $totalScore;
 
-        dd($request->criteria,$request->student_id, $id, $request->comments,$request->total_weight, $totalScore, $finalScore, $request->rubric_id);
+        Score::create([
+            'rubric_id' => $request->rubric_id,
+            'student_psm1_id' => $request->student_id,
+            'mark' => $finalScore,
+            'comment' => $request->comments,
+        ]);
+
+        return redirect()->back()->with('success', 'Score successfully stored.');
+
+        // dd($request->criteria,$request->student_id, $id, $request->comments,$request->total_weight, $totalScore, $finalScore, $request->rubric_id);
     }
-
-
-
-
 
     public function PSM1ViewResult()
     {
         $this->authorize('view psm1 result table');
 
-        return Inertia::render('Coordinator/PSM1/ViewResult');
+        $students = StudentPSM1::with(['score.rubric'])->get();
+
+        // dd($students[2]);
+
+        $rubric = Rubric:: where('PSMType',  'PSM1') ->get();
+
+        return Inertia::render('Coordinator/PSM1/ViewResult',[
+            'students' => $students,
+            'rubrics' => $rubric,
+        ]);
     }
+
+
 
 
     //PSM2

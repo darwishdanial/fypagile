@@ -30,6 +30,7 @@ interface GradeRubricModalProps {
     psmType: string;
     rubric: Rubric | null;
     studentId: number | null;
+    userType: number | null;
 }
 
 const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
@@ -37,6 +38,7 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
     onClose,
     psmType,
     rubric,
+    userType,
     studentId,
 }) => {
     useEffect(() => {
@@ -121,9 +123,15 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
             }
         });
 
+        const route_path =
+            userType === 2
+                ? "panel.PSM1.score.store"
+                : "coordinator.PSM1.score.store";
+
+
         // Send only the criteria scores
         router.post(
-            route("coordinator.PSM1.score.store", rubric.id),
+            route(route_path),
             { criteria: criteriaScores, student_id: studentId, comments: data.comments, total_weight: data.total_weight, rubric_id:data.id },
             {
                 onStart: () => setIsProcessing(true),

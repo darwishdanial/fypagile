@@ -23,9 +23,11 @@ interface Rubric {
     total_weight: number;
     psmType: string;
     isEnable: boolean;
+    isCoordinatorPSM1: boolean;
     isSupervisorPSM1: boolean;
     isPanelPSM1: boolean;
     isArchivePSM1: boolean;
+    isCoordinatorPSM2: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
     criteria: Criteria[] | null;
@@ -237,11 +239,9 @@ export default function EvaluationRubric() {
                                     Enable
                                 </th>
                                 <th className="px-4 py-2 border-b border-gray-300">
-                                    Supervisor
+                                    Role
                                 </th>
-                                <th className="px-4 py-2 border-b border-gray-300">
-                                    PSM1 Panel
-                                </th>
+
                                 <th className="px-4 py-2 border-b border-gray-300">
                                     Action
                                 </th>
@@ -330,52 +330,38 @@ export default function EvaluationRubric() {
                                                 )
                                             }
                                         >
-                                            {rubric.isSupervisorPSM1 ? (
-                                                <div className="flex items-center justify-center">
-                                                    {rubric.isSupervisorPSM1 && (
-                                                        <Check
-                                                            size={20}
-                                                            className="text-green-600"
-                                                        />
+                                            <div className="flex flex-col items-center text-sm">
+                                                {Boolean(
+                                                    rubric.isCoordinatorPSM1
+                                                ) && (
+                                                    <span className="py-1 px-2 bg-blue-100 text-blue-800 rounded mb-1">
+                                                        Coordinator
+                                                    </span>
+                                                )}
+                                                {Boolean(
+                                                    rubric.isSupervisorPSM1
+                                                ) && (
+                                                    <span className="py-1 px-2 bg-green-100 text-green-800 rounded mb-1">
+                                                        Supervisor
+                                                    </span>
+                                                )}
+                                                {Boolean(
+                                                    rubric.isPanelPSM1
+                                                ) && (
+                                                    <span className="py-1 px-2 bg-purple-100 text-purple-800 rounded mb-1">
+                                                        Panel
+                                                    </span>
+                                                )}
+                                                {!rubric.isCoordinatorPSM1 &&
+                                                    !rubric.isSupervisorPSM1 &&
+                                                    !rubric.isPanelPSM1 && (
+                                                        <span className="py-1 px-2 bg-gray-100 text-gray-600 rounded">
+                                                            None
+                                                        </span>
                                                     )}
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center justify-center">
-                                                    <X
-                                                        size={20}
-                                                        className="text-green-600"
-                                                    />
-                                                </div>
-                                            )}
+                                            </div>
                                         </td>
-                                        <td
-                                            className="px-4 py-2 cursor-pointer "
-                                            onClick={() =>
-                                                setExpandedRow(
-                                                    expandedRow === rubric.id
-                                                        ? null
-                                                        : rubric.id
-                                                )
-                                            }
-                                        >
-                                            {rubric.isPanelPSM1 ? (
-                                                <div className="flex items-center justify-center">
-                                                    {rubric.isPanelPSM1 && (
-                                                        <Check
-                                                            size={20}
-                                                            className="text-green-600"
-                                                        />
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center justify-center">
-                                                    <X
-                                                        size={20}
-                                                        className="text-green-600"
-                                                    />
-                                                </div>
-                                            )}
-                                        </td>
+
                                         <td className="px-4 py-2">
                                             <div className="flex items-center justify-center space-x-2">
                                                 <button

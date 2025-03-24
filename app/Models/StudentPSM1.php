@@ -34,6 +34,11 @@ class StudentPSM1 extends Model
         'panelProposal2Id'
     ];
 
+    public function score(){
+        
+        return $this->hasMany(Score::class, 'student_psm1_id');
+    }
+
     public function supervisor()
     {
         return $this->belongsTo(Supervisor::class);

@@ -162,9 +162,11 @@ Route::middleware( EnsureCoordinator::class)
         Route::get('/grade-supervision', [CoordinatorController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
 
 
-        Route::get('/grade-PSM1', [CoordinatorController::class, 'PSM1GradePanel'])->name('gradePSM1');
+        Route::get('/grade-PSM1-panel', [CoordinatorController::class, 'PSM1GradePanel'])->name('gradePSM1Panel');
 
-        Route::post('/store-score/{id}', [CoordinatorController::class, 'PSM1StoreScore'])->name('score.store');
+        Route::get('/grade-PSM1-coordinator', [CoordinatorController::class, 'PSM1GradeCoordinator'])->name('gradePSM1Coordinator');
+
+        Route::post('/store-score', [CoordinatorController::class, 'PSM1StoreScore'])->name('score.store');
 
     });
 
@@ -256,6 +258,8 @@ Route::middleware(EnsurePanel::class)
         Route::get('/grade-proposal', [PanelController::class, 'PSM1GradeProposal'])->name('gradeProposal');
 
         Route::get('/grade-PSM1', [PanelController::class, 'PSM1Grade'])->name('gradePSM1');
+
+        Route::post('/store-score', [PanelController::class, 'PSM1StoreScore'])->name('score.store');
 
     });
 

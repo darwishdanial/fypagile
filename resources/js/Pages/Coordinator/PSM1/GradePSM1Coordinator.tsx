@@ -26,23 +26,27 @@ interface Student {
     cohort: string;
     phone: string;
     email: string;
-    score: Score[] | null;
-}
-
-interface Score {
-    id: number;
-    mark: number;
-    comment: string;
-    rubric: Rubric | null;
 }
 
 interface Rubric {
     id: number;
     name: string;
     total_weight: number;
-    isCoordinatorPSM1: number;
-    isSupervisorPSM1: number;
-    isPanelPSM1: number;
+    psmType: string;
+    isEnable: boolean;
+    isSupervisorPSM1: boolean;
+    isPanelPSM1: boolean;
+    isArchivePSM1: boolean;
+    isSupervisorPSM2: boolean;
+    isPanelPSM2: boolean;
+    criteria: Criteria[] | null;
+}
+
+interface Criteria {
+    id: number;
+    rubric_id: number;
+    name: string;
+    weight: number;
 }
 
 interface Flash {
@@ -51,7 +55,7 @@ interface Flash {
     warning?: string[][];
 }
 
-export default function ViewResult() {
+export default function GradePSM1Coordinator() {
     const { props } = usePage<{
         students: Student[];
         rubrics: Rubric[];
@@ -66,7 +70,9 @@ export default function ViewResult() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isImportErrorModalOpen, setIsImportErrorModalOpen] = useState(false);
-    const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
+    const [selectedStudent, setSelectedStudent] = useState<number | null>(
+        null
+    );
     const [isImportModalOpen, setIsImoprtModalOpen] = useState(false);
 
     // State for selected students
@@ -241,22 +247,9 @@ export default function ViewResult() {
                                     key={rubric.id}
                                     className="px-4 py-2 border-b border-gray-300"
                                 >
-                                    {Boolean(rubric.isCoordinatorPSM1) && (
-                                        <span>Coordinator</span>
-                                    )}
-                                    {Boolean(rubric.isSupervisorPSM1) && (
-                                        <span>Supervisor</span>
-                                    )}
-                                    {Boolean(rubric.isPanelPSM1) && (
-                                        <span>Panel</span>
-                                    )}{" "}
-                                    {rubric.name} {rubric.total_weight}
-                                    {"%"}
+                                    {rubric.name}
                                 </th>
                             ))}
-                            <th className="px-4 py-2 text-left border-b border-gray-300">
-                                Total
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -319,70 +312,33 @@ export default function ViewResult() {
                                     >
                                         {student.name}
                                     </td>
-                                    {rubrics.map((rubric) => {
-                                        const scores =
-                                            student.score?.filter(
-                                                (s) =>
-                                                    s.rubric?.id === rubric.id
-                                            ) || [];
-
-                                        return (
-                                            <td
-                                                key={`${student.id}-${rubric.id}`}
-                                                className="px-4 py-2"
+                                    {rubrics.map((rubric) => (
+                                        <td
+                                            key={`${student.id}-${rubric.id}`}
+                                            className="px-4 py-2"
+                                        >
+                                            <button
+                                                type="button"
+                                                className="p-1 text-blue-600 hover:text-blue-800 transition"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    // Handle rubric editing (you can add your logic here)
+                                                    setSelectedStudent(student.id);
+                                                    setSelectedRubric(rubric);
+                                                    setIsGradeModalOpen(true);
+                                                    console.log(
+                                                        `Edit rubric ${rubric.id} for student ${student.id}`
+                                                    );
+                                                }}
+                                                title={`Edit ${rubric.name}`}
                                             >
-                                                <div className="flex items-center justify-center">
-                                                    <p className="mr-2">
-                                                        {scores.length > 0
-                                                            ? scores
-                                                                  .map(
-                                                                      (s) =>
-                                                                          s.mark
-                                                                  )
-                                                                  .join(" | ")
-                                                            : "N/A"}
-                                                    </p>
-
-                                                    {scores.length > 0 && (
-                                                        <button
-                                                            type="button"
-                                                            className="p-1 text-blue-600 hover:text-blue-800 transition"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setSelectedStudent(
-                                                                    student.id
-                                                                );
-                                                                setSelectedRubric(
-                                                                    rubric
-                                                                );
-                                                                setIsGradeModalOpen(
-                                                                    true
-                                                                );
-                                                            }}
-                                                            title={`Edit ${rubric.name}`}
-                                                        >
-                                                            <Pencil
-                                                                size={20}
-                                                                className="transition-transform duration-200 hover:scale-125"
-                                                            />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        );
-                                    })}
-                                    <td
-                                        className="px-4 py-2 cursor-pointer"
-                                        onClick={() =>
-                                            setExpandedRow(
-                                                expandedRow === student.id
-                                                    ? null
-                                                    : student.id
-                                            )
-                                        }
-                                    >
-                                        N/A
-                                    </td>
+                                                <Pencil
+                                                    size={20}
+                                                    className="transition-transform duration-200 hover:scale-125"
+                                                />
+                                            </button>
+                                        </td>
+                                    ))}
                                 </tr>
                                 {expandedRow === student.id && (
                                     <tr className="bg-gray-50 border-b border-gray-300">
@@ -461,7 +417,7 @@ export default function ViewResult() {
                 studentType = {studentType}
             /> */}
 
-            {/* <GradeRubricModal
+            <GradeRubricModal
                 isOpen={isGradeModalOpen}
                 onClose={() => {
                     setIsGradeModalOpen(false);
@@ -470,7 +426,8 @@ export default function ViewResult() {
                 rubric={selectedRubric}
                 psmType="PSM1"
                 studentId={selectedStudent}
-            /> */}
+                userType = {1}
+            />
 
             {/* <EditStudentModal
                 isOpen={isEditModalOpen}

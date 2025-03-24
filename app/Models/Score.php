@@ -16,11 +16,22 @@ class Score extends Model
         'student_id',
         'mark',
         'comment',
-        
+        'student_psm1_id',
+        'student_psm2_id'
     ];
 
     public function rubric()
     {
         return $this->belongsTo(Rubric::class);
+    }
+
+    public function student_psm1()
+    {
+        return $this->belongsTo(StudentPSM1::class, 'student_psm1_id');
+    }
+
+    public function student_psm2()
+    {
+        return $this->belongsTo(StudentPSM2::class);
     }
 }
