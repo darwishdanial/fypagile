@@ -17,7 +17,9 @@ class Score extends Model
         'mark',
         'comment',
         'student_psm1_id',
-        'student_psm2_id'
+        'student_psm2_id',
+        'panel_id',
+        'panel_name'
     ];
 
     public function rubric()
@@ -33,5 +35,10 @@ class Score extends Model
     public function student_psm2()
     {
         return $this->belongsTo(StudentPSM2::class);
+    }
+
+    public function panel()
+    {
+        return $this->belongsTo(User::class,'panel_id');
     }
 }

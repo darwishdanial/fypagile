@@ -60,11 +60,13 @@ export default function GradePSM1() {
         students: Student[];
         rubrics: Rubric[];
         flash?: Flash;
+        id: number;
     }>();
 
     const students = props.students;
     const rubrics = props.rubrics;
     const studentType = "PSM1";
+    const panelId = props.id;
 
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -426,7 +428,8 @@ export default function GradePSM1() {
                 rubric={selectedRubric}
                 psmType="PSM1"
                 studentId={selectedStudent}
-                userType = {1}
+                userType = {1}  
+                panelId = {panelId}
             />
 
             {/* <EditStudentModal

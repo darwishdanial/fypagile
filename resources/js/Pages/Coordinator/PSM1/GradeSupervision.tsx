@@ -60,19 +60,19 @@ export default function GradeSupervision() {
         students: Student[];
         rubrics: Rubric[];
         flash?: Flash;
+        id: number;
     }>();
 
     const students = props.students;
     const rubrics = props.rubrics;
     const studentType = "PSM1";
+    const panelId = props.id;
 
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isImportErrorModalOpen, setIsImportErrorModalOpen] = useState(false);
-    const [selectedStudent, setSelectedStudent] = useState<number | null>(
-        null
-    );
+    const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
     const [isImportModalOpen, setIsImoprtModalOpen] = useState(false);
 
     // State for selected students
@@ -323,7 +323,9 @@ export default function GradeSupervision() {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     // Handle rubric editing (you can add your logic here)
-                                                    setSelectedStudent(student.id);
+                                                    setSelectedStudent(
+                                                        student.id
+                                                    );
                                                     setSelectedRubric(rubric);
                                                     setIsGradeModalOpen(true);
                                                     console.log(
@@ -426,6 +428,8 @@ export default function GradeSupervision() {
                 rubric={selectedRubric}
                 psmType="PSM1"
                 studentId={selectedStudent}
+                userType={1}
+                panelId={panelId}
             />
 
             {/* <EditStudentModal

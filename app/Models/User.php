@@ -71,5 +71,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Coordinator::class, 'userId');
     }
+
+    public function score()
+    {
+        return $this->hasMany(Score::class, 'panel_id');
+    }
 }
 

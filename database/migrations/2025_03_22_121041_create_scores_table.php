@@ -24,6 +24,9 @@ return new class extends Migration
                 ->nullable() 
                 ->constrained('students_psm2')
                 ->onDelete('cascade');
+            $table->foreignId('panel_id')
+                ->constrained('users');
+            $table->string('panel_name');
             $table->decimal('mark');
             $table->longText('comment');
             $table->timestamps();

@@ -527,7 +527,8 @@ class CoordinatorController extends Controller
 
         return Inertia::render('Coordinator/PSM1/GradeSupervision',[
             'students' => $students,
-            'rubrics' => $rubrics
+            'rubrics' => $rubrics,
+            'id' => $id
         ]);
     }
 
@@ -546,7 +547,8 @@ class CoordinatorController extends Controller
 
         return Inertia::render('Coordinator/PSM1/GradePSM1',[
             'students' => $students,
-            'rubrics' => $rubrics
+            'rubrics' => $rubrics,
+            'id' => $id
         ]);
     }
 
@@ -563,17 +565,24 @@ class CoordinatorController extends Controller
 
         return Inertia::render('Coordinator/PSM1/GradePSM1Coordinator',[
             'students' => $students,
-            'rubrics' => $rubrics
+            'rubrics' => $rubrics,
+            'id' => $id
         ]);
     }
 
     public function PSM1StoreScore(Request $request){
+
+        // dd('panel id: '.$request->panel_id);
 
         $totalScore = array_sum($request->criteria);
 
         $weight = $request->total_weight;
 
         $finalScore = $weight/100 * $totalScore;
+
+        $panelName = User::findOrFail($request->panel_id)->name;
+
+        // dd($panelName);
 
         // Score::create([
         //     'rubric_id' => $request->rubric_id,
@@ -586,10 +595,12 @@ class CoordinatorController extends Controller
             [
                 'rubric_id' => $request->rubric_id,
                 'student_psm1_id' => $request->student_id,
+                'panel_id' => $request->panel_id,
             ],
             [
                 'mark' => $finalScore,
                 'comment' => $request->comments,
+                'panel_name' => $panelName,
             ]
         );
 

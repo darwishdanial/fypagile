@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
+use App\Models\User;
 use Session;
 use Exception;
 use Illuminate\Http\Request;
@@ -68,11 +69,14 @@ class PanelController extends Controller
 
         return Inertia::render('Panel/PSM1/GradePSM1',[
             'students' => $students,
-            'rubrics' => $rubrics
+            'rubrics' => $rubrics,
+            'id' => $id
         ]);
     }
 
     public function PSM1StoreScore(Request $request){
+
+        //dd('panel id: '.$request->panel_id);
 
         $totalScore = array_sum($request->criteria);
 
@@ -80,27 +84,25 @@ class PanelController extends Controller
 
         $finalScore = $weight/100 * $totalScore;
 
-        // Score::create([
-        //     'rubric_id' => $request->rubric_id,
-        //     'student_psm1_id' => $request->student_id,
-        //     'mark' => $finalScore,
-        //     'comment' => $request->comments,
-        // ]);
+        $panelName = User::findOrFail($request->panel_id)->name;
+
+        // dd($panelName);
 
         Score::updateOrCreate(
             [
                 'rubric_id' => $request->rubric_id,
                 'student_psm1_id' => $request->student_id,
+                'panel_id' => $request->panel_id,
             ],
             [
                 'mark' => $finalScore,
                 'comment' => $request->comments,
+                'panel_name' => $panelName,
             ]
         );
 
         return redirect()->back()->with('success', 'Score successfully stored.');
 
-        // dd($request->criteria,$request->student_id, $id, $request->comments,$request->total_weight, $totalScore, $finalScore, $request->rubric_id);
     }
 
     //PSM2

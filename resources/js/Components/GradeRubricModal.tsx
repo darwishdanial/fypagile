@@ -31,6 +31,7 @@ interface GradeRubricModalProps {
     rubric: Rubric | null;
     studentId: number | null;
     userType: number | null;
+    panelId: number | null;
 }
 
 const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
@@ -40,6 +41,7 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
     rubric,
     userType,
     studentId,
+    panelId
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -132,7 +134,8 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
         // Send only the criteria scores
         router.post(
             route(route_path),
-            { criteria: criteriaScores, student_id: studentId, comments: data.comments, total_weight: data.total_weight, rubric_id:data.id },
+            { criteria: criteriaScores, student_id: studentId, comments: data.comments, 
+                total_weight: data.total_weight, rubric_id:data.id, panel_id: panelId },
             {
                 onStart: () => setIsProcessing(true),
                 onFinish: () => setIsProcessing(false),
