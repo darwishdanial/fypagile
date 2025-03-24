@@ -575,12 +575,23 @@ class CoordinatorController extends Controller
 
         $finalScore = $weight/100 * $totalScore;
 
-        Score::create([
-            'rubric_id' => $request->rubric_id,
-            'student_psm1_id' => $request->student_id,
-            'mark' => $finalScore,
-            'comment' => $request->comments,
-        ]);
+        // Score::create([
+        //     'rubric_id' => $request->rubric_id,
+        //     'student_psm1_id' => $request->student_id,
+        //     'mark' => $finalScore,
+        //     'comment' => $request->comments,
+        // ]);
+
+        Score::updateOrCreate(
+            [
+                'rubric_id' => $request->rubric_id,
+                'student_psm1_id' => $request->student_id,
+            ],
+            [
+                'mark' => $finalScore,
+                'comment' => $request->comments,
+            ]
+        );
 
         return redirect()->back()->with('success', 'Score successfully stored.');
 
