@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('scores', function (Blueprint $table) {
             $table->id();
             $table->foreignId('rubric_id')
-                ->constrained('rubrics')
-                ->onDelete('cascade');
+                ->constrained('rubrics');
             $table->foreignId('student_psm1_id')
                 ->nullable() 
                 ->constrained('students_psm1')

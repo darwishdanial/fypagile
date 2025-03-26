@@ -24,7 +24,7 @@ class Score extends Model
 
     public function rubric()
     {
-        return $this->belongsTo(Rubric::class);
+        return $this->belongsTo(Rubric::class)->withTrashed();
     }
 
     public function student_psm1()

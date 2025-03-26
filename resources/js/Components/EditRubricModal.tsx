@@ -9,6 +9,8 @@ interface Rubric {
     total_weight: number;
     psmType: string;
     isEnable: boolean;
+    isResearch: boolean;
+    isDevelopment: boolean;
     isCoordinatorPSM1: boolean;
     isSupervisorPSM1: boolean;
     isPanelPSM1: boolean;
@@ -40,9 +42,24 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
             if (rubric.isPanelPSM1) return "panel";
         } else {
             // For PSM2
-            if (rubric.isCoordinatorPSM1) return "coordinator"; // Assuming there's a coordinator for PSM2 as well
+            if (rubric.isCoordinatorPSM1) return "coordinator"; 
             if (rubric.isSupervisorPSM2) return "supervisor";
             if (rubric.isPanelPSM2) return "panel";
+        }
+        
+        return "";
+    };
+
+    const determineInitialRubricType = (rubric: Rubric | null, psmType: string): string => {
+        if (!rubric) return "";
+        
+        if (psmType === "PSM1") {
+            if (rubric.isResearch) return "research";
+            if (rubric.isDevelopment) return "development";
+        } else {
+            // For PSM2
+            if (rubric.isResearch) return "research"; 
+            if (rubric.isDevelopment) return "development";
         }
         
         return "";
@@ -66,6 +83,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
         PSMType: psmType || "",
         isEnable: rubric?.isEnable || false,
         roleType: determineInitialRoleType(rubric, psmType),
+        rubricType: determineInitialRubricType(rubric, psmType),
     });
 
     useEffect(() => {
@@ -76,6 +94,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                 PSMType: psmType || "",
                 isEnable: rubric?.isEnable || false,
                 roleType: determineInitialRoleType(rubric, psmType),
+                rubricType: determineInitialRubricType(rubric, psmType),
             });
         }
     }, [rubric, setData, psmType]);
@@ -102,7 +121,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
         } else if (type === "radio") {
             setData((prev) => ({
                 ...prev,
-                roleType: value,
+                [name]: value,
             }));
         } else {
             setData((prev) => ({
@@ -126,6 +145,8 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
             isCoordinatorPSM2: psmType === "PSM2" && data.roleType === "coordinator",
             isSupervisorPSM2: psmType === "PSM2" && data.roleType === "supervisor",
             isPanelPSM2: psmType === "PSM2" && data.roleType === "panel",
+            isResearch: data.rubricType === "research",
+            isDevelopment: data.rubricType === "development",
         };
 
         const route_path =
@@ -174,7 +195,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
 
                 <hr className="border-t-1 border-gray-300"></hr>
 
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto max-h-[80vh]">
                     <form id="PSM1EditRubricForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
@@ -239,6 +260,54 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                                     </p>
                                 )}
                             </div>
+                        </div>
+
+                        <div className="p-4 border rounded border-gray-300 my-3 mx-2">
+                            <h3 className="font-medium text-[#808080] mb-3">
+                                Rubric Type Selection (Select One)
+                            </h3>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center">
+                                    <label className="font-medium text-gray-700 w-32">
+                                        Research:
+                                    </label>
+                                    <input
+                                        title="Research"
+                                        id="research"
+                                        type="radio"
+                                        name="rubricType"
+                                        value="research"
+                                        checked={data.rubricType === "research"}
+                                        onChange={handleChange}
+                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                    />
+                                </div>
+
+                                <div className="flex items-center">
+                                    <label className="font-medium text-gray-700 w-32">
+                                        Development:
+                                    </label>
+                                    <input
+                                        title="Development"
+                                        id="development"
+                                        type="radio"
+                                        name="rubricType"
+                                        value="development"
+                                        checked={
+                                            data.rubricType === "development"
+                                        }
+                                        onChange={handleChange}
+                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+
+                            {errors.rubricType && (
+                                <p className="text-red-500 mt-2">
+                                    {errors.rubricType}
+                                </p>
+                            )}
                         </div>
 
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">

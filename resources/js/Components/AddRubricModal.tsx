@@ -28,10 +28,11 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
 
     const { data, setData } = useForm({
         name: "",
-        total_weight: 0,
+        total_weight: "",
         PSMType: psmType,
         isEnable: false,
         roleType: "", // Single role selection
+        rubricType: "",
     });
 
     const [processing, setIsProcessing] = useState(false);
@@ -56,7 +57,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         } else if (type === "radio") {
             setData((prev) => ({
                 ...prev,
-                roleType: value,
+                [name]: value,
             }));
         } else {
             setData((prev) => ({
@@ -72,12 +73,18 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         // Transform the roleType into the expected format for the backend
         const transformedData = {
             ...data,
-            isCoordinatorPSM1: psmType === "PSM1" && data.roleType === "coordinator",
-            isSupervisorPSM1: psmType === "PSM1" && data.roleType === "supervisor",
+            isCoordinatorPSM1:
+                psmType === "PSM1" && data.roleType === "coordinator",
+            isSupervisorPSM1:
+                psmType === "PSM1" && data.roleType === "supervisor",
             isPanelPSM1: psmType === "PSM1" && data.roleType === "panel",
-            isCoordinatorPSM2: psmType === "PSM2" && data.roleType === "coordinator",
-            isSupervisorPSM2: psmType === "PSM2" && data.roleType === "supervisor",
+            isCoordinatorPSM2:
+                psmType === "PSM2" && data.roleType === "coordinator",
+            isSupervisorPSM2:
+                psmType === "PSM2" && data.roleType === "supervisor",
             isPanelPSM2: psmType === "PSM2" && data.roleType === "panel",
+            isResearch: data.rubricType === "research",
+            isDevelopment: data.rubricType === "development",
         };
 
         const route_path =
@@ -100,10 +107,11 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                 // Reset form
                 setData({
                     name: "",
-                    total_weight: 0,
+                    total_weight: "",
                     PSMType: psmType,
                     isEnable: false,
                     roleType: "",
+                    rubricType: "",
                 });
             },
         });
@@ -134,7 +142,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
 
                 <hr className="border-t-1 border-gray-300"></hr>
 
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto max-h-[80vh]">
                     <form id="PSM1AddRubricForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
@@ -166,7 +174,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                 </label>
                                 <input
                                     title="Total Weight"
-                                    type="number"
+                                    type="decimal"
                                     name="total_weight"
                                     value={data.total_weight}
                                     onChange={handleChange}
@@ -180,7 +188,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                 )}
                             </div>
 
-                            <div className="flex items-center">
+                            <div className="flex items-center mb-4">
                                 <label className="font-medium text-gray-700 w-25">
                                     Enable:
                                 </label>
@@ -199,6 +207,62 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                     </p>
                                 )}
                             </div>
+
+                            {/* <div className="flex items-center">
+                                <label className="font-medium text-gray-700 w-25">
+                                    Type:
+                                </label>
+                                //research radio button //development radio
+                                button
+                            </div> */}
+                        </div>
+
+                        <div className="p-4 border rounded border-gray-300 my-3 mx-2">
+                            <h3 className="font-medium text-[#808080] mb-3">
+                                Rubric Type Selection (Select One)
+                            </h3>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center">
+                                    <label className="font-medium text-gray-700 w-32">
+                                        Research:
+                                    </label>
+                                    <input
+                                        title="Research"
+                                        id="research"
+                                        type="radio"
+                                        name="rubricType"
+                                        value="research"
+                                        checked={data.rubricType === "research"}
+                                        onChange={handleChange}
+                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                    />
+                                </div>
+
+                                <div className="flex items-center">
+                                    <label className="font-medium text-gray-700 w-32">
+                                        Development:
+                                    </label>
+                                    <input
+                                        title="Development"
+                                        id="development"
+                                        type="radio"
+                                        name="rubricType"
+                                        value="development"
+                                        checked={
+                                            data.rubricType === "development"
+                                        }
+                                        onChange={handleChange}
+                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+
+                            {errors.rubricType && (
+                                <p className="text-red-500 mt-2">
+                                    {errors.rubricType}
+                                </p>
+                            )}
                         </div>
 
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
@@ -217,7 +281,9 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                             type="radio"
                                             name="roleType"
                                             value="coordinator"
-                                            checked={data.roleType === "coordinator"}
+                                            checked={
+                                                data.roleType === "coordinator"
+                                            }
                                             onChange={handleChange}
                                             className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
                                         />
@@ -233,7 +299,9 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                             type="radio"
                                             name="roleType"
                                             value="supervisor"
-                                            checked={data.roleType === "supervisor"}
+                                            checked={
+                                                data.roleType === "supervisor"
+                                            }
                                             onChange={handleChange}
                                             className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
                                         />
@@ -267,7 +335,9 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                             type="radio"
                                             name="roleType"
                                             value="coordinator"
-                                            checked={data.roleType === "coordinator"}
+                                            checked={
+                                                data.roleType === "coordinator"
+                                            }
                                             onChange={handleChange}
                                             className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
                                         />
@@ -283,7 +353,9 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                             type="radio"
                                             name="roleType"
                                             value="supervisor"
-                                            checked={data.roleType === "supervisor"}
+                                            checked={
+                                                data.roleType === "supervisor"
+                                            }
                                             onChange={handleChange}
                                             className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
                                         />

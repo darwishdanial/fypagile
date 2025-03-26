@@ -41,7 +41,7 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
     rubric,
     userType,
     studentId,
-    panelId
+    panelId,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -130,12 +130,19 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
                 ? "panel.PSM1.score.store"
                 : "coordinator.PSM1.score.store";
 
-
         // Send only the criteria scores
         router.post(
             route(route_path),
-            { criteria: criteriaScores, student_id: studentId, comments: data.comments, 
-                total_weight: data.total_weight, rubric_id:data.id, panel_id: panelId },
+            {
+                criteria: criteriaScores,
+                student_id: studentId,
+                comments: data.comments,
+                total_weight: data.total_weight,
+                rubric_id: data.id,
+                panel_id: panelId,
+                rubric_name: rubric.name,
+                rubric_total_weight: rubric.total_weight
+            },
             {
                 onStart: () => setIsProcessing(true),
                 onFinish: () => setIsProcessing(false),
@@ -155,7 +162,7 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
             onClick={onClose}
         >
             <div
-                className="bg-white rounded-lg w-full max-w-lg xl:max-w-2xl shadow-xl"
+                className="bg-white rounded-lg w-full max-w-[650px] xl:max-w-2xl shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center py-2 px-4">
@@ -178,35 +185,55 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
                 <div className="overflow-y-auto max-h-[80vh]">
                     <form id="PSM1GradeRubricForm" onSubmit={handleSubmit}>
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
-                            <h3 className="font-medium text-[#808080] mb-3">
+                            <h3 className="font-medium text-[#808080] ">
                                 Criteria
                             </h3>
 
                             {rubric?.isEnable ? (
                                 <>
+                                    {/* Score Level Labels */}
+                                    <div className="grid grid-cols-6 gap-4  items-center">
+                                        <span className="col-start-3 text-center font-medium text-gray-700">
+                                            Poor
+                                        </span>
+                                        <span className="text-center font-medium text-gray-700">
+                                            Fair
+                                        </span>
+                                        <span className="text-center font-medium text-gray-700">
+                                            Good
+                                        </span>
+                                        <span className="text-center font-medium text-gray-700">
+                                            Excellent
+                                        </span>
+                                    </div>
+
                                     {rubric?.criteria?.map((criterion) => (
                                         <div
                                             key={criterion.id}
-                                            className="mb-4 flex"
+                                            className="my-4 grid grid-cols-6 "
                                         >
-                                            <label className="font-medium text-gray-700 mr-4 mt-1">
-                                                {criterion.name}
+                                            <label className="font-medium text-gray-700 mt-1 col-span-2">
+                                                {criterion.name} :
                                             </label>
 
-                                            <div className="flex gap-4 mt-2">
                                                 {[1, 2, 3, 4].map((score) => (
                                                     <label
                                                         key={score}
-                                                        className="flex items-center gap-2"
+                                                        className="flex items-center justify-center"
                                                     >
                                                         <input
                                                             type="radio"
                                                             name={`criteria_${criterion.id}`}
-                                                            value={score/4 * criterion.weight}
+                                                            value={
+                                                                (score / 4) *
+                                                                criterion.weight
+                                                            }
                                                             checked={
                                                                 data[
                                                                     `criteria_${criterion.id}`
-                                                                ] === score/4 * criterion.weight
+                                                                ] ===
+                                                                (score / 4) *
+                                                                    criterion.weight
                                                             }
                                                             onChange={(e) =>
                                                                 setData(
@@ -226,12 +253,11 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
                                                         {score}
                                                     </label>
                                                 ))}
-                                            </div>
                                         </div>
                                     ))}
 
-                                    {/* Comment Section (Only visible if rubric is enabled) */}
-                                    <div className="mt-4">
+                                    {/* Comment Section */}
+                                    <div className="mt-3">
                                         <label className="font-medium text-gray-700">
                                             Comments (Optional)
                                         </label>
@@ -254,6 +280,8 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
                                 <p className="text-red-500">Rubric disabled</p>
                             )}
                         </div>
+
+                        
                     </form>
                 </div>
 

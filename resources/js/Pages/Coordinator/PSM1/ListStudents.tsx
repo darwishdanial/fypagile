@@ -43,6 +43,8 @@ export default function ListStudents() {
     const studentType = "PSM1";
 
     const [showArchived, setShowArchived] = useState(false);
+    const [showTest, setShowTest] = useState(false);
+
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -109,6 +111,8 @@ export default function ListStudents() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
+
+    const showType = (showTest ? "True" : "False");
 
     // Filter students based on search query
     const filteredStudents = (
@@ -262,7 +266,7 @@ export default function ListStudents() {
                                         ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100 border-r "
                                 }`}
-                                onClick={() => setShowArchived(false)}
+                                onClick={() => {setShowArchived(false), setShowTest(false)}}
                             >
                                 Active
                             </button>
@@ -273,7 +277,7 @@ export default function ListStudents() {
                                         ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100"
                                 }`}
-                                onClick={() => setShowArchived(true)}
+                                onClick={() => {setShowArchived(true), setShowTest(true)}}
                             >
                                 Archived
                             </button>
@@ -389,7 +393,7 @@ export default function ListStudents() {
                                 </th>
                             )}
                             <th className="px-4 py-2 border-b border-gray-300">
-                                No
+                                No {showType}
                             </th>
                             <th className="px-4 py-2 border-b border-gray-300">
                                 Course

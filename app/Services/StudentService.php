@@ -353,23 +353,40 @@ class StudentService
             ->update(['supervisorId' => null ]);
     }
 
-    public function getStudentsSupervisorGradePSM1(?int $supervisorId){
+    public function getStudentsSupervisorGradePSM1(?int $supervisorId, int $type){
 
-        $assignedStudents = StudentPSM1::where('supervisorId', $supervisorId)->get();
-
-        return $assignedStudents;
-    }
-
-    public function getStudentsSupervisorGradePSM2(?int $supervisorId){
-
-        $assignedStudents = StudentPSM2::where('supervisorId', $supervisorId)->get();
+        $assignedStudents = ($type == 1 ) ? 
+            StudentPSM1::where('supervisorId', $supervisorId)->where('project_type', "System Development")->get()
+            :StudentPSM1::where('supervisorId', $supervisorId)->where('project_type', "Research Based")->get();
 
         return $assignedStudents;
     }
 
-    public function getStudentsPanelGradePSM1(?int $panelId){
+    public function getStudentsSupervisorGradePSM2(?int $supervisorId, int $type){
 
-        $assignedStudents = StudentPSM1::where('panelId',  $panelId)->orWhere('panel2Id',  $panelId)->get();
+        $assignedStudents = ($type == 1 ) ? 
+            StudentPSM2::where('supervisorId', $supervisorId)->where('project_type', "System Development")->get()
+            :StudentPSM2::where('supervisorId', $supervisorId)->where('project_type', "Research Based")->get();
+
+        return $assignedStudents;
+    }
+
+    public function getStudentsPanelGradePSM1(?int $panelId, int $type){
+
+        $assignedStudents = ($type == 1 ) ? 
+            StudentPSM1::where(function ($query) use ($panelId) {
+                $query->where('panelId', $panelId)
+                    ->orWhere('panel2Id', $panelId);
+            })
+            ->where('project_type', "System Development")
+            ->get()
+            :StudentPSM1::where(function ($query) use ($panelId) {
+                $query->where('panelId', $panelId)
+                    ->orWhere('panel2Id', $panelId);
+            })
+            ->where('project_type', "Research Based")
+            ->get();
+    
 
         return $assignedStudents;
     }

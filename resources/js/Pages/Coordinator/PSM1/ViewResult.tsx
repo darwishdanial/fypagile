@@ -57,14 +57,17 @@ interface Flash {
 export default function ViewResult() {
     const { props } = usePage<{
         students: Student[];
-        rubrics: Rubric[];
+        rubricDevelopment: Rubric[];
+        rubricResearch: Rubric[];
         flash?: Flash;
     }>();
 
     const students = props.students;
-    const rubrics = props.rubrics;
+    const rubricDevelopment = props.rubricDevelopment;
+    const rubricResearch = props.rubricResearch;
     const studentType = "PSM1";
 
+    const [showrubricsResearch, setShowrubricsResearch] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -169,6 +172,10 @@ export default function ViewResult() {
         }
     }, [props.flash]); // Run effect when flash message changes
 
+    const currentRubric = (
+        showrubricsResearch ? rubricResearch : rubricDevelopment
+    );
+
     // Calculate selection statistics
     const totalActiveStudents = filteredStudents.length;
     const selectedCount = selectedStudents.length;
@@ -196,7 +203,7 @@ export default function ViewResult() {
         let hasAnyScores = false;
 
         // For each rubric, get the average score and add to total
-        rubrics.forEach((rubric) => {
+        currentRubric.forEach((rubric) => {
             const averageScore = calculateRubricAverage(student, rubric.id);
             if (averageScore > 0) {
                 totalScore += averageScore;
@@ -314,13 +321,18 @@ export default function ViewResult() {
                                         <button
                                             type="button"
                                             className="p-1 text-blue-600 hover:text-blue-800 transition"
-                                            onClick={() =>
+                                            onClick={() =>{
                                                 setExpandedRow(
                                                     expandedRow === student.id
                                                         ? null
                                                         : student.id
                                                 )
-                                            }
+
+                                                //setShowrubricsResearch true if project_type === Research Based else false
+
+                                                setShowrubricsResearch(student.project_type === "Research Based");
+
+                                            }}
                                         >
                                             {expandedRow === student.id ? (
                                                 <ChevronUp
@@ -343,7 +355,7 @@ export default function ViewResult() {
                                                 Rubrics Information
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                {rubrics.map((rubric) => {
+                                                {currentRubric.map((rubric) => {
                                                     const scores =
                                                         student.score?.filter(
                                                             (s) =>
@@ -411,6 +423,10 @@ export default function ViewResult() {
                                                                         {averageScore.toFixed(
                                                                             1
                                                                         )}
+                                                                        /
+                                                                        {
+                                                                            rubric.total_weight
+                                                                        }
                                                                     </span>
                                                                     <span className="text-sm text-gray-500 ml-1">
                                                                         (
@@ -450,6 +466,10 @@ export default function ViewResult() {
                                                                                             {
                                                                                                 score.mark
                                                                                             }
+                                                                                            /
+                                                                                            {
+                                                                                                rubric.total_weight
+                                                                                            }
                                                                                         </span>
 
                                                                                         {score.panel_name && (
@@ -462,8 +482,7 @@ export default function ViewResult() {
                                                                                     </div>
 
                                                                                     <div className="flex">
-
-                                                                                    <button
+                                                                                        <button
                                                                                             type="button"
                                                                                             className="p-1 text-red-600 hover:text-red-800 transition"
                                                                                             onClick={(

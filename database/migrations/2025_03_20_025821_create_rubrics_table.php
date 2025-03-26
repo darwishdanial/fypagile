@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->tinyInteger('total_weight')->unsigned();
             $table->string(column: 'PSMType');
+            $table->boolean('isDevelopment');
+            $table->boolean('isResearch');
             $table->boolean('isEnable');
             $table->boolean('isCoordinatorPSM1');
             $table->boolean('isSupervisorPSM1');
@@ -24,6 +26,7 @@ return new class extends Migration
             $table->boolean('isSupervisorPSM2');
             $table->boolean('isPanelPSM2');
             $table->timestamps();
+            $table->softDeletes();
 
         });
     }

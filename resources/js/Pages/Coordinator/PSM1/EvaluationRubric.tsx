@@ -23,6 +23,8 @@ interface Rubric {
     total_weight: number;
     psmType: string;
     isEnable: boolean;
+    isResearch: boolean;
+    isDevelopment: boolean;
     isCoordinatorPSM1: boolean;
     isSupervisorPSM1: boolean;
     isPanelPSM1: boolean;
@@ -48,13 +50,17 @@ interface Flash {
 
 export default function EvaluationRubric() {
     const { props } = usePage<{
-        rubrics: Rubric[];
+        rubricsDevelopment: Rubric[];
+        rubricsResearch: Rubric[];
         flash?: Flash;
     }>();
 
-    const rubrics = props.rubrics ?? [];
+    const rubricsDevelopment = props.rubricsDevelopment ?? [];
+    const rubricsResearch = props.rubricsResearch ?? [];
+
     const panelType = "PSM1";
 
+    const [showrubricsResearch, setShowrubricsResearch] = useState(false);
     const [isAddRubricModalOpen, setIsAddRubricModalOpen] = useState(false);
     const [isAddCriteriaModalOpen, setIsAddCriteriaModalOpen] = useState(false);
     const [isEditCriteriaModalOpen, setIsEditCriteriaModalOpen] =
@@ -72,6 +78,9 @@ export default function EvaluationRubric() {
     const [selectedRubricName, setSelectedRubricName] = useState<string | null>(
         null
     );
+    const currentRubric = showrubricsResearch
+        ? rubricsResearch
+        : rubricsDevelopment;
 
     const calculateCurrentCriteriaWeight = (criteria: Criteria[] | null) => {
         if (!criteria || criteria.length === 0) return 0;
@@ -131,7 +140,9 @@ export default function EvaluationRubric() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredRubrics = rubrics.filter((rubric) =>
+    const filteredRubrics = (
+        showrubricsResearch ? rubricsResearch : rubricsDevelopment
+    ).filter((rubric) =>
         rubric.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -159,20 +170,53 @@ export default function EvaluationRubric() {
             )}
 
             <div className="w-full">
-                <div className="flex items-center justify-end">
-                    <button
-                        type="button"
-                        className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 my-4 font-semibold"
-                        onClick={() => {
-                            setIsAddRubricModalOpen(true);
-                        }}
-                        title="Add Rubric"
-                    >
-                        <div className="flex">
-                            <CirclePlus className="mr-2" />
-                            Add Rubric
+                <div className="flex items-center justify-between">
+                    <div className="mx-4 my-4">
+                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
+                            <button
+                                type="button"
+                                className={`p-1 px-3 transition  text-center ${
+                                    !showrubricsResearch
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                        : "bg-white hover:bg-gray-100 border-r "
+                                }`}
+                                onClick={() => {
+                                    setShowrubricsResearch(false);
+                                }}
+                            >
+                                Development
+                            </button>
+                            <button
+                                type="button"
+                                className={`p-1 px-3 transition text-center ${
+                                    showrubricsResearch
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                        : "bg-white hover:bg-gray-100"
+                                }`}
+                                onClick={() => {
+                                    setShowrubricsResearch(true);
+                                }}
+                            >
+                                Research
+                            </button>
                         </div>
-                    </button>
+                    </div>
+
+                    <div className="flex">
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 my-4 font-semibold"
+                            onClick={() => {
+                                setIsAddRubricModalOpen(true);
+                            }}
+                            title="Add Rubric"
+                        >
+                            <div className="flex">
+                                <CirclePlus className="mr-2" />
+                                Add Rubric
+                            </div>
+                        </button>
+                    </div>
                 </div>
 
                 <div className="flex justify-between mx-4">
@@ -197,9 +241,9 @@ export default function EvaluationRubric() {
                         <div className="ml-2 mt-2">
                             <span className="ml-2 text-sm text-gray-600">
                                 Current total weight:{" "}
-                                {calculateCurrentRubricWeight(rubrics)}
+                                {calculateCurrentRubricWeight(currentRubric)}
                                 /100
-                                {calculateCurrentRubricWeight(rubrics) !==
+                                {calculateCurrentRubricWeight(currentRubric) !==
                                     100 && (
                                     <span className="ml-1 text-red-500">
                                         (Unbalanced)

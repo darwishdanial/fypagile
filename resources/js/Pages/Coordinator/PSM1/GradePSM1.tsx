@@ -57,24 +57,27 @@ interface Flash {
 
 export default function GradePSM1() {
     const { props } = usePage<{
-        students: Student[];
-        rubrics: Rubric[];
+        studentsDevelopment: Student[];
+        studentResearch: Student[];
+        rubricsDevelopment: Rubric[];
+        rubricsResearch: Rubric[];
         flash?: Flash;
         id: number;
     }>();
 
-    const students = props.students;
-    const rubrics = props.rubrics;
+    const studentsDevelopment = props.studentsDevelopment;
+    const studentResearch = props.studentResearch;
+    const rubricsDevelopment = props.rubricsDevelopment;
+    const rubricsResearch = props.rubricsResearch;
     const studentType = "PSM1";
     const panelId = props.id;
 
+    const [showStudentResearch, setStudentResearch] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isImportErrorModalOpen, setIsImportErrorModalOpen] = useState(false);
-    const [selectedStudent, setSelectedStudent] = useState<number | null>(
-        null
-    );
+    const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
     const [isImportModalOpen, setIsImoprtModalOpen] = useState(false);
 
     // State for selected students
@@ -107,8 +110,14 @@ export default function GradePSM1() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
+    const currentRubric = showStudentResearch
+        ? rubricsResearch
+        : rubricsDevelopment;
+
     // Filter students based on search query
-    const filteredStudents = students.filter(
+    const filteredStudents = (
+        showStudentResearch ? studentResearch : studentsDevelopment
+    ).filter(
         (student) =>
             student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             student.matric.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -178,7 +187,7 @@ export default function GradePSM1() {
     const totalActiveStudents = filteredStudents.length;
     const selectedCount = selectedStudents.length;
 
-    const totalColumns = 5 + rubrics.length;
+    const totalColumns = 5 + currentRubric.length;
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
@@ -195,6 +204,39 @@ export default function GradePSM1() {
             )}
 
             <div className="w-full">
+                <div className="flex items-center justify-between">
+                    <div className="mx-4 my-4">
+                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
+                            <button
+                                type="button"
+                                className={`p-1 px-3 transition  text-center ${
+                                    !showStudentResearch
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                        : "bg-white hover:bg-gray-100 border-r "
+                                }`}
+                                onClick={() => {
+                                    setStudentResearch(false);
+                                }}
+                            >
+                                Development
+                            </button>
+                            <button
+                                type="button"
+                                className={`p-1 px-3 transition text-center ${
+                                    showStudentResearch
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                        : "bg-white hover:bg-gray-100"
+                                }`}
+                                onClick={() => {
+                                    setStudentResearch(true);
+                                }}
+                            >
+                                Research
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
                 {/* Search Input */}
                 <div className="flex justify-between mx-4 mt-3">
                     <div className="flex">
@@ -244,7 +286,7 @@ export default function GradePSM1() {
                             <th className="px-4 py-2 text-left border-b border-gray-300">
                                 Name
                             </th>
-                            {rubrics.map((rubric) => (
+                            {currentRubric.map((rubric) => (
                                 <th
                                     key={rubric.id}
                                     className="px-4 py-2 border-b border-gray-300"
@@ -314,7 +356,7 @@ export default function GradePSM1() {
                                     >
                                         {student.name}
                                     </td>
-                                    {rubrics.map((rubric) => (
+                                    {currentRubric.map((rubric) => (
                                         <td
                                             key={`${student.id}-${rubric.id}`}
                                             className="px-4 py-2"
@@ -325,7 +367,9 @@ export default function GradePSM1() {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     // Handle rubric editing (you can add your logic here)
-                                                    setSelectedStudent(student.id);
+                                                    setSelectedStudent(
+                                                        student.id
+                                                    );
                                                     setSelectedRubric(rubric);
                                                     setIsGradeModalOpen(true);
                                                     console.log(
@@ -428,8 +472,8 @@ export default function GradePSM1() {
                 rubric={selectedRubric}
                 psmType="PSM1"
                 studentId={selectedStudent}
-                userType = {1}  
-                panelId = {panelId}
+                userType={1}
+                panelId={panelId}
             />
 
             {/* <EditStudentModal

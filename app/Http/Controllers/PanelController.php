@@ -60,16 +60,27 @@ class PanelController extends Controller
         $this->authorize('view psm1 grade table');
         $id = Auth::user()->id;
 
-        $students = $this->studentService->getStudentsPanelGradePSM1($id);
+        $studentsDevelopment = $this->studentService->getStudentsPanelGradePSM1($id, 1);
 
-        $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                ->where('PSMType',  'PSM1')
-                ->where('isPanelPSM1',  true)
-                ->get();
+        $studentResearch = $this->studentService->getStudentsPanelGradePSM1($id, 2);
+
+        $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+            ->where('PSMType',  'PSM1')
+            ->where('isDevelopment',  true)
+            ->get();
+
+        // dd($rubricsDevelopment);
+
+        $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+            ->where('PSMType',  'PSM1')
+            ->where('isResearch',  true)
+            ->get();    
 
         return Inertia::render('Panel/PSM1/GradePSM1',[
-            'students' => $students,
-            'rubrics' => $rubrics,
+            'studentsDevelopment' => $studentsDevelopment,
+            'studentResearch' => $studentResearch,
+            'rubricsDevelopment' => $rubricsDevelopment,
+            'rubricsResearch' => $rubricsResearch,
             'id' => $id
         ]);
     }
