@@ -17,6 +17,7 @@ import EditCriteriaModal from "../../../Components/EditCriteriaModal";
 import EditRubricModal from "../../../Components/EditRubricModal";
 import { route } from "ziggy-js";
 
+// Interfaces
 interface Rubric {
     id: number;
     name: string;
@@ -32,6 +33,7 @@ interface Rubric {
     isCoordinatorPSM2: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
+    deleted_at: Date;
     criteria: Criteria[] | null;
 }
 
@@ -49,24 +51,23 @@ interface Flash {
 }
 
 export default function EvaluationRubric() {
+    // Page props from Inertia
     const { props } = usePage<{
-        rubricsDevelopment: Rubric[];
-        rubricsResearch: Rubric[];
+        rubricsDevelopmentActive: Rubric[];
+        rubricsDevelopmentArchive: Rubric[];
+        rubricsResearchActive: Rubric[];
+        rubricsResearchArchive: Rubric[];
         flash?: Flash;
     }>();
 
-    const rubricsDevelopment = props.rubricsDevelopment ?? [];
-    const rubricsResearch = props.rubricsResearch ?? [];
-
-    const panelType = "PSM1";
-
+    // State variables
     const [showrubricsResearch, setShowrubricsResearch] = useState(false);
+    const [isArchivedView, setIsArchivedView] = useState(false);
     const [isAddRubricModalOpen, setIsAddRubricModalOpen] = useState(false);
     const [isAddCriteriaModalOpen, setIsAddCriteriaModalOpen] = useState(false);
     const [isEditCriteriaModalOpen, setIsEditCriteriaModalOpen] =
         useState(false);
     const [isEditRubricModalOpen, setIsEditRubricModalOpen] = useState(false);
-    const [showRubric, setShowRubric] = useState(true);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [selectedRubric, setSelectedRubric] = useState<Rubric | null>(null);
     const [selectedCriteria, setSelectedCriteria] = useState<Criteria | null>(
@@ -78,10 +79,30 @@ export default function EvaluationRubric() {
     const [selectedRubricName, setSelectedRubricName] = useState<string | null>(
         null
     );
-    const currentRubric = showrubricsResearch
-        ? rubricsResearch
-        : rubricsDevelopment;
+    const [flashMessage, setFlashMessage] = useState<{
+        type: "success" | "error";
+        message: string;
+    } | null>(null);
 
+    // Pagination and search states
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    // Determine which rubrics to display based on current selection
+    const getCurrentRubrics = () => {
+        if (showrubricsResearch) {
+            return isArchivedView
+                ? props.rubricsResearchArchive
+                : props.rubricsResearchActive;
+        } else {
+            return isArchivedView
+                ? props.rubricsDevelopmentArchive
+                : props.rubricsDevelopmentActive;
+        }
+    };
+
+    // Utility functions
     const calculateCurrentCriteriaWeight = (criteria: Criteria[] | null) => {
         if (!criteria || criteria.length === 0) return 0;
         return criteria.reduce((sum, item) => sum + Number(item.weight), 0);
@@ -92,14 +113,16 @@ export default function EvaluationRubric() {
         return rubric.reduce((sum, item) => sum + Number(item.total_weight), 0);
     };
 
-    const [flashMessage, setFlashMessage] = useState<{
-        type: "success" | "error";
-        message: string;
-    } | null>(null);
+    // Handle delete actions
+    const handleArchiveRubric = (id: number) => {
+        router.delete(route("coordinator.PSM1.evaluationRubric.archive", id), {
+            preserveScroll: true,
+        });
+    };
 
     const handleDeleteRubric = (id: number) => {
         const isConfirmed = confirm(
-            "Are you sure you want to delete this rubric? This action cannot be undone."
+            "Are you sure you want to delete this rubric? The scores assosiated with the rubric will be deleted as well."
         );
 
         if (isConfirmed) {
@@ -112,12 +135,19 @@ export default function EvaluationRubric() {
         }
     };
 
+    const handleRestoreRubric = (id: number) => {
+        router.post(route("coordinator.PSM1.evaluationRubric.restore", id), {
+            preserveScroll: true,
+        });
+    };
+
     const handleDeleteCriteria = (id: number) => {
         router.delete(route("coordinator.PSM1.evaluationCriteria.delete", id), {
             preserveScroll: true,
         });
     };
 
+    // Flash message effect
     useEffect(() => {
         if (props.flash?.success) {
             setFlashMessage({ type: "success", message: props.flash.success });
@@ -126,30 +156,19 @@ export default function EvaluationRubric() {
             setFlashMessage({ type: "error", message: props.flash.error });
         }
 
-        if (props.flash?.warning) {
-            // setIsImportErrorModalOpen(true);
-        }
-
         if (props.flash?.success || props.flash?.error) {
-            const timer = setTimeout(() => setFlashMessage(null), 3000); // Hide after 3s
+            const timer = setTimeout(() => setFlashMessage(null), 3000);
             return () => clearTimeout(timer);
         }
-    }, [props.flash]); // Run effect when flash message changes
+    }, [props.flash]);
 
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState("");
-
-    const filteredRubrics = (
-        showrubricsResearch ? rubricsResearch : rubricsDevelopment
-    ).filter((rubric) =>
+    // Filtering and pagination
+    const filteredRubrics = getCurrentRubrics().filter((rubric) =>
         rubric.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Calculate total pages after filtering
     const totalPages = Math.ceil(filteredRubrics.length / rowsPerPage);
 
-    // Paginate filtered panels
     const paginatedRubrics = filteredRubrics.slice(
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
@@ -157,6 +176,7 @@ export default function EvaluationRubric() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
+            {/* Flash Message */}
             {flashMessage && (
                 <div
                     className={`fixed bottom-5 right-5 px-4 py-3 rounded shadow-lg text-white ${
@@ -170,19 +190,18 @@ export default function EvaluationRubric() {
             )}
 
             <div className="w-full">
+                {/* Development/Research Toggle */}
                 <div className="flex items-center justify-between">
-                    <div className="mx-4 my-4">
+                    <div className="flex mx-4 my-4">
                         <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
                             <button
                                 type="button"
-                                className={`p-1 px-3 transition  text-center ${
+                                className={`p-1 px-3 transition text-center ${
                                     !showrubricsResearch
                                         ? "bg-blue-400 hover:bg-blue-500 transition text-white"
-                                        : "bg-white hover:bg-gray-100 border-r "
+                                        : "bg-white hover:bg-gray-100 border-r"
                                 }`}
-                                onClick={() => {
-                                    setShowrubricsResearch(false);
-                                }}
+                                onClick={() => setShowrubricsResearch(false)}
                             >
                                 Development
                             </button>
@@ -193,22 +212,19 @@ export default function EvaluationRubric() {
                                         ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100"
                                 }`}
-                                onClick={() => {
-                                    setShowrubricsResearch(true);
-                                }}
+                                onClick={() => setShowrubricsResearch(true)}
                             >
                                 Research
                             </button>
                         </div>
                     </div>
 
+                    {/* Add Rubric Button */}
                     <div className="flex">
                         <button
                             type="button"
                             className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 my-4 font-semibold"
-                            onClick={() => {
-                                setIsAddRubricModalOpen(true);
-                            }}
+                            onClick={() => setIsAddRubricModalOpen(true)}
                             title="Add Rubric"
                         >
                             <div className="flex">
@@ -219,16 +235,46 @@ export default function EvaluationRubric() {
                     </div>
                 </div>
 
+                {/* Controls and Search */}
                 <div className="flex justify-between mx-4">
-                    <div className="flex">
-                        <label className="font-semibold">
+                    <div className="flex items-center">
+                        {/* Active/Archived Toggle */}
+                        <div className="pr-2">
+                            <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
+                                <button
+                                    type="button"
+                                    className={`p-1 px-3 transition text-center ${
+                                        !isArchivedView
+                                            ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                            : "bg-white hover:bg-gray-100 border-r"
+                                    }`}
+                                    onClick={() => setIsArchivedView(false)}
+                                >
+                                    Active
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`p-1 px-3 transition text-center ${
+                                        isArchivedView
+                                            ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                            : "bg-white hover:bg-gray-100"
+                                    }`}
+                                    onClick={() => setIsArchivedView(true)}
+                                >
+                                    Archived
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Rows per Page Selector */}
+                        <label className="font-semibold ml-2">
                             Rows per page:
                             <select
                                 className="ml-2 border border-gray-300 rounded p-1 bg-white"
                                 value={rowsPerPage}
                                 onChange={(e) => {
                                     setRowsPerPage(Number(e.target.value));
-                                    setCurrentPage(1); // Reset to first page
+                                    setCurrentPage(1);
                                 }}
                             >
                                 <option value={5}>5</option>
@@ -238,13 +284,17 @@ export default function EvaluationRubric() {
                             </select>
                         </label>
 
+                        {/* Total Weight Display */}
                         <div className="ml-2 mt-2">
                             <span className="ml-2 text-sm text-gray-600">
                                 Current total weight:{" "}
-                                {calculateCurrentRubricWeight(currentRubric)}
+                                {calculateCurrentRubricWeight(
+                                    getCurrentRubrics()
+                                )}
                                 /100
-                                {calculateCurrentRubricWeight(currentRubric) !==
-                                    100 && (
+                                {calculateCurrentRubricWeight(
+                                    getCurrentRubrics()
+                                ) !== 100 && (
                                     <span className="ml-1 text-red-500">
                                         (Unbalanced)
                                     </span>
@@ -253,18 +303,20 @@ export default function EvaluationRubric() {
                         </div>
                     </div>
 
+                    {/* Search Input */}
                     <input
                         type="text"
                         className="border border-gray-300 rounded p-2 w-1/5 bg-white hover:border-[#6D2323]"
-                        placeholder="Search "
+                        placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => {
                             setSearchQuery(e.target.value);
-                            setCurrentPage(1); // Reset to first page on search
+                            setCurrentPage(1);
                         }}
                     />
                 </div>
 
+                {/* Rubrics Table */}
                 <div className="w-full">
                     <table className="w-full border-collapse border-t border-b border-gray-300 mt-3">
                         <thead className="bg-gray-200">
@@ -272,20 +324,18 @@ export default function EvaluationRubric() {
                                 <th className="px-4 py-2 border-b border-gray-300">
                                     No
                                 </th>
-
-                                <th className="t px-4 py-2 border-b border-gray-300">
+                                <th className="px-4 py-2 border-b border-gray-300">
                                     Name
                                 </th>
-                                <th className="px-4 py-2  border-b border-gray-300">
+                                <th className="px-4 py-2 border-b border-gray-300">
                                     Total Weight
                                 </th>
-                                <th className="px-4 py-2  border-b border-gray-300">
+                                <th className="px-4 py-2 border-b border-gray-300">
                                     Enable
                                 </th>
                                 <th className="px-4 py-2 border-b border-gray-300">
                                     Role
                                 </th>
-
                                 <th className="px-4 py-2 border-b border-gray-300">
                                     Action
                                 </th>
@@ -294,11 +344,7 @@ export default function EvaluationRubric() {
                         <tbody>
                             {paginatedRubrics.map((rubric, index) => (
                                 <React.Fragment key={rubric.id}>
-                                    <tr
-                                        className={
-                                            "text-center bg-white hover:bg-gray-100 border-b border-gray-300"
-                                        }
-                                    >
+                                    <tr className="text-center bg-white hover:bg-gray-100 border-b border-gray-300">
                                         <td
                                             className="px-4 py-2 cursor-pointer"
                                             onClick={() =>
@@ -311,7 +357,6 @@ export default function EvaluationRubric() {
                                         >
                                             {index + 1}
                                         </td>
-
                                         <td
                                             className="px-4 py-2 cursor-pointer"
                                             onClick={() =>
@@ -337,7 +382,7 @@ export default function EvaluationRubric() {
                                             {rubric.total_weight}
                                         </td>
                                         <td
-                                            className="px-4 py-2 cursor-pointer "
+                                            className="px-4 py-2 cursor-pointer"
                                             onClick={() =>
                                                 setExpandedRow(
                                                     expandedRow === rubric.id
@@ -348,24 +393,22 @@ export default function EvaluationRubric() {
                                         >
                                             {rubric.isEnable ? (
                                                 <div className="flex items-center justify-center">
-                                                    {rubric.isEnable && (
-                                                        <Check
-                                                            size={20}
-                                                            className="text-green-600"
-                                                        />
-                                                    )}
+                                                    <Check
+                                                        size={20}
+                                                        className="text-green-600"
+                                                    />
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center justify-center">
                                                     <X
                                                         size={20}
-                                                        className="text-green-600"
+                                                        className="text-red-600"
                                                     />
                                                 </div>
                                             )}
                                         </td>
                                         <td
-                                            className="px-4 py-2 cursor-pointer "
+                                            className="px-4 py-2 cursor-pointer"
                                             onClick={() =>
                                                 setExpandedRow(
                                                     expandedRow === rubric.id
@@ -405,7 +448,6 @@ export default function EvaluationRubric() {
                                                     )}
                                             </div>
                                         </td>
-
                                         <td className="px-4 py-2">
                                             <div className="flex items-center justify-center space-x-2">
                                                 <button
@@ -432,7 +474,7 @@ export default function EvaluationRubric() {
                                                 <button
                                                     type="button"
                                                     className="p-1 text-blue-600 hover:text-blue-800 transition"
-                                                    onClick={(e) => {
+                                                    onClick={() => {
                                                         setSelectedRubric(
                                                             rubric
                                                         );
@@ -447,21 +489,56 @@ export default function EvaluationRubric() {
                                                         className="transition-transform duration-200 hover:scale-125"
                                                     />
                                                 </button>
-                                                <button
-                                                    type="button"
-                                                    className="p-1 text-red-600 hover:text-red-800 transition"
-                                                    onClick={(e) => {
-                                                        handleDeleteRubric(
-                                                            rubric.id
-                                                        );
-                                                    }}
-                                                    title="Delete Rubric"
-                                                >
-                                                    <Trash
-                                                        size={20}
-                                                        className="transition-transform duration-200 hover:scale-125"
-                                                    />
-                                                </button>
+                                                {isArchivedView ? (
+                                                    <div className="flex">
+                                                        <button
+                                                            type="button"
+                                                            className="p-1 text-red-600 hover:text-red-800 transition"
+                                                            onClick={() =>
+                                                                handleRestoreRubric(
+                                                                    rubric.id
+                                                                )
+                                                            }
+                                                            title="Restore Rubric"
+                                                        >
+                                                            <ArchiveRestore
+                                                                size={20}
+                                                                className="transition-transform duration-200 hover:scale-125"
+                                                            />
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="p-1 ml-2 text-red-600 hover:text-red-800 transition"
+                                                            onClick={() =>
+                                                                handleDeleteRubric(
+                                                                    rubric.id
+                                                                )
+                                                            }
+                                                            title="Delete Rubric"
+                                                        >
+                                                            <Trash
+                                                                size={20}
+                                                                className="transition-transform duration-200 hover:scale-125"
+                                                            />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <button
+                                                        type="button"
+                                                        className="p-1 text-red-600 hover:text-red-800 transition"
+                                                        onClick={() =>
+                                                            handleArchiveRubric(
+                                                                rubric.id
+                                                            )
+                                                        }
+                                                        title="Archive rubric"
+                                                    >
+                                                        <Archive
+                                                            size={20}
+                                                            className="transition-transform duration-200 hover:scale-125"
+                                                        />
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -512,10 +589,7 @@ export default function EvaluationRubric() {
                                                                     <button
                                                                         type="button"
                                                                         className="p-1 text-blue-600 hover:text-blue-800 transition ml-2"
-                                                                        onClick={(
-                                                                            e
-                                                                        ) => {
-                                                                            e.stopPropagation();
+                                                                        onClick={() => {
                                                                             setSelectedCriteria(
                                                                                 criteria
                                                                             );
@@ -535,14 +609,11 @@ export default function EvaluationRubric() {
                                                                     <button
                                                                         type="button"
                                                                         className="p-1 text-red-600 hover:text-red-800 transition"
-                                                                        onClick={(
-                                                                            e
-                                                                        ) => {
-                                                                            e.stopPropagation();
+                                                                        onClick={() =>
                                                                             handleDeleteCriteria(
                                                                                 criteria.id
-                                                                            );
-                                                                        }}
+                                                                            )
+                                                                        }
                                                                         title="Delete Criteria"
                                                                     >
                                                                         <Trash
@@ -569,6 +640,7 @@ export default function EvaluationRubric() {
                         </tbody>
                     </table>
 
+                    {/* Pagination Controls */}
                     <div className="flex justify-center space-x-2 items-center mt-4">
                         <button
                             type="button"
@@ -595,6 +667,7 @@ export default function EvaluationRubric() {
                 </div>
             </div>
 
+            {/* Modals */}
             <AddRubricModal
                 isOpen={isAddRubricModalOpen}
                 onClose={() => setIsAddRubricModalOpen(false)}

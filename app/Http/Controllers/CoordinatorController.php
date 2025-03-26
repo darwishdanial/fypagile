@@ -415,19 +415,33 @@ class CoordinatorController extends Controller
     {
         $this->authorize('view psm1 evaluation rubric');
 
-        $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+        $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM1')
                     ->where('isDevelopment',  true)
                     ->get();
+
+        $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM1')
+                    ->where('isDevelopment',  true)
+                    ->onlyTrashed()
+                    ->get();
         
-        $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+        $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM1')
+                    ->where('isResearch', true)
+                    ->get();
+
+        $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM1')
                     ->where('isResearch',  true)
+                    ->onlyTrashed()
                     ->get();
 
         return Inertia::render('Coordinator/PSM1/EvaluationRubric',[
-            'rubricsDevelopment' => $rubricsDevelopment,
-            'rubricsResearch' => $rubricsResearch
+            'rubricsDevelopmentActive' => $rubricsDevelopmentActive,
+            'rubricsDevelopmentArchive' => $rubricsDevelopmentArchive,
+            'rubricsResearchActive' => $rubricsResearchActive,
+            'rubricsResearchArchive' => $rubricsResearchArchive
         ]);
     }
 
@@ -472,7 +486,9 @@ class CoordinatorController extends Controller
 
     public function PSM1UpdateEvaluationRurbric(Request $request, $id)
     {
-        $rubric = Rubric::findOrFail($id);
+        $rubric = Rubric::withTrashed()->findOrFail($id);
+
+        //dd($rubric);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -509,17 +525,31 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Criteria updated successfully!');
     }
 
-    public function PSM1DeleteEvaluationRurbric($id)
+    public function PSM1ArchiveEvaluationRurbric($id)
     {
         $rubric = Rubric::findOrFail($id);
 
-        if ($rubric->scores()->exists()) {
-            $rubric->delete();
-            return redirect()->back()->with('success', 'Rubric deleted successfully.');
-        } else {
-            $rubric->forceDelete();
-            return redirect()->back()->with('success', 'Rubric deleted successfully.');
-        }
+        $rubric->delete();
+
+        return redirect()->back()->with('success', 'Rubric archived successfully.');
+        
+    }
+
+    public function PSM1DeleteEvaluationRurbric($id)
+    {
+        $rubric = Rubric::withTrashed()->findOrFail($id);
+
+        $rubric->forceDelete();
+
+        return redirect()->back()->with('success', 'Rubric deleted successfully.');
+    }
+    public function PSM1RestoreEvaluationRurbric($id)
+    {
+        $rubric = Rubric::withTrashed()->findOrFail($id);
+
+        $rubric->restore();
+
+        return redirect()->back()->with('success', 'Rubric restored successfully.');
     }
 
     public function PSM1DeleteEvaluationCriteria($id)

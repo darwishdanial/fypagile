@@ -150,7 +150,11 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::put('/evaluation-rubric/{id}/update', [CoordinatorController::class, 'PSM1UpdateEvaluationRurbric'])->name('evaluationRubric.update');
 
+        Route::delete('/evaluation-rubric/{id}/archive', [CoordinatorController::class, 'PSM1ArchiveEvaluationRurbric'])->name('evaluationRubric.archive');
+
         Route::delete('/evaluation-rubric/{id}/delete', [CoordinatorController::class, 'PSM1DeleteEvaluationRurbric'])->name('evaluationRubric.delete');
+
+        Route::post('/evaluation-rubric/{id}/restore', [CoordinatorController::class, 'PSM1RestoreEvaluationRurbric'])->name('evaluationRubric.restore');
 
         Route::post('/evaluation-critertia/store', [CoordinatorController::class, 'PSM1StoreEvaluationCriteria'])->name('evaluationCriteria.store');
 
