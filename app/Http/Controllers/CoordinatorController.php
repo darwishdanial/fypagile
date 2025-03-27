@@ -445,6 +445,47 @@ class CoordinatorController extends Controller
         ]);
     }
 
+    public function PSM1DevelopmentRurbric()
+    {
+        $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM1')
+                    ->where('isDevelopment',  true)
+                    ->get();
+
+        $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM1')
+                    ->where('isDevelopment',  true)
+                    ->onlyTrashed()
+                    ->get();
+
+        return Inertia::render('Coordinator/PSM1/DevelopmentRubric',[
+            'rubricsDevelopmentActive' => $rubricsDevelopmentActive,
+            'rubricsDevelopmentArchive' => $rubricsDevelopmentArchive,
+        ]);
+    }
+
+    public function PSM1ResearchRurbric()
+    {
+        $this->authorize('view psm1 evaluation rubric');
+
+        $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM1')
+                    ->where('isResearch', true)
+                    ->get();
+
+        $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM1')
+                    ->where('isResearch',  true)
+                    ->onlyTrashed()
+                    ->get();
+
+        return Inertia::render('Coordinator/PSM1/ResearchRubric',[
+            'rubricsResearchActive' => $rubricsResearchActive,
+            'rubricsResearchArchive' => $rubricsResearchArchive
+        ]);
+    }
+
+
     public function PSM1StoreEvaluationRurbric(Request $request)
     {
         //dd( $request->all());
@@ -453,6 +494,7 @@ class CoordinatorController extends Controller
             'name' => 'required|string|max:255',
             'PSMType' => 'required|string|max:255',
             'total_weight' => 'required|integer|min:0|max:100',
+            'session' => 'required|string',
             'isEnable' => 'required|boolean',
             'isResearch' => 'required|boolean',
             'isDevelopment' => 'required|boolean',
@@ -493,6 +535,7 @@ class CoordinatorController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'PSMType' => 'required|string|max:255',
+            'session' => 'required|string',
             'total_weight' => 'required|integer|min:0|max:100',
             'isEnable' => 'required|boolean',
             'isResearch' => 'required|boolean',

@@ -163,6 +163,11 @@ Route::middleware( EnsureCoordinator::class)
         Route::delete('/evaluation-critertia/{id}/delete', [CoordinatorController::class, 'PSM1DeleteEvaluationCriteria'])->name('evaluationCriteria.delete');
 
 
+        Route::get('/development-rubric', [CoordinatorController::class, 'PSM1DevelopmentRurbric'])->name('developmentRubric');
+
+        Route::get('/research-rubric', [CoordinatorController::class, 'PSM1ResearchRurbric'])->name('researchRubric');
+
+
         Route::get('/grade-supervision', [CoordinatorController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
 
 

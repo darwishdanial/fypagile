@@ -56,10 +56,20 @@ export function CoordinatorSidebar() {
             label: "View Result",
             link: route('coordinator.PSM1.viewResult'),
         },
+        // {
+        //     icon: <ClipboardList />,
+        //     label: "Evaluation Rubric",
+        //     link: route('coordinator.PSM1.evaluationRubric'),
+        // },
         {
             icon: <ClipboardList />,
-            label: "Evaluation Rubric",
-            link: route('coordinator.PSM1.evaluationRubric'),
+            label: "Development Rubric",
+            link: route('coordinator.PSM1.developmentRubric'),
+        },
+        {
+            icon: <ClipboardList />,
+            label: "Research Rubric",
+            link: route('coordinator.PSM1.researchRubric'),
         },
         {
             icon: <ListChecks />,

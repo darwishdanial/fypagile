@@ -7,12 +7,14 @@ interface AddRubricModalProps {
     isOpen: boolean;
     onClose: () => void;
     psmType: string;
+    rubric: string;
 }
 
 const AddRubricModal: React.FC<AddRubricModalProps> = ({
     isOpen,
     onClose,
     psmType,
+    rubric
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -32,7 +34,8 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         PSMType: psmType,
         isEnable: false,
         roleType: "", // Single role selection
-        rubricType: "",
+        rubricType: rubric,
+        session: ""
     });
 
     const [processing, setIsProcessing] = useState(false);
@@ -112,6 +115,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                     isEnable: false,
                     roleType: "",
                     rubricType: "",
+                    session: ""
                 });
             },
         });
@@ -188,6 +192,26 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                 )}
                             </div>
 
+                            <div className="grid grid-cols-5 mb-4 items-center">
+                                <label className="col-span-1 font-medium">
+                                    Session:
+                                </label>
+                                <input
+                                    title="Session"
+                                    type="string"
+                                    name="session"
+                                    value={data.session}
+                                    onChange={handleChange}
+                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    required
+                                />
+                                {errors.session && (
+                                    <p className="text-red-500 col-start-2 col-span-4">
+                                        {errors.session}
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="flex items-center mb-4">
                                 <label className="font-medium text-gray-700 w-25">
                                     Enable:
@@ -217,7 +241,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                             </div> */}
                         </div>
 
-                        <div className="p-4 border rounded border-gray-300 my-3 mx-2">
+                        {/* <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Rubric Type Selection (Select One)
                             </h3>
@@ -263,7 +287,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                     {errors.rubricType}
                                 </p>
                             )}
-                        </div>
+                        </div> */}
 
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">

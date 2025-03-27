@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->tinyInteger('total_weight')->unsigned();
             $table->string(column: 'PSMType');
+            $table->string(column: 'session');
             $table->boolean('isDevelopment');
             $table->boolean('isResearch');
             $table->boolean('isEnable');

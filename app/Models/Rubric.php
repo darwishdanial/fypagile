@@ -16,6 +16,7 @@ class Rubric extends Model
         'name',
         'PSMType',
         'total_weight',
+        'session',
         'isEnable',
         'isCoordinatorPSM1',
         'isSupervisorPSM1',
