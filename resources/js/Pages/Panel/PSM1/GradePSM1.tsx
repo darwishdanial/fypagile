@@ -472,7 +472,7 @@ export default function GradePSM1() {
                 rubric={selectedRubric}
                 psmType="PSM1"
                 studentId={selectedStudent}
-                userType={1}
+                userType={2}
                 panelId={panelId}
             />
 

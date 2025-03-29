@@ -291,8 +291,6 @@ Route::middleware(EnsurePanel::class)
 
         Route::get('/grade-supervision', [PanelController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-proposal', [PanelController::class, 'PSM1GradeProposal'])->name('gradeProposal');
-
         Route::get('/grade-PSM1', [PanelController::class, 'PSM1Grade'])->name('gradePSM1');
 
         Route::post('/store-score', [PanelController::class, 'PSM1StoreScore'])->name('score.store');
@@ -306,6 +304,8 @@ Route::middleware(EnsurePanel::class)
         Route::get('/grade-supervision', [PanelController::class, 'PSM2GradeSupervision'])->name('gradeSupervision');
 
         Route::get('/grade-PSM2', [PanelController::class, 'PSM2Grade'])->name('gradePSM2');
+
+        Route::post('/store-score', [PanelController::class, 'PSM2StoreScore'])->name('score.store');
     });
 });
 

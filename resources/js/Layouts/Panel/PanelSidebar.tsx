@@ -33,11 +33,6 @@ export function PanelSidebar() {
         },
         {
             icon: <ListChecks />,
-            label: "Grade Proposal",
-            link: route('panel.PSM1.gradeProposal'),
-        },
-        {
-            icon: <ListChecks />,
             label: "Grade PSM1",
             link: route('panel.PSM1.gradePSM1'),
         },
