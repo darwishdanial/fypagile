@@ -116,8 +116,13 @@ export function CoordinatorSidebar() {
         },
         {
             icon: <ClipboardList />,
-            label: "Evaluation Rubric",
-            link: route('coordinator.PSM2.evaluationRubric'),
+            label: "Development Rubric",
+            link: route('coordinator.PSM2.developmentRubric'),
+        },
+        {
+            icon: <ClipboardList />,
+            label: "Research Rubric",
+            link: route('coordinator.PSM2.researchRubric'),
         },
         {
             icon: <ListChecks />,

@@ -411,39 +411,44 @@ class CoordinatorController extends Controller
         $this->studentService->unassignStudentsPSMPanel2PSM1($studentId);
     }
 
-    public function PSM1EvaluationRurbric()
-    {
-        $this->authorize('view psm1 evaluation rubric');
 
-        $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM1')
-                    ->where('isDevelopment',  true)
-                    ->get();
+   
 
-        $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM1')
-                    ->where('isDevelopment',  true)
-                    ->onlyTrashed()
-                    ->get();
+    // public function PSM1EvaluationRurbric()
+    // {
+    //     $this->authorize('view psm1 evaluation rubric');
+
+    //     $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+    //                 ->where('PSMType',  'PSM1')
+    //                 ->where('isDevelopment',  true)
+    //                 ->get();
+
+    //     $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+    //                 ->where('PSMType',  'PSM1')
+    //                 ->where('isDevelopment',  true)
+    //                 ->onlyTrashed()
+    //                 ->get();
         
-        $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM1')
-                    ->where('isResearch', true)
-                    ->get();
+    //     $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+    //                 ->where('PSMType',  'PSM1')
+    //                 ->where('isResearch', true)
+    //                 ->get();
 
-        $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM1')
-                    ->where('isResearch',  true)
-                    ->onlyTrashed()
-                    ->get();
+    //     $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+    //                 ->where('PSMType',  'PSM1')
+    //                 ->where('isResearch',  true)
+    //                 ->onlyTrashed()
+    //                 ->get();
 
-        return Inertia::render('Coordinator/PSM1/EvaluationRubric',[
-            'rubricsDevelopmentActive' => $rubricsDevelopmentActive,
-            'rubricsDevelopmentArchive' => $rubricsDevelopmentArchive,
-            'rubricsResearchActive' => $rubricsResearchActive,
-            'rubricsResearchArchive' => $rubricsResearchArchive
-        ]);
-    }
+    //     return Inertia::render('Coordinator/PSM1/EvaluationRubric',[
+    //         'rubricsDevelopmentActive' => $rubricsDevelopmentActive,
+    //         'rubricsDevelopmentArchive' => $rubricsDevelopmentArchive,
+    //         'rubricsResearchActive' => $rubricsResearchActive,
+    //         'rubricsResearchArchive' => $rubricsResearchArchive
+    //     ]);
+    // }
+
+    //eveluation psm1
 
     public function PSM1DevelopmentRurbric()
     {
@@ -602,6 +607,170 @@ class CoordinatorController extends Controller
         return redirect()->back()->with('success', 'Criteria deleted successfully.');
     }
 
+    //end of evaluation psm1
+
+     //eveluation psm1
+
+    public function PSM2DevelopmentRurbric()
+    {
+        $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM2')
+                    ->where('isDevelopment',  true)
+                    ->get();
+
+        $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM2')
+                    ->where('isDevelopment',  true)
+                    ->onlyTrashed()
+                    ->get();
+
+        return Inertia::render('Coordinator/PSM2/DevelopmentRubric',[
+            'rubricsDevelopmentActive' => $rubricsDevelopmentActive,
+            'rubricsDevelopmentArchive' => $rubricsDevelopmentArchive,
+        ]);
+    }
+
+    public function PSM2ResearchRurbric()
+    {
+
+        $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM2')
+                    ->where('isResearch', true)
+                    ->get();
+
+        $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                    ->where('PSMType',  'PSM2')
+                    ->where('isResearch',  true)
+                    ->onlyTrashed()
+                    ->get();
+
+        return Inertia::render('Coordinator/PSM2/ResearchRubric',[
+            'rubricsResearchActive' => $rubricsResearchActive,
+            'rubricsResearchArchive' => $rubricsResearchArchive
+        ]);
+    }
+
+
+    public function PSM2StoreEvaluationRurbric(Request $request)
+    {
+        //dd( $request->all());
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'PSMType' => 'required|string|max:255',
+            'total_weight' => 'required|integer|min:0|max:100',
+            'session' => 'required|string',
+            'isEnable' => 'required|boolean',
+            'isResearch' => 'required|boolean',
+            'isDevelopment' => 'required|boolean',
+            'isCoordinatorPSM1' => 'required|boolean',
+            'isSupervisorPSM1' => 'required|boolean',
+            'isPanelPSM1' => 'required|boolean',
+            'isCoordinatorPSM2' => 'required|boolean',
+            'isSupervisorPSM2' => 'required|boolean',
+            'isPanelPSM2' => 'required|boolean',
+        ]);
+
+        Rubric::create($validated);
+
+        return redirect()->back()->with('success', 'Rubric added successfully!');
+    }
+
+    public function PSM2StoreEvaluationCriteria(Request $request)
+    {
+        //dd( $request->all());
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'rubric_id' => 'required|integer|exists:rubrics,id',
+            'weight' => 'required|decimal:0,2|max:100',
+        ]);
+
+        Criteria::create($validated);
+
+        return redirect()->back()->with('success', 'Criteria added successfully!');
+    }
+
+    public function PSM2UpdateEvaluationRurbric(Request $request, $id)
+    {
+        $rubric = Rubric::withTrashed()->findOrFail($id);
+
+        //dd($rubric);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'PSMType' => 'required|string|max:255',
+            'session' => 'required|string',
+            'total_weight' => 'required|integer|min:0|max:100',
+            'isEnable' => 'required|boolean',
+            'isResearch' => 'required|boolean',
+            'isDevelopment' => 'required|boolean',
+            'isCoordinatorPSM1' => 'required|boolean',
+            'isSupervisorPSM1' => 'required|boolean',
+            'isPanelPSM1' => 'required|boolean',
+        ]);
+
+        $rubric->update($validated);
+
+        return redirect()->back()->with('success', 'Rubric updated successfully!');
+    }
+
+
+    public function PSM2UpdateEvaluationCriteria(Request $request, $id)
+    {
+        //dd( $request->all());
+
+        $criteria = Criteria::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'rubric_id' => 'required|integer|exists:rubrics,id',
+            'weight' => 'required|decimal:0,2|max:100',
+        ]);
+
+        $criteria->update($validated);
+
+        return redirect()->back()->with('success', 'Criteria updated successfully!');
+    }
+
+    public function PSM2ArchiveEvaluationRurbric($id)
+    {
+        $rubric = Rubric::findOrFail($id);
+
+        $rubric->delete();
+
+        return redirect()->back()->with('success', 'Rubric archived successfully.');
+        
+    }
+
+    public function PSM2DeleteEvaluationRurbric($id)
+    {
+        $rubric = Rubric::withTrashed()->findOrFail($id);
+
+        $rubric->forceDelete();
+
+        return redirect()->back()->with('success', 'Rubric deleted successfully.');
+    }
+    public function PSM2RestoreEvaluationRurbric($id)
+    {
+        $rubric = Rubric::withTrashed()->findOrFail($id);
+
+        $rubric->restore();
+
+        return redirect()->back()->with('success', 'Rubric restored successfully.');
+    }
+
+    public function PSM2DeleteEvaluationCriteria($id)
+    {
+        $criteria = Criteria::findOrFail($id);
+        $criteria->delete(); // Soft delete
+        return redirect()->back()->with('success', 'Criteria deleted successfully.');
+    }
+ 
+    //end of evaluation psm2
+
+    //Grade PSM1
+
     public function PSM1GradeSupervision()
     {
         $this->authorize('view psm1 grade supervision table');
@@ -620,6 +789,7 @@ class CoordinatorController extends Controller
         $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM1')
             ->where('isDevelopment',  true)
+            ->where('isEnable',  true)
             ->get();
 
             // dd($rubricsDevelopment);
@@ -627,6 +797,7 @@ class CoordinatorController extends Controller
         $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM1')
             ->where('isResearch',  true)
+            ->where('isEnable',  true)
             ->get();    
 
             // dd($rubricsResearch);
@@ -653,6 +824,7 @@ class CoordinatorController extends Controller
         $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM1')
             ->where('isDevelopment',  true)
+            ->where('isEnable',  true)
             ->get();
 
         // dd($rubricsDevelopment);
@@ -660,6 +832,7 @@ class CoordinatorController extends Controller
         $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM1')
             ->where('isResearch',  true)
+            ->where('isEnable',  true)
             ->get();    
 
         return Inertia::render('Coordinator/PSM1/GradePSM1',[
@@ -680,6 +853,7 @@ class CoordinatorController extends Controller
         $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                 ->where('PSMType',  'PSM1')
                 ->where('isCoordinatorPSM1',  true)
+                ->where('isEnable',  true)
                 ->get();
 
         return Inertia::render('Coordinator/PSM1/GradePSM1Coordinator',[
@@ -688,7 +862,7 @@ class CoordinatorController extends Controller
             'id' => $id
         ]);
     }
-
+    
     public function PSM1StoreScore(Request $request){
 
         // dd('panel id: '.$request->panel_id);
@@ -728,6 +902,142 @@ class CoordinatorController extends Controller
         // dd($request->criteria,$request->student_id, $id, $request->comments,$request->total_weight, $totalScore, $finalScore, $request->rubric_id);
     }
 
+    //Grade PSM2
+
+    public function PSM2GradeSupervision()
+    {
+        $this->authorize('view psm2 grade supervision table');
+
+        $id = Auth::user()->id;
+
+        $studentsDevelopment = $this->studentService->getStudentsSupervisorGradePSM2($id, 1);
+
+        // dd($studentsDevelopment);
+
+        $studentResearch = $this->studentService->getStudentsSupervisorGradePSM2($id, 2);
+
+        // dd($studentResearch);
+
+        $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+            ->where('PSMType',  'PSM2')
+            ->where('isDevelopment',  true)
+            ->where('isEnable',  true)
+            ->get();
+
+            // dd($rubricsDevelopment);
+
+        $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+            ->where('PSMType',  'PSM2')
+            ->where('isResearch',  true)
+            ->where('isEnable',  true)
+            ->get();    
+
+            // dd($rubricsResearch);
+
+        return Inertia::render('Coordinator/PSM2/GradeSupervision',[
+            'studentsDevelopment' => $studentsDevelopment,
+            'studentResearch' => $studentResearch,
+            'rubricsDevelopment' => $rubricsDevelopment,
+            'rubricsResearch' => $rubricsResearch,
+            'id' => $id
+        ]);
+    }
+
+    public function PSM2GradePanel()
+    {
+        $this->authorize('view psm2 grade table');
+
+        $id = Auth::user()->id;
+
+        $studentsDevelopment = $this->studentService->getStudentsPanelGradePSM2($id, 1);
+
+        $studentResearch = $this->studentService->getStudentsPanelGradePSM2($id, 2);
+
+        $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+            ->where('PSMType',  'PSM2')
+            ->where('isDevelopment',  true)
+            ->where('isEnable',  true)
+            ->get();
+
+        // dd($rubricsDevelopment);
+
+        $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+            ->where('PSMType',  'PSM2')
+            ->where('isResearch',  true)
+            ->where('isEnable',  true)
+            ->get();    
+
+        return Inertia::render('Coordinator/PSM2/GradePSM2',[
+            'studentsDevelopment' => $studentsDevelopment,
+            'studentResearch' => $studentResearch,
+            'rubricsDevelopment' => $rubricsDevelopment,
+            'rubricsResearch' => $rubricsResearch,
+            'id' => $id
+        ]);
+    }
+
+    public function PSM2GradeCoordinator()
+    {
+        $id = Auth::user()->id;
+
+        $students = StudentPSM1::all();
+
+        $rubrics = Rubric::with(['criteria'])  // Only load criteria, not grading levels
+                ->where('PSMType',  'PSM2')
+                ->where('isCoordinatorPSM2',  true)
+                ->where('isEnable',  true)
+                ->get();
+
+        return Inertia::render('Coordinator/PSM2/GradePSM2Coordinator',[
+            'students' => $students,
+            'rubrics' => $rubrics,
+            'id' => $id
+        ]);
+    }
+
+    public function PSM2StoreScore(Request $request){
+
+        // dd('panel id: '.$request->panel_id);
+
+        $totalScore = array_sum($request->criteria);
+
+        $weight = $request->total_weight;
+
+        $finalScore = $weight/100 * $totalScore;
+
+        $panelName = User::findOrFail($request->panel_id)->name;
+
+        // dd($panelName);
+
+        // Score::create([
+        //     'rubric_id' => $request->rubric_id,
+        //     'student_psm1_id' => $request->student_id,
+        //     'mark' => $finalScore,
+        //     'comment' => $request->comments,
+        // ]);
+
+        Score::updateOrCreate(
+            [
+                'rubric_id' => $request->rubric_id,
+                'student_psm2_id' => $request->student_id,
+                'panel_id' => $request->panel_id,
+            ],
+            [
+                'mark' => $finalScore,
+                'comment' => $request->comments,
+                'panel_name' => $panelName,
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Score successfully stored.');
+
+        // dd($request->criteria,$request->student_id, $id, $request->comments,$request->total_weight, $totalScore, $finalScore, $request->rubric_id);
+    }
+
+    //END GRADE
+
+
+
     public function PSM1ViewResult()
     {
         $this->authorize('view psm1 result table');
@@ -745,6 +1055,28 @@ class CoordinatorController extends Controller
             ->where('isResearch',  true)->withTrashed()->get();
 
         return Inertia::render('Coordinator/PSM1/ViewResult',[
+            'students' => $students,
+            'rubricDevelopment' => $rubricDevelopment,
+            'rubricResearch' => $rubricResearch,
+        ]);
+    }
+
+    public function PSM2ViewResult()
+    {
+
+        $students = StudentPSM2::with(['score.rubric' => function ($query) {
+            $query->withTrashed(); // Include soft-deleted rubrics
+        }])->get();
+
+        // dd($students[0]);
+
+        $rubricDevelopment = Rubric:: where('PSMType',  'PSM2')
+            ->where('isDevelopment',  true)->withTrashed()->get();
+
+        $rubricResearch = Rubric:: where('PSMType',  'PSM2')
+            ->where('isResearch',  true)->withTrashed()->get();
+
+        return Inertia::render('Coordinator/PSM2/ViewResult',[
             'students' => $students,
             'rubricDevelopment' => $rubricDevelopment,
             'rubricResearch' => $rubricResearch,
@@ -1071,12 +1403,12 @@ class CoordinatorController extends Controller
 
 
 
-    public function PSM2ViewResult()
-    {
-        $this->authorize('view psm2 result table');
+    // public function PSM2ViewResult()
+    // {
+    //     $this->authorize('view psm2 result table');
 
-        return Inertia::render('Coordinator/PSM2/ViewResult');
-    }
+    //     return Inertia::render('Coordinator/PSM2/ViewResult');
+    // }
 
     public function PSM2EvaluationRurbric()
     {
@@ -1085,19 +1417,7 @@ class CoordinatorController extends Controller
         return Inertia::render('Coordinator/PSM2/EvaluationRubric');
     }
 
-    public function PSM2GradeSupervision()
-    {
-        $this->authorize('view psm2 grade supervision table');
 
-        return Inertia::render('Coordinator/PSM2/GradeSupervision');
-    }
-
-    public function PSM2Grade()
-    {
-        $this->authorize('view psm2 grade table');
-
-        return Inertia::render('Coordinator/PSM2/GradePSM2');
-    }
 
 
     /////////////////////////////////////////////////////////////////////////////////

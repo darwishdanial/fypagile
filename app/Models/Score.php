@@ -34,7 +34,7 @@ class Score extends Model
 
     public function student_psm2()
     {
-        return $this->belongsTo(StudentPSM2::class);
+        return $this->belongsTo(StudentPSM2::class, 'student_psm2_id');
     }
 
     public function panel()

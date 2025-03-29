@@ -125,10 +125,17 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
             }
         });
 
-        const route_path =
-            userType === 2
-                ? "panel.PSM1.score.store"
-                : "coordinator.PSM1.score.store";
+        let route_path;
+
+        if (psmType === "PSM1" && userType === 1) {
+            route_path = "coordinator.PSM1.score.store";
+        } else if (psmType === "PSM2" && userType === 1) {
+            route_path = "coordinator.PSM2.score.store";
+        } else if (psmType === "PSM1" && userType === 2) {
+            route_path = "panel.PSM1.score.store";
+        } else if (psmType === "PSM2" && userType === 2) {
+            route_path = "panel.PSM2.score.store";
+        }
 
         // Send only the criteria scores
         router.post(
@@ -141,7 +148,7 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
                 rubric_id: data.id,
                 panel_id: panelId,
                 rubric_name: rubric.name,
-                rubric_total_weight: rubric.total_weight
+                rubric_total_weight: rubric.total_weight,
             },
             {
                 onStart: () => setIsProcessing(true),
@@ -189,99 +196,87 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
                                 Criteria
                             </h3>
 
-                            {rubric?.isEnable ? (
-                                <>
-                                    {/* Score Level Labels */}
-                                    <div className="grid grid-cols-6 gap-4  items-center">
-                                        <span className="col-start-3 text-center font-medium text-gray-700">
-                                            Poor
-                                        </span>
-                                        <span className="text-center font-medium text-gray-700">
-                                            Fair
-                                        </span>
-                                        <span className="text-center font-medium text-gray-700">
-                                            Good
-                                        </span>
-                                        <span className="text-center font-medium text-gray-700">
-                                            Excellent
-                                        </span>
-                                    </div>
+                            <>
+                                {/* Score Level Labels */}
+                                <div className="grid grid-cols-6 gap-4  items-center">
+                                    <span className="col-start-3 text-center font-medium text-gray-700">
+                                        Poor
+                                    </span>
+                                    <span className="text-center font-medium text-gray-700">
+                                        Fair
+                                    </span>
+                                    <span className="text-center font-medium text-gray-700">
+                                        Good
+                                    </span>
+                                    <span className="text-center font-medium text-gray-700">
+                                        Excellent
+                                    </span>
+                                </div>
 
-                                    {rubric?.criteria?.map((criterion) => (
-                                        <div
-                                            key={criterion.id}
-                                            className="my-4 grid grid-cols-6 "
-                                        >
-                                            <label className="font-medium text-gray-700 mt-1 col-span-2">
-                                                {criterion.name} :
-                                            </label>
-
-                                                {[1, 2, 3, 4].map((score) => (
-                                                    <label
-                                                        key={score}
-                                                        className="flex items-center justify-center"
-                                                    >
-                                                        <input
-                                                            type="radio"
-                                                            name={`criteria_${criterion.id}`}
-                                                            value={
-                                                                (score / 4) *
-                                                                criterion.weight
-                                                            }
-                                                            checked={
-                                                                data[
-                                                                    `criteria_${criterion.id}`
-                                                                ] ===
-                                                                (score / 4) *
-                                                                    criterion.weight
-                                                            }
-                                                            onChange={(e) =>
-                                                                setData(
-                                                                    (prev) => ({
-                                                                        ...prev,
-                                                                        [`criteria_${criterion.id}`]:
-                                                                            Number(
-                                                                                e
-                                                                                    .target
-                                                                                    .value
-                                                                            ),
-                                                                    })
-                                                                )
-                                                            }
-                                                            className="cursor-pointer"
-                                                        />
-                                                        {score}
-                                                    </label>
-                                                ))}
-                                        </div>
-                                    ))}
-
-                                    {/* Comment Section */}
-                                    <div className="mt-3">
-                                        <label className="font-medium text-gray-700">
-                                            Comments (Optional)
+                                {rubric?.criteria?.map((criterion) => (
+                                    <div
+                                        key={criterion.id}
+                                        className="my-4 grid grid-cols-6 "
+                                    >
+                                        <label className="font-medium text-gray-700 mt-1 col-span-2">
+                                            {criterion.name} :
                                         </label>
-                                        <textarea
-                                            name="comments"
-                                            value={data.comments}
-                                            onChange={(e) =>
-                                                setData(
-                                                    "comments",
-                                                    e.target.value
-                                                )
-                                            }
-                                            rows={4}
-                                            className="w-full mt-2 p-2 border rounded border-gray-300"
-                                            placeholder="Enter your comments here..."
-                                        ></textarea>
-                                    </div>
-                                </>
-                            ) : (
-                                <p className="text-red-500">Rubric disabled</p>
-                            )}
-                        </div>
 
-                        
+                                        {[1, 2, 3, 4].map((score) => (
+                                            <label
+                                                key={score}
+                                                className="flex items-center justify-center"
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name={`criteria_${criterion.id}`}
+                                                    value={
+                                                        (score / 4) *
+                                                        criterion.weight
+                                                    }
+                                                    checked={
+                                                        data[
+                                                            `criteria_${criterion.id}`
+                                                        ] ===
+                                                        (score / 4) *
+                                                            criterion.weight
+                                                    }
+                                                    onChange={(e) =>
+                                                        setData((prev) => ({
+                                                            ...prev,
+                                                            [`criteria_${criterion.id}`]:
+                                                                Number(
+                                                                    e.target
+                                                                        .value
+                                                                ),
+                                                        }))
+                                                    }
+                                                    className="cursor-pointer"
+                                                />
+                                                {score}
+                                            </label>
+                                        ))}
+                                    </div>
+                                ))}
+
+                                {/* Comment Section */}
+                                <div className="mt-3">
+                                    <label className="font-medium text-gray-700">
+                                        Comments (Optional)
+                                    </label>
+                                    <textarea
+                                        name="comments"
+                                        value={data.comments}
+                                        onChange={(e) =>
+                                            setData("comments", e.target.value)
+                                        }
+                                        rows={4}
+                                        className="w-full mt-2 p-2 border rounded border-gray-300"
+                                        placeholder="Enter your comments here..."
+                                    ></textarea>
+                                </div>
+                            </>
+                        </div>
                     </form>
                 </div>
 
@@ -296,20 +291,16 @@ const GradeRubricModal: React.FC<GradeRubricModalProps> = ({
                         Cancel
                     </button>
 
-                    {Boolean(rubric?.isEnable) && (
-                        <button
-                            type="submit"
-                            form="PSM1GradeRubricForm"
-                            disabled={processing}
-                            className={`px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition ${
-                                processing
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : ""
-                            }`}
-                        >
-                            {processing ? "Saving..." : "Save"}
-                        </button>
-                    )}
+                    <button
+                        type="submit"
+                        form="PSM1GradeRubricForm"
+                        disabled={processing}
+                        className={`px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition ${
+                            processing ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                    >
+                        {processing ? "Saving..." : "Save"}
+                    </button>
                 </div>
             </div>
         </div>

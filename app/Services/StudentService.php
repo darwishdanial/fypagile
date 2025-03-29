@@ -391,6 +391,26 @@ class StudentService
         return $assignedStudents;
     }
 
+    public function getStudentsPanelGradePSM2(?int $panelId, int $type){
+
+        $assignedStudents = ($type == 1 ) ? 
+            StudentPSM2::where(function ($query) use ($panelId) {
+                $query->where('panelId', $panelId)
+                    ->orWhere('panel2Id', $panelId);
+            })
+            ->where('project_type', "System Development")
+            ->get()
+            :StudentPSM2::where(function ($query) use ($panelId) {
+                $query->where('panelId', $panelId)
+                    ->orWhere('panel2Id', $panelId);
+            })
+            ->where('project_type', "Research Based")
+            ->get();
+    
+
+        return $assignedStudents;
+    }
+
 
 
 

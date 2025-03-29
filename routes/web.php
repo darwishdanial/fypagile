@@ -144,7 +144,9 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/view-result', [CoordinatorController::class, 'PSM1ViewResult'])->name('viewResult');
 
-        Route::get('/evaluation-rubric', [CoordinatorController::class, 'PSM1EvaluationRurbric'])->name('evaluationRubric');
+        Route::get('/development-rubric', [CoordinatorController::class, 'PSM1DevelopmentRurbric'])->name('developmentRubric');
+
+        Route::get('/research-rubric', [CoordinatorController::class, 'PSM1ResearchRurbric'])->name('researchRubric');
 
         Route::post('/evaluation-rubric/store', [CoordinatorController::class, 'PSM1StoreEvaluationRurbric'])->name('evaluationRubric.store');
 
@@ -162,14 +164,10 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::delete('/evaluation-critertia/{id}/delete', [CoordinatorController::class, 'PSM1DeleteEvaluationCriteria'])->name('evaluationCriteria.delete');
 
-
-        Route::get('/development-rubric', [CoordinatorController::class, 'PSM1DevelopmentRurbric'])->name('developmentRubric');
-
-        Route::get('/research-rubric', [CoordinatorController::class, 'PSM1ResearchRurbric'])->name('researchRubric');
-
+ 
+        //Grading
 
         Route::get('/grade-supervision', [CoordinatorController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
-
 
         Route::get('/grade-PSM1-panel', [CoordinatorController::class, 'PSM1GradePanel'])->name('gradePSM1Panel');
 
@@ -237,14 +235,43 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/unassign-PSM2-panel-2/{id}', [CoordinatorController::class, 'PSM2UnassignPSMPanel2'])->name('panel2.unassign');
 
+        //Rubrics and Criteria
+
+
 
         Route::get('/view-result', [CoordinatorController::class, 'PSM2ViewResult'])->name('viewResult');
 
-        Route::get('/evaluation-rubric', [CoordinatorController::class, 'PSM2EvaluationRurbric'])->name('evaluationRubric');
+        Route::get('/development-rubric', [CoordinatorController::class, 'PSM2DevelopmentRurbric'])->name('developmentRubric');
+
+        Route::get('/research-rubric', [CoordinatorController::class, 'PSM2ResearchRurbric'])->name('researchRubric');
+
+        Route::post('/evaluation-rubric/store', [CoordinatorController::class, 'PSM2StoreEvaluationRurbric'])->name('evaluationRubric.store');
+
+        Route::put('/evaluation-rubric/{id}/update', [CoordinatorController::class, 'PSM2UpdateEvaluationRurbric'])->name('evaluationRubric.update');
+
+        Route::delete('/evaluation-rubric/{id}/archive', [CoordinatorController::class, 'PSM2ArchiveEvaluationRurbric'])->name('evaluationRubric.archive');
+
+        Route::delete('/evaluation-rubric/{id}/delete', [CoordinatorController::class, 'PSM2DeleteEvaluationRurbric'])->name('evaluationRubric.delete');
+
+        Route::post('/evaluation-rubric/{id}/restore', [CoordinatorController::class, 'PSM2RestoreEvaluationRurbric'])->name('evaluationRubric.restore');
+
+        Route::post('/evaluation-critertia/store', [CoordinatorController::class, 'PSM2StoreEvaluationCriteria'])->name('evaluationCriteria.store');
+
+        Route::put('/evaluation-critertia/{id}/update', [CoordinatorController::class, 'PSM2UpdateEvaluationCriteria'])->name('evaluationCriteria.update');
+
+        Route::delete('/evaluation-critertia/{id}/delete', [CoordinatorController::class, 'PSM2DeleteEvaluationCriteria'])->name('evaluationCriteria.delete');
+
+
+
+        //Grading
 
         Route::get('/grade-supervision', [CoordinatorController::class, 'PSM2GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-PSM2', [CoordinatorController::class, 'PSM2Grade'])->name('gradePSM2');
+        Route::get('/grade-PSM2', [CoordinatorController::class, 'PSM2GradePanel'])->name('gradePSM2');
+
+        Route::get('/grade-PSM2-coordinator', [CoordinatorController::class, 'PSM2GradeCoordinator'])->name('gradePSM2Coordinator');
+
+        Route::post('/store-score', [CoordinatorController::class, 'PSM2StoreScore'])->name('score.store');
 
     });
 
