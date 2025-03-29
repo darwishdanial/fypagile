@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, usePage, useForm } from "@inertiajs/react";
-import { CoordinatorSidebar } from "./CoordinatorSidebar";
+import { PanelSidebar } from "./PanelSidebar";
 import { User } from "lucide-react";
 import { route } from "ziggy-js";
 
-export function CoordinatorLayout({ children }) {
+export function PanelLayout({ children }) {
     const { url } = usePage();
     const { get } = useForm();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -17,7 +17,7 @@ export function CoordinatorLayout({ children }) {
     return (
         <>
             <div className="flex h-screen">
-                <CoordinatorSidebar></CoordinatorSidebar>
+                <PanelSidebar></PanelSidebar>
                 <div className="flex flex-col w-full">
                     <header className="bg-white shadow-md">
                         <div>
@@ -36,13 +36,13 @@ export function CoordinatorLayout({ children }) {
                                 <ul className="flex uppercase font-semibold text-3xl tracking-wide">
                                     <li
                                         className={`${
-                                            url.startsWith("/Coordinator/Home")
+                                            url.startsWith("/Panel/Home")
                                                 ? "text-[#6D2323] border-b-3 border-[#6D2323]"
                                                 : "text-[#CCCCCC]"
                                         } hover:bg-gray-100 p-2`}
                                     >
                                         <Link
-                                            href={route("coordinator.home")}
+                                            href={route("panel.home")}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p>H</p>
@@ -50,13 +50,13 @@ export function CoordinatorLayout({ children }) {
                                     </li>
                                     <li
                                         className={`${
-                                            url.startsWith("/Coordinator/PSM1")
+                                            url.startsWith("/Panel/PSM1")
                                                 ? "text-[#6D2323] border-b-3 border-[#6D2323]"
                                                 : "text-[#CCCCCC]"
                                         } hover:bg-gray-100 p-2`}
                                     >
                                         <Link
-                                            href="/Coordinator/PSM1/list-students"
+                                            href={route("panel.PSM1.gradeSupervision")}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p>PSM1</p>
@@ -64,13 +64,13 @@ export function CoordinatorLayout({ children }) {
                                     </li>
                                     <li
                                         className={`${
-                                            url.startsWith("/Coordinator/PSM2")
+                                            url.startsWith("/Panel/PSM2")
                                                 ? "text-[#6D2323] border-b-3 border-[#6D2323]"
                                                 : "text-[#CCCCCC]"
                                         } hover:bg-gray-100 p-2`}
                                     >
                                         <Link
-                                            href="/Coordinator/PSM2/list-students"
+                                            href={route("panel.PSM2.gradeSupervision")}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p>PSM2</p>
