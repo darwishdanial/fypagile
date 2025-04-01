@@ -76,19 +76,19 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/list-panels', [PanelController::class, 'PSM1ListPanels'])->name('listPanels');
 
-        Route::post('/panels/{id}/archive', [CoordinatorController::class, 'PSM1ArchivePanel'])->name('panels.archive');
+        Route::post('/panels/{id}/archive', [PanelController::class, 'PSM1ArchivePanel'])->name('panels.archive');
 
-        Route::post('/panels/{id}/restore', [CoordinatorController::class, 'PSM1RestorePanel'])->name('panels.restore');
+        Route::post('/panels/{id}/restore', [PanelController::class, 'PSM1RestorePanel'])->name('panels.restore');
 
-        Route::post('/panels/store', [CoordinatorController::class, 'PSM1StorePanel'])->name('panels.store');
+        Route::post('/panels/store', [PanelController::class, 'PSM1StorePanel'])->name('panels.store');
 
-        Route::put('/panels/{id}/update', [CoordinatorController::class, 'PSM1UpdatePanel'])->name('panels.update');
+        Route::put('/panels/{id}/update', [PanelController::class, 'PSM1UpdatePanel'])->name('panels.update');
 
-        Route::delete('/panels/{id}/delete', [CoordinatorController::class, 'PSM1DeletePanel'])->name('panels.delete');
+        Route::delete('/panels/{id}/delete', [PanelController::class, 'PSM1DeletePanel'])->name('panels.delete');
 
-        Route::post('/panels/bulk-archive', [CoordinatorController::class, 'PSM1BulkArchivePanel'])->name('panels.bulkArchive');
+        Route::post('/panels/bulk-archive', [PanelController::class, 'PSM1BulkArchivePanel'])->name('panels.bulkArchive');
 
-        Route::post('/panels/import', [CoordinatorController::class, 'ImportPanels'])->name('panels.import');
+        Route::post('/panels/import', [PanelController::class, 'ImportPanels'])->name('panels.import');
 
         Route::get('/panels/sample', [PanelController::class, 'getPanelSample'])->name('panels.sample');
 
@@ -181,17 +181,17 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/list-panels', [PanelController::class, 'PSM2ListPanels'])->name('listPanels');
 
-        Route::post('/panels/{id}/archive', [CoordinatorController::class, 'PSM2ArchivePanel'])->name('panels.archive');
+        Route::post('/panels/{id}/archive', [PanelController::class, 'PSM2ArchivePanel'])->name('panels.archive');
 
-        Route::post('/panels/{id}/restore', [CoordinatorController::class, 'PSM2RestorePanel'])->name('panels.restore');
+        Route::post('/panels/{id}/restore', [PanelController::class, 'PSM2RestorePanel'])->name('panels.restore');
 
-        Route::delete('/panels/{id}/delete', [CoordinatorController::class, 'PSM2DeletePanel'])->name('panels.delete');
+        Route::delete('/panels/{id}/delete', [PanelController::class, 'PSM2DeletePanel'])->name('panels.delete');
 
-        Route::post('/panels/bulk-archive', [CoordinatorController::class, 'PSM2BulkArchivePanel'])->name('panels.bulkArchive');
+        Route::post('/panels/bulk-archive', [PanelController::class, 'PSM2BulkArchivePanel'])->name('panels.bulkArchive');
 
-        Route::post('/panels/store', [CoordinatorController::class, 'PSM2StorePanel'])->name('panels.store');
+        Route::post('/panels/store', [PanelController::class, 'PSM2StorePanel'])->name('panels.store');
 
-        Route::put('/panels/{id}/update', [CoordinatorController::class, 'PSM2UpdatePanel'])->name('panels.update');
+        Route::put('/panels/{id}/update', [PanelController::class, 'PSM2UpdatePanel'])->name('panels.update');
 
         //SUPERVISOR ASSIGNMENT
 
