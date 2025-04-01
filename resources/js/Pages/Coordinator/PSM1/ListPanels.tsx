@@ -602,7 +602,7 @@ export default function ListPanels() {
                                                 <>
                                                     <button
                                                         type="button"
-                                                        className="p-1 text-red-600 hover:text-red-800 transition"
+                                                        className="p-1 text-gray-600 hover:text-gray-800 transition"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleArchive(

@@ -489,7 +489,7 @@ export default function ListStudents() {
                                                 <>
                                                     <button
                                                         type="button"
-                                                        className="p-1 text-red-600 hover:text-red-800 transition"
+                                                        className="p-1 text-archive-600 hover:text-archive-800 transition"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleArchive(

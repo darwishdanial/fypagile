@@ -108,7 +108,7 @@ export default function ResearchRubric() {
 
     const handleDeleteRubric = (id: number) => {
         const isConfirmed = confirm(
-            "Are you sure you want to delete this rubric? The scores assosiated with the rubric will be deleted as well."
+            "Are you sure you want to delete this rubric? The criteria and scores assosiated with the rubric will be deleted as well."
         );
 
         if (isConfirmed) {
@@ -429,7 +429,7 @@ export default function ResearchRubric() {
                                                     <div className="flex space-x-2">
                                                         <button
                                                             type="button"
-                                                            className="p-1 text-red-600 hover:text-red-800 transition"
+                                                            className="p-1 text-green-600 hover:text-green-800 transition"
                                                             onClick={() =>
                                                                 handleRestoreRubric(
                                                                     rubric.id
@@ -486,7 +486,7 @@ export default function ResearchRubric() {
                                                         </button>
                                                         <button
                                                             type="button"
-                                                            className="p-1 text-red-600 hover:text-red-800 transition"
+                                                            className="p-1 text-gray-600 hover:text-gray-800 transition"
                                                             onClick={() =>
                                                                 handleArchiveRubric(
                                                                     rubric.id

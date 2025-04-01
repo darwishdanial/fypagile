@@ -122,7 +122,7 @@ export default function EvaluationRubric() {
 
     const handleDeleteRubric = (id: number) => {
         const isConfirmed = confirm(
-            "Are you sure you want to delete this rubric? The scores assosiated with the rubric will be deleted as well."
+            "Are you sure you want to delete this rubric? The criteria and scores assosiated with the rubric will be deleted as well."
         );
 
         if (isConfirmed) {

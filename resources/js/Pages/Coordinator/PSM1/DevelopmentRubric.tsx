@@ -108,7 +108,7 @@ export default function DevelopmentRubric() {
 
     const handleDeleteRubric = (id: number) => {
         const isConfirmed = confirm(
-            "Are you sure you want to delete this rubric? The scores assosiated with the rubric will be deleted as well."
+            "Are you sure you want to delete this rubric? The criteria and scores assosiated with the rubric will be deleted as well."
         );
 
         if (isConfirmed) {
@@ -429,7 +429,7 @@ export default function DevelopmentRubric() {
                                                     <div className="flex space-x-2">
                                                         <button
                                                             type="button"
-                                                            className="p-1 text-red-600 hover:text-red-800 transition"
+                                                            className="p-1 text-green-600 hover:text-green-800 transition"
                                                             onClick={() =>
                                                                 handleRestoreRubric(
                                                                     rubric.id
@@ -442,21 +442,7 @@ export default function DevelopmentRubric() {
                                                                 className="transition-transform duration-200 hover:scale-125"
                                                             />
                                                         </button>
-                                                        <button
-                                                            type="button"
-                                                            className="p-1 text-red-600 hover:text-red-800 transition"
-                                                            onClick={() =>
-                                                                handleDeleteRubric(
-                                                                    rubric.id
-                                                                )
-                                                            }
-                                                            title="Delete Rubric"
-                                                        >
-                                                            <Trash
-                                                                size={20}
-                                                                className="transition-transform duration-200 hover:scale-125"
-                                                            />
-                                                        </button>
+                                                        
                                                     </div>
                                                 ) : (
                                                     <div className="flex space-x-2">
@@ -501,7 +487,7 @@ export default function DevelopmentRubric() {
                                                         </button>
                                                         <button
                                                             type="button"
-                                                            className="p-1 text-red-600 hover:text-red-800 transition"
+                                                            className="p-1 text-gray-600 hover:text-gray-800 transition"
                                                             onClick={() =>
                                                                 handleArchiveRubric(
                                                                     rubric.id
@@ -510,6 +496,21 @@ export default function DevelopmentRubric() {
                                                             title="Archive rubric"
                                                         >
                                                             <Archive
+                                                                size={20}
+                                                                className="transition-transform duration-200 hover:scale-125"
+                                                            />
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="p-1 text-red-600 hover:text-red-800 transition"
+                                                            onClick={() =>
+                                                                handleDeleteRubric(
+                                                                    rubric.id
+                                                                )
+                                                            }
+                                                            title="Delete Rubric"
+                                                        >
+                                                            <Trash
                                                                 size={20}
                                                                 className="transition-transform duration-200 hover:scale-125"
                                                             />
