@@ -113,7 +113,7 @@ export function CoordinatorLayout({ children }) {
                         </div>
                     </header>
 
-                    <main>{children}</main>
+                    <main className="overflow-y-auto">{children}</main>
                 </div>
             </div>
         </>

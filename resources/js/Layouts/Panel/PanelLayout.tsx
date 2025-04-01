@@ -113,7 +113,7 @@ export function PanelLayout({ children }) {
                         </div>
                     </header>
 
-                    <main>{children}</main>
+                    <main className="overflow-y-auto">{children}</main>
                 </div>
             </div>
         </>
