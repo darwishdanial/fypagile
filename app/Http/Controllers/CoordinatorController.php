@@ -295,7 +295,17 @@ class CoordinatorController extends Controller
 
     public function getPanelHistory(){
 
-        return Inertia::render('Coordinator/Home/PanelHistory');
+        $users = User::whereHas('panelHistories')
+                ->with('panelHistories')
+                ->get(['id', 'name','matricNo']);
+
+        //  dd($users[0]);
+
+        return Inertia::render('Coordinator/Home/PanelHistory', [
+            'users' => $users
+        ]);
+
     }
+
 
 }

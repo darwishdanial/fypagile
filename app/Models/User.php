@@ -76,5 +76,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Score::class, 'panel_id');
     }
+
+    public function panelHistories()
+    {
+        return $this->hasMany(PanelHistory::class, 'panel_id');
+    }
 }
 
