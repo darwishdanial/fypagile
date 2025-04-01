@@ -101,6 +101,7 @@ class CoordinatorController extends Controller
         $this->studentService->unassignStudentsSupervisorPSM1($studentId);
     }
 
+
     //SUPERVISOR ASSIGN
     //PSM2
 
@@ -185,6 +186,17 @@ class CoordinatorController extends Controller
         $this->studentService->unassignStudentsPSMPanel2PSM1($studentId);
     }
 
+    public function PSM1autoAssignPanelsToStudents(){
+
+        $user = Auth::user();
+        $email = $user->email;
+        $psmType = 'PSM1';
+        $this->coordinatorService->autoAssignPanelsToStudents($psmType, $email);
+
+        return redirect()->back()->with(['success' => 'AI Panel assignment process has started....']);
+
+    }
+
     //PANEL ASSIGN
     //PSM2
 
@@ -232,6 +244,58 @@ class CoordinatorController extends Controller
     public function PSM2UnassignPSMPanel2($studentId)
     {
         $this->studentService->unassignStudentsPSMPanel2PSM2($studentId);
+    }
+
+    //AI
+
+    public function getMLData(ProjectLecturerMergerService $mergerService){
+
+        $projectArea = $mergerService->mergePanelAndProjectDataWithMapping();
+        $sampleCount = count($projectArea['samples']);
+        $labelCount = count($projectArea['labels']);
+        $samples = $projectArea['samples'];
+        $labels = $projectArea['labels'];
+
+        return Inertia::render('Coordinator/Home/MLData',[
+            'totalPanel' => $projectArea['panelCount'],
+            'totalProjectArea' =>$projectArea['projectAreaCount'],
+            'totalProjectType' => $projectArea['projectTypeCount'],
+            'totalSamples' => $sampleCount,
+            'totalLabels' => $labelCount,
+            'asgCountPerPanel' => $projectArea['panelAssignments'],
+        ]);
+
+        
+        // logger(json_encode($samples, JSON_PRETTY_PRINT));
+        // logger(json_encode($labels, JSON_PRETTY_PRINT));
+
+        // dd([
+        //     'Total Panel (Label Count)' => $projectArea['panelCount'],  
+        //     'Total Project Areas' => $projectArea['projectAreaCount'],  
+        //     'Total Project Types' => $projectArea['projectTypeCount'],  
+        //     'Total Samples' => $sampleCount,  
+        //     'Total Labels' => $labelCount,
+        //     'Asg count per panel' => $projectArea['panelAssignments'],
+        // ]);
+
+
+        //103 panel -> label type
+        //16 project area
+        //2 project type
+        //2567 samples and labels
+
+        //low probability because large number of panels
+
+    }
+
+    public function compareKernelModel(CompareMachineLearningService $compareMachineLearningService){
+        $mergeResult = $compareMachineLearningService->compareKernel();
+        dd($mergeResult);
+    }
+
+    public function getPanelHistory(){
+
+        return Inertia::render('Coordinator/Home/PanelHistory');
     }
 
 }
