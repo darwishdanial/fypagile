@@ -11,6 +11,9 @@ import {
     ClipboardList,
     ListChecks,
     LogOut,
+    Info,
+    House,
+    History
 } from "lucide-react";
 import { route } from 'ziggy-js';
 
@@ -29,6 +32,24 @@ export function CoordinatorSidebar() {
         e.preventDefault();
         get("/logout");
     };
+
+    const menuItemsHome: MenuItemType[] = [
+        {
+            icon: <House />,
+            label: "Dashobard",
+            link: route('coordinator.home'),
+        },
+        {
+            icon: <History />,
+            label: "Panel History",
+            link: route('coordinator.panel.history'),
+        },
+        {
+            icon: <Info />,
+            label: "ML Data",
+            link: route('coordinator.panel.ml-data'),
+        },
+    ];
 
     const menuItemsPSM1: MenuItemType[] = [
         {
@@ -137,8 +158,8 @@ export function CoordinatorSidebar() {
     ];
 
     let menuItems: MenuItemType[] = [];
-    if (url === "/Coordinator/Home") {
-        menuItems = [];
+    if (url.startsWith("/Coordinator/Home")) {
+        menuItems = menuItemsHome;
     } else if (url.startsWith("/Coordinator/PSM1")) {
         menuItems = menuItemsPSM1;
     } else if (url.startsWith("/Coordinator/PSM2")) {

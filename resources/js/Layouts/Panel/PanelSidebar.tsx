@@ -6,6 +6,7 @@ import {
     PanelRightOpen,
     ListChecks,
     LogOut,
+    House
 } from "lucide-react";
 
 interface MenuItemType {
@@ -24,6 +25,14 @@ export function PanelSidebar() {
         e.preventDefault();
         get("/logout");
     };
+
+    const menuItemsHome: MenuItemType[] = [
+        {
+            icon: <House />,
+            label: "Dashobard",
+            link: route('panel.home'),
+        },
+    ];
 
     const menuItemsPSM1: MenuItemType[] = [
         {
@@ -52,8 +61,8 @@ export function PanelSidebar() {
     ];
 
     let menuItems: MenuItemType[] = [];
-    if (url === "/Panel/Home") {
-        menuItems = [];
+    if (url.startsWith("/Panel/Home")) {
+        menuItems = menuItemsHome;
     } else if (url.startsWith("/Panel/PSM1")) {
         menuItems = menuItemsPSM1;
     } else if (url.startsWith("/Panel/PSM2")) {
@@ -77,7 +86,7 @@ export function PanelSidebar() {
                     {menuItems.map(({ icon, label, link }, index) => {
                         const isActive = url === new URL(link, window.location.origin).pathname;
                         const iconColor = isActive
-                            ? "text-[#6D2323] font-semibold"
+                            ? "text-[#6D2323] font-semibold bg-gray-100"
                             : "text-[#808080]";
 
                         return (
