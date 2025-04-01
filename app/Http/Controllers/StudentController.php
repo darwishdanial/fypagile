@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 use App\Imports\PSM1StudentsImport;
 use App\Imports\PSM2StudentsImport;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
@@ -135,6 +136,17 @@ class StudentController extends Controller
         StudentPSM1::whereIn('id', $request->ids)->delete();
 
         return redirect()->back()->with('success', 'Selected students have been archived successfully!');
+    }
+
+    public function getStudentSample(){
+
+        $filePath = 'import_student_sample_data.xlsx'; // Update to CSV if needed
+        
+        if (!Storage::disk('public')->exists($filePath)) {
+            abort(404);
+        }
+    
+        return response()->download(storage_path("app/public/$filePath"));
     }
 
     //PSM2

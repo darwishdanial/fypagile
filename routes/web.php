@@ -43,6 +43,11 @@ Route::middleware( EnsureCoordinator::class)
 
     Route::get('/Home', [CoordinatorController::class, 'index'])->name('home');
 
+    Route::get('/Home/panel-history', [CoordinatorController::class, 'getPanelHistory'])->name('panel.history');
+
+    Route::get('/Home/ml-data', [CoordinatorController::class, 'getMLData'])->name('panel.ml-data');
+
+
     Route::prefix('PSM1')
         ->as('PSM1.')
         ->group(function () {
@@ -65,15 +70,7 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/students/bulk-archive', [StudentController::class, 'PSM1BulkArchiveStudent'])->name('students.bulkArchive');
 
-        Route::get('/students/sample', function () {
-            $filePath = 'import_student_sample_data.xlsx'; // Update to CSV if needed
-        
-            if (!Storage::disk('public')->exists($filePath)) {
-                abort(404);
-            }
-        
-            return response()->download(storage_path("app/public/$filePath"));
-        })->name('students.sample');
+        Route::get('/students/sample',[StudentController::class, 'getStudentSample'] )->name('students.sample');
 
         //PANEL MANAGEMENT
 
@@ -93,17 +90,9 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/panels/import', [CoordinatorController::class, 'ImportPanels'])->name('panels.import');
 
-        Route::get('/panels/sample', function () {
-            $filePath = 'import_panels_sample_data.xlsx'; // Update to CSV if needed
-        
-            if (!Storage::disk('public')->exists($filePath)) {
-                abort(404);
-            }
-        
-            return response()->download(storage_path("app/public/$filePath"));
-        })->name('panels.sample');
+        Route::get('/panels/sample', [PanelController::class, 'getPanelSample'])->name('panels.sample');
 
-        //SUPERVISOR
+        //SUPERVISOR ASSIGNMENT
 
         Route::get('/list-supervisor', [CoordinatorController::class, 'PSM1ListSupervisor'])->name('listSupervisor');
 
@@ -113,7 +102,7 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/unassign-supervisor/{id}', [CoordinatorController::class, 'PSM1UnassignSupervisor'])->name('supervisor.unassign');
 
-        //PANEL
+        //PANEL ASSIGNMENT
 
         Route::get('/list-PSM1-panel', [CoordinatorController::class, 'PSM1listAssignPanel'])->name('listPSM1Panel');
 
@@ -128,6 +117,7 @@ Route::middleware( EnsureCoordinator::class)
         Route::post('/unassign-PSM1-panel-2/{id}', [CoordinatorController::class, 'PSM1UnassignPSMPanel2'])->name('panel2.unassign');
 
         Route::post('/auto-assign-PSM1-panel', [CoordinatorController::class, 'PSM1autoAssignPanelsToStudents'])->name('panel.autoAssign');
+
 
         //RURBIC AND CRITERIA
 
@@ -203,7 +193,7 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::put('/panels/{id}/update', [CoordinatorController::class, 'PSM2UpdatePanel'])->name('panels.update');
 
-        //SUPERVISOR
+        //SUPERVISOR ASSIGNMENT
 
         Route::get('/list-supervisor', [CoordinatorController::class, 'PSM2ListSupervisor'])->name('listSupervisor');
 
@@ -213,7 +203,7 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/unassign-supervisor/{id}', [CoordinatorController::class, 'PSM2UnassignSupervisor'])->name('supervisor.unassign');
 
-        //PANEL PSM2
+        //PANEL PSM2 ASSIGNMENT
 
         Route::get('/list-PSM2-panel', [CoordinatorController::class, 'PSM2ListPanel'])->name('listPSM2Panel');
         

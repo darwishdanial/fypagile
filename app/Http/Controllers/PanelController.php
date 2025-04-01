@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Imports\PanelsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class PanelController extends Controller
 {
@@ -164,7 +165,7 @@ class PanelController extends Controller
         if (!$request->filled('password')) {
             unset($validated['password']);
         } else {
-            $validated['password'] = bcrypt($validated['password']);
+            $validated['password'] = Hash::make($validated['password']);
         }
 
         $panel->update($validated);
@@ -188,6 +189,17 @@ class PanelController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Selected panels have been archived successfully!');
+    }
+
+    public function getPanelSample(){
+
+        $filePath = 'import_panels_sample_data.xlsx'; // Update to CSV if needed
+        
+        if (!Storage::disk('public')->exists($filePath)) {
+            abort(404);
+        }
+    
+        return response()->download(storage_path("app/public/$filePath"));
     }
 
     public function ImportPanels(Request $request)
@@ -313,225 +325,12 @@ class PanelController extends Controller
         if (!$request->filled('password')) {
             unset($validated['password']);
         } else {
-            $validated['password'] = bcrypt($validated['password']);
+            $validated['password'] = Hash::make($validated['password']);
         }
 
         $panel->update($validated);
 
         return redirect()->back()->with('success', 'Panel added successfully!');
-    }
-
-
-    
-
-    //PSM1
-
-    public function PSM1GradeSupervision(){
-
-        $this->authorize('view psm1 grade supervision table');
-
-        $id = Auth::user()->id;
-
-        $studentsDevelopment = $this->studentService->getStudentsSupervisorGradePSM1($id, 1);
-
-        // dd($studentsDevelopment);
-
-        $studentResearch = $this->studentService->getStudentsSupervisorGradePSM1($id, 2);
-
-        // dd($studentResearch);
-
-        $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-            ->where('PSMType',  'PSM1')
-            ->where('isDevelopment',  true)
-            ->where('isEnable',  true)
-            ->get();
-
-            // dd($rubricsDevelopment);
-
-        $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-            ->where('PSMType',  'PSM1')
-            ->where('isResearch',  true)
-            ->where('isEnable',  true)
-            ->get();    
-
-            // dd($rubricsResearch);
-
-        return Inertia::render('Panel/PSM1/GradeSupervision',[
-            'studentsDevelopment' => $studentsDevelopment,
-            'studentResearch' => $studentResearch,
-            'rubricsDevelopment' => $rubricsDevelopment,
-            'rubricsResearch' => $rubricsResearch,
-            'id' => $id
-        ]);
-
-    }
-
-    public function PSM1Grade(){
-
-        $this->authorize('view psm1 grade table');
-        
-        $id = Auth::user()->id;
-
-        $studentsDevelopment = $this->studentService->getStudentsPanelGradePSM1($id, 1);
-
-        $studentResearch = $this->studentService->getStudentsPanelGradePSM1($id, 2);
-
-        $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-            ->where('PSMType',  'PSM1')
-            ->where('isDevelopment',  true)
-            ->where('isEnable',  true)
-            ->get();
-
-        // dd($rubricsDevelopment);
-
-        $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-            ->where('PSMType',  'PSM1')
-            ->where('isResearch',  true)
-            ->where('isEnable',  true)
-            ->get();    
-
-        return Inertia::render('Panel/PSM1/GradePSM1',[
-            'studentsDevelopment' => $studentsDevelopment,
-            'studentResearch' => $studentResearch,
-            'rubricsDevelopment' => $rubricsDevelopment,
-            'rubricsResearch' => $rubricsResearch,
-            'id' => $id
-        ]);
-    }
-
-    public function PSM1StoreScore(Request $request){
-
-        //dd('panel id: '.$request->panel_id);
-
-        $totalScore = array_sum($request->criteria);
-
-        $weight = $request->total_weight;
-
-        $finalScore = $weight/100 * $totalScore;
-
-        $panelName = User::findOrFail($request->panel_id)->name;
-
-        // dd($panelName);
-
-        Score::updateOrCreate(
-            [
-                'rubric_id' => $request->rubric_id,
-                'student_psm1_id' => $request->student_id,
-                'panel_id' => $request->panel_id,
-            ],
-            [
-                'mark' => $finalScore,
-                'comment' => $request->comments,
-                'panel_name' => $panelName,
-            ]
-        );
-
-        return redirect()->back()->with('success', 'Score successfully stored.');
-
-    }
-
-    //PSM2
-
-    public function PSM2GradeSupervision(){
-
-        $this->authorize('view psm2 grade supervision table');
-
-        $id = Auth::user()->id;
-
-        $studentsDevelopment = $this->studentService->getStudentsSupervisorGradePSM2($id, 1);
-
-        // dd($studentsDevelopment);
-
-        $studentResearch = $this->studentService->getStudentsSupervisorGradePSM2($id, 2);
-
-        // dd($studentResearch);
-
-        $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-            ->where('PSMType',  'PSM2')
-            ->where('isDevelopment',  true)
-            ->where('isEnable',  true)
-            ->get();
-
-            // dd($rubricsDevelopment);
-
-        $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-            ->where('PSMType',  'PSM2')
-            ->where('isResearch',  true)
-            ->where('isEnable',  true)
-            ->get();    
-
-            // dd($rubricsResearch);
-
-        return Inertia::render('Panel/PSM2/GradeSupervision',[
-            'studentsDevelopment' => $studentsDevelopment,
-            'studentResearch' => $studentResearch,
-            'rubricsDevelopment' => $rubricsDevelopment,
-            'rubricsResearch' => $rubricsResearch,
-            'id' => $id
-        ]);
-    }
-
-    public function PSM2Grade(){
-
-        $this->authorize('view psm2 grade table');
-
-        $id = Auth::user()->id;
-
-        $studentsDevelopment = $this->studentService->getStudentsPanelGradePSM1($id, 1);
-
-        $studentResearch = $this->studentService->getStudentsPanelGradePSM1($id, 2);
-
-        $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-            ->where('PSMType',  'PSM2')
-            ->where('isDevelopment',  true)
-            ->where('isEnable',  true)
-            ->get();
-
-        // dd($rubricsDevelopment);
-
-        $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-            ->where('PSMType',  'PSM2')
-            ->where('isResearch',  true)
-            ->where('isEnable',  true)
-            ->get();    
-
-        return Inertia::render('Panel/PSM2/GradePSM2',[
-            'studentsDevelopment' => $studentsDevelopment,
-            'studentResearch' => $studentResearch,
-            'rubricsDevelopment' => $rubricsDevelopment,
-            'rubricsResearch' => $rubricsResearch,
-            'id' => $id
-        ]);
-    }
-
-    public function PSM2StoreScore(Request $request){
-
-        //dd('panel id: '.$request->panel_id);
-
-        $totalScore = array_sum($request->criteria);
-
-        $weight = $request->total_weight;
-
-        $finalScore = $weight/100 * $totalScore;
-
-        $panelName = User::findOrFail($request->panel_id)->name;
-
-        // dd($panelName);
-
-        Score::updateOrCreate(
-            [
-                'rubric_id' => $request->rubric_id,
-                'student_psm2_id' => $request->student_id,
-                'panel_id' => $request->panel_id,
-            ],
-            [
-                'mark' => $finalScore,
-                'comment' => $request->comments,
-                'panel_name' => $panelName,
-            ]
-        );
-
-        return redirect()->back()->with('success', 'Score successfully stored.');
     }
 
 }
