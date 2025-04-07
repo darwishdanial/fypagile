@@ -189,14 +189,17 @@ export default function PanelHistory() {
                                         <button
                                             type="button"
                                             title="Assign Student"
-                                            className="p-2 px-3 bg-blue-400 text-white rounded hover:bg-blue-500 transition my-2 ml-2 font-semibold"
+                                            className="p-1 text-blue-600 hover:text-blue-800 transition"
                                             onClick={() => {
                                                 handleOpenModal(supervisor)
                                                 // console.log(supervisor.panel_histories)
                                             }}
                                         >
                                             <div className="flex">
-                                                <Search  />
+                                                <Search  
+                                                    size={20}
+                                                    className="transition-transform duration-200 hover:scale-125"
+                                                />
                                             </div>
                                         </button>
                                     </td>
