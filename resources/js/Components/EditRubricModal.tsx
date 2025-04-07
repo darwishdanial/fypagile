@@ -10,9 +10,8 @@ interface Rubric {
     psmType: string;
     session: string;
     isEnable: boolean;
-    isResearch: boolean;
-    isDevelopment: boolean;
     roleType: number;
+    rubricType: number;
 }
 
 interface EditRubricModalProps {
@@ -48,14 +47,8 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
     ): string => {
         if (!rubric) return "";
 
-        if (psmType === "PSM1") {
-            if (rubric.isResearch) return "research";
-            if (rubric.isDevelopment) return "development";
-        } else {
-            // For PSM2
-            if (rubric.isResearch) return "research";
-            if (rubric.isDevelopment) return "development";
-        }
+        if (rubric.rubricType === 1) return "development";
+        if (rubric.rubricType === 2) return "research";
 
         return "";
     };
@@ -140,14 +133,18 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                 ? 3
                 : null;
 
+        const rubricTypeValue =
+                data.rubricType === "development" ? 1 : 2;
+
         if (!rubric) return;
 
         // Transform the roleType into the expected format for the backend
         const transformedData = {
             ...data,
             roleType: roleTypeValue,
-            isResearch: data.rubricType === "research",
-            isDevelopment: data.rubricType === "development",
+            rubricType: rubricTypeValue,
+            // isResearch: data.rubricType === "research",
+            // isDevelopment: data.rubricType === "development",
         };
 
         const route_path =

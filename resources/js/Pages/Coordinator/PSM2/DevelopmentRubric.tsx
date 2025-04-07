@@ -25,8 +25,7 @@ interface Rubric {
     psmType: string;
     session: string;
     isEnable: boolean;
-    isResearch: boolean;
-    isDevelopment: boolean;
+    rubricType: number;
     roleType: number; // 1 = coordinator, 2 = panel, 3 = supervisor
     deleted_at: Date;
     criteria: Criteria[] | null;

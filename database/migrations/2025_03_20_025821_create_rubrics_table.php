@@ -17,10 +17,9 @@ return new class extends Migration
             $table->tinyInteger('total_weight')->unsigned();
             $table->string(column: 'PSMType');
             $table->string(column: 'session');
-            $table->boolean('isDevelopment');
-            $table->boolean('isResearch');
-            $table->boolean('isEnable');
+            $table->tinyInteger('rubricType')->unsigned();
             $table->tinyInteger('roleType')->unsigned();
+            $table->boolean('isEnable');
             $table->timestamps();
             $table->softDeletes();
 

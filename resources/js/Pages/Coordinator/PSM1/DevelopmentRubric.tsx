@@ -28,6 +28,7 @@ interface Rubric {
     isResearch: boolean;
     isDevelopment: boolean;
     roleType: number; // 1 = coordinator, 2 = panel, 3 = supervisor
+    rubricType: number;
     deleted_at: Date;
     criteria: Criteria[] | null;
 }

@@ -82,12 +82,16 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                 ? 3
                 : null;
 
+        const rubricTypeValue =
+            data.rubricType === "development" ? 1 : 2;
+
         // Transform the roleType into the expected format for the backend
         const transformedData = {
             ...data,
             roleType: roleTypeValue,
-            isResearch: data.rubricType === "research",
-            isDevelopment: data.rubricType === "development",
+            rubricType: rubricTypeValue,
+            // isResearch: data.rubricType === "research",
+            // isDevelopment: data.rubricType === "development",
         };
 
         const route_path =

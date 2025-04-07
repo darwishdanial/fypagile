@@ -39,7 +39,7 @@ class GradingController extends Controller
 
         $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM1')
-            ->where('isDevelopment',  true)
+            ->where('rubricType',  1)
             ->where('roleType',  3)
             ->where('isEnable',  true)
             ->get();
@@ -48,7 +48,7 @@ class GradingController extends Controller
 
         $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM1')
-            ->where('isResearch',  true)
+            ->where('rubricType',  2)
             ->where('roleType',  3)
             ->where('isEnable',  true)
             ->get();    
@@ -80,7 +80,7 @@ class GradingController extends Controller
 
         $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM1')
-            ->where('isDevelopment',  true)
+            ->where('rubricType',  1)
             ->where('roleType',  2)
             ->where('isEnable',  true)
             ->get();
@@ -89,7 +89,7 @@ class GradingController extends Controller
 
         $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM1')
-            ->where('isResearch',  true)
+            ->where('rubricType',  2)
             ->where('roleType',  2)
             ->where('isEnable',  true)
             ->get();    
@@ -173,7 +173,7 @@ class GradingController extends Controller
 
         $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM2')
-            ->where('isDevelopment',  true)
+            ->where('rubricType',  1)
             ->where('roleType',  3)
             ->where('isEnable',  true)
             ->get();
@@ -182,7 +182,7 @@ class GradingController extends Controller
 
         $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM2')
-            ->where('isResearch',  true)
+            ->where('rubricType',  2)
             ->where('roleType',  3)
             ->where('isEnable',  true)
             ->get();    
@@ -212,7 +212,7 @@ class GradingController extends Controller
 
         $rubricsDevelopment = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM2')
-            ->where('isDevelopment',  true)
+            ->where('rubricType',  1)
             ->where('roleType',  2)
             ->where('isEnable',  true)
             ->get();
@@ -221,7 +221,7 @@ class GradingController extends Controller
 
         $rubricsResearch = Rubric::with(['criteria'])  // Only load criteria, not grading levels
             ->where('PSMType',  'PSM2')
-            ->where('isResearch',  true)
+            ->where('rubricType',  2)
             ->where('roleType',  2)
             ->where('isEnable',  true)
             ->get();    

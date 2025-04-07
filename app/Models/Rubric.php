@@ -20,7 +20,8 @@ class Rubric extends Model
         'isEnable',
         'roleType',
         'isDevelopment',
-        'isResearch'
+        'isResearch',
+        'rubricType',
     ];
 
     public function criteria()

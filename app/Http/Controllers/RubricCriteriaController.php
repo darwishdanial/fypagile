@@ -25,10 +25,10 @@ class RubricCriteriaController extends Controller
         //dd($students[0]);
 
         $rubricDevelopment = Rubric:: where('PSMType',  'PSM1')
-            ->where('isDevelopment',  true)->withTrashed()->get();
+            ->where('rubricType',  1)->withTrashed()->get();
 
         $rubricResearch = Rubric:: where('PSMType',  'PSM1')
-            ->where('isResearch',  true)->withTrashed()->get();
+            ->where('rubricType',  2)->withTrashed()->get();
 
         return Inertia::render('Coordinator/PSM1/ViewResult',[
             'students' => $students,
@@ -50,10 +50,10 @@ class RubricCriteriaController extends Controller
         // dd($students[0]);
 
         $rubricDevelopment = Rubric:: where('PSMType',  'PSM2')
-            ->where('isDevelopment',  true)->withTrashed()->get();
+            ->where('rubricType',  1)->withTrashed()->get();
 
         $rubricResearch = Rubric:: where('PSMType',  'PSM2')
-            ->where('isResearch',  true)->withTrashed()->get();
+            ->where('rubricType',  2)->withTrashed()->get();
 
         return Inertia::render('Coordinator/PSM2/ViewResult',[
             'students' => $students,
@@ -69,12 +69,12 @@ class RubricCriteriaController extends Controller
     {
         $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM1')
-                    ->where('isDevelopment',  true)
+                    ->where('rubricType',  1)
                     ->get();
 
         $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM1')
-                    ->where('isDevelopment',  true)
+                    ->where('rubricType',  1)
                     ->onlyTrashed()
                     ->get();
 
@@ -90,12 +90,12 @@ class RubricCriteriaController extends Controller
 
         $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM1')
-                    ->where('isResearch', true)
+                    ->where('rubricType',  2)
                     ->get();
 
         $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM1')
-                    ->where('isResearch',  true)
+                    ->where('rubricType',  2)
                     ->onlyTrashed()
                     ->get();
 
@@ -121,12 +121,11 @@ class RubricCriteriaController extends Controller
             'total_weight' => 'required|integer|min:0|max:100',
             'session' => 'required|string',
             'isEnable' => 'required|boolean',
-            'isResearch' => 'required|boolean',
-            'isDevelopment' => 'required|boolean',
+            'rubricType' => 'required|integer|min:1|max:3',
             'roleType' => 'required|integer|min:1|max:3',
         ]);
 
-        //  dd( $request->all());
+        //   dd( $request->all());
 
         Rubric::create($validated);
 
@@ -160,8 +159,7 @@ class RubricCriteriaController extends Controller
             'session' => 'required|string',
             'total_weight' => 'required|integer|min:0|max:100',
             'isEnable' => 'required|boolean',
-            'isResearch' => 'required|boolean',
-            'isDevelopment' => 'required|boolean',
+            'rubricType' => 'required|integer|min:1|max:3',
             'roleType' => 'required|integer|min:1|max:3',
         ]);
 
@@ -229,12 +227,12 @@ class RubricCriteriaController extends Controller
     {
         $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM2')
-                    ->where('isDevelopment',  true)
+                    ->where('rubricType',  1)
                     ->get();
 
         $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM2')
-                    ->where('isDevelopment',  true)
+                    ->where('rubricType',  1)
                     ->onlyTrashed()
                     ->get();
 
@@ -249,12 +247,12 @@ class RubricCriteriaController extends Controller
 
         $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM2')
-                    ->where('isResearch', true)
+                    ->where('rubricType',  2)
                     ->get();
 
         $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
                     ->where('PSMType',  'PSM2')
-                    ->where('isResearch',  true)
+                    ->where('rubricType',  2)
                     ->onlyTrashed()
                     ->get();
 
@@ -275,8 +273,7 @@ class RubricCriteriaController extends Controller
             'total_weight' => 'required|integer|min:0|max:100',
             'session' => 'required|string',
             'isEnable' => 'required|boolean',
-            'isResearch' => 'required|boolean',
-            'isDevelopment' => 'required|boolean',
+            'rubricType' => 'required|integer|min:1|max:3',
             'roleType' => 'required|integer|min:1|max:3',
         ]);
 
@@ -312,8 +309,7 @@ class RubricCriteriaController extends Controller
             'session' => 'required|string',
             'total_weight' => 'required|integer|min:0|max:100',
             'isEnable' => 'required|boolean',
-            'isResearch' => 'required|boolean',
-            'isDevelopment' => 'required|boolean',
+            'rubricType' => 'required|integer|min:1|max:3',
             'roleType' => 'required|integer|min:1|max:3',
         ]);
 
