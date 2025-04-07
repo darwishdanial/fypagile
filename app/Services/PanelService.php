@@ -8,6 +8,12 @@ use App\Models\StudentPSM2;
 use Exception;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use App\Imports\PanelsImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 
 class PanelService 
 {
@@ -199,6 +205,157 @@ class PanelService
         return $panelPSM2;
     }
 
+    public function getPanelDashboardData()
+    {
+        $user = Auth::user();
+
+        $studentsPSM1 = StudentPSM1::where("supervisorId", $user->id)->count();
+        $studentsPSM2 = StudentPSM2::where("supervisorId", $user->id)->count();
+        $panelsPSM1 = StudentPSM1::where("panelId", $user->id)
+                                ->orWhere("panel2Id", $user->id)
+                                ->count();
+        $panelsPSM2 = StudentPSM2::where("panelId", $user->id)
+                                ->orWhere("panel2Id", $user->id)
+                                ->count();
+
+        return [
+            'userName' => $user->name,
+            'studentsPSM1' => $studentsPSM1,
+            'studentsPSM2' => $studentsPSM2,
+            'panelsPSM1' => $panelsPSM1,
+            'panelsPSM2' => $panelsPSM2,
+        ];
+    }
+
+
+    public function createPanel(array $data)
+    {
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        }
+
+        return User::create($data);
+    }
+
+    public function updatePanel($id, array $data)
+    {
+        $panel = User::findOrFail($id);
+
+        if (!isset($data['password']) || empty($data['password'])) {
+            unset($data['password']);
+        } else {
+            $data['password'] = Hash::make($data['password']);
+        }
+
+        $panel->update($data);
+
+        return $panel;
+    }
+
+    public function deletePanel($id)
+    {
+        $panel = User::findOrFail($id);
+        return $panel->forceDelete();
+    }
+
+    public function archivePanel($id, $psmType)
+    {
+        $panel = User::findOrFail($id);
+        
+        if ($psmType === 'PSM1') {
+            $panel->update([
+                'isArchivePSM1' => 1,
+                'isSupervisorPSM1' => 0,
+                'isPanelPSM1' => 0,
+            ]);
+        } else {
+            $panel->update([
+                'isArchivePSM2' => 1,
+                'isSupervisorPSM2' => 0,
+                'isPanelPSM2' => 0,
+            ]);
+        }
+
+        return $panel;
+    }
+
+    public function restorePanel($id, $psmType)
+    {
+        $panel = User::findOrFail($id);
+        
+        if ($psmType === 'PSM1') {
+            $panel->update(['isArchivePSM1' => 0]);
+        } else {
+            $panel->update(['isArchivePSM2' => 0]);
+        }
+
+        return $panel;
+    }
+
+    public function bulkArchivePanel(array $ids, $psmType)
+    {
+        if ($psmType === 'PSM1') {
+            return User::whereIn('id', $ids)->update([
+                'isArchivePSM1' => 1,
+                'isSupervisorPSM1' => 0,
+                'isPanelPSM1' => 0,
+            ]);
+        } else {
+            return User::whereIn('id', $ids)->update([
+                'isArchivePSM2' => 1,
+                'isSupervisorPSM2' => 0,
+                'isPanelPSM2' => 0,
+            ]);
+        }
+    }
+
+    public function getPanelSample()
+    {
+        $filePath = 'import_panels_sample_data.xlsx';
+        
+        if (!Storage::disk('public')->exists($filePath)) {
+            return false;
+        }
+    
+        return storage_path("app/public/$filePath");
+    }
+
+    public function importPanels($file)
+    {
+        $import = new PanelsImport();
+        Excel::import($import, $file);
+
+        $failures = Cache::get('panels_import_failures', []);
+
+        if($failures) {
+            Cache::forget('panels_import_failures');
+            return $failures;
+        }
+
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function getPanel(){
         
@@ -280,14 +437,6 @@ class PanelService
         }
     }
 
-    // public function getPanelPSM2(){
-
-    //     $panels = DB::table('users')
-    //         ->where('isPanel','=', '1')
-    //         ->get();
-
-    //     return $panels;
-    // }
     public function getStudentsPSM2($panelType, $panelId)
     {
         $students = collect();

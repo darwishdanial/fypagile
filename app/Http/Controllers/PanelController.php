@@ -1,26 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\DB;
-use App\Models\StudentPSM1;
-use App\Models\StudentPSM2;
-use App\Models\User;
-use Session;
-use Exception;
 use Illuminate\Http\Request;
 use App\Services\StudentService;
 use App\Services\PanelService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Models\Rubric;
-use App\Models\Criteria;
-use App\Models\Score;
 use App\Services\CoordinatorService;
-use Illuminate\Support\Facades\Hash;
-use App\Imports\PanelsImport;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+
 
 class PanelController extends Controller
 {
@@ -39,41 +26,20 @@ class PanelController extends Controller
     {
         $this->authorize('view panel dashboard');
 
-        $userName = Auth::user()->name;
-        $userId = Auth::user()->id;
+        $dashboardData = $this->panelService->getPanelDashboardData();
 
-        $studentsPSM1 = StudentPSM1:: where("supervisorId",$userId)->count();
-        $studentsPSM2 = StudentPSM2:: where("supervisorId",$userId)->count();
-        $panelsPSM1 = StudentPSM1:: where("panelId",$userId)
-                                ->orWhere("panel2Id",$userId)
-                                ->count();
-        $panelsPSM2 = StudentPSM2:: where("panelId",$userId)
-                                ->orWhere("panel2Id",$userId)
-                                ->count();
-        
-
-        // dd($panelsPSM1);
-
-        return Inertia::render('Panel/Home/Index',[
-            'userName' => $userName,
-            'studentsPSM1' => $studentsPSM1,
-            'studentsPSM2' => $studentsPSM2,
-            'panelsPSM1' => $panelsPSM1,
-            'panelsPSM2' => $panelsPSM2
-        ]);
+        return Inertia::render('Panel/Home/Index', $dashboardData);
     }
 
     //PSM1
 
-    public function PSM1ListPanels()
-    {
+    public function PSM1ListPanels(){
+
         $this->authorize('view psm1 list panels table');
 
         $panelActive = $this->panelService->getPanelPSM1();
 
         $panelArchive = $this->panelService->getPanelPSM1Archive();
-
-        //dd($panelActive);
 
         return Inertia::render('Coordinator/PSM1/ListPanels',[
             'panels' => $panelActive,
@@ -93,35 +59,21 @@ class PanelController extends Controller
 
     }
 
-    public function PSM1ArchivePanel($id)
-    {
-        $panel = User ::findOrFail($id);
+    public function PSM1ArchivePanel($id){
 
-        //dd($panel);
-
-        $panel->update([
-            'isArchivePSM1' => 1,
-            'isSupervisorPSM1' => 0,
-            'isPanelPSM1' => 0,
-        ]);
+        $this->panelService->archivePanel($id, 'PSM1');
 
         return redirect()->back()->with('success', 'Panel archived successfully.');
     }
 
-    public function PSM1RestorePanel($id)
-    {
-        $panel = User ::findOrFail($id);
+    public function PSM1RestorePanel($id){
 
-        $panel->update([
-            'isArchivePSM1' => 0,
-        ]);
+        $this->panelService->restorePanel($id, 'PSM1');
 
         return back()->with('success', 'Panel restore successfully.');
     }
 
-    public function PSM1StorePanel(Request $request)
-    {
-        //dd( $request->all());
+    public function PSM1StorePanel(Request $request){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -138,18 +90,12 @@ class PanelController extends Controller
             'isArchivePSM2' => 'required|boolean',
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
-
-        User::create($validated);
+        $this->panelService->createPanel($validated);
 
         return redirect()->back()->with('success', 'Panel added successfully!');
     }
 
-    public function PSM1UpdatePanel(Request $request, $id)
-    {
-        //dd( $request->all());
-
-        $panel = User::findOrFail($id);
+    public function PSM1UpdatePanel(Request $request, $id){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -162,60 +108,46 @@ class PanelController extends Controller
             'password' => 'nullable|string|max:255',
         ]);        
 
-        if (!$request->filled('password')) {
-            unset($validated['password']);
-        } else {
-            $validated['password'] = Hash::make($validated['password']);
-        }
-
-        $panel->update($validated);
+        $this->panelService->updatePanel($id, $validated);
 
         return redirect()->back()->with('success', 'Panel added successfully!');
     }
 
-    public function PSM1DeletePanel($id)
-    {
-        $panel = User::findOrFail($id);
-        $panel->forceDelete(); 
+    public function PSM1DeletePanel($id){
+
+        $this->panelService->deletePanel($id);
+
         return redirect()->back()->with('success', 'Panel deleted successfully.');
     }
 
     public function PSM1BulkArchivePanel(Request $request){
 
-        User::whereIn('id', $request->ids)->update([
-            'isArchivePSM1' => 1,
-            'isSupervisorPSM1' => 0,
-            'isPanelPSM1' => 0,
-        ]);
+        $this->panelService->bulkArchivePanel($request->ids, 'PSM1');
 
         return redirect()->back()->with('success', 'Selected panels have been archived successfully!');
     }
 
     public function getPanelSample(){
 
-        $filePath = 'import_panels_sample_data.xlsx'; // Update to CSV if needed
+        $filePath = $this->panelService->getPanelSample();
         
-        if (!Storage::disk('public')->exists($filePath)) {
+        if (!$filePath) {
             abort(404);
         }
     
-        return response()->download(storage_path("app/public/$filePath"));
+        return response()->download($filePath);
     }
 
-    public function ImportPanels(Request $request)
-    {
-        $import = new PanelsImport();
-        Excel::import($import, $request->file('file'));
+    public function ImportPanels(Request $request){
 
-        $failures = Cache::get('panels_import_failures', []);
+        $result = $this->panelService->importPanels($request->file('file'));
 
-        if($failures){
-            Cache::forget('panels_import_failures');
-            //dd($failures);
-            return redirect()->back()->with('warning', $failures);
+        if (is_array($result)) {
+            return redirect()->back()->with('warning', $result);
         }
 
         return redirect()->back()->with('success', 'Panels imported successfully!');
+
     }
 
     //PSM2
@@ -228,61 +160,41 @@ class PanelController extends Controller
 
         $panelArchive = $this->panelService->getPanelPSM2Archive();
 
-        //dd($panelActive);
-
         return Inertia::render('Coordinator/PSM2/ListPanels',[
             'panels' => $panelActive,
             'archivedPanels' => $panelArchive
         ]);
     }
 
-    public function PSM2ArchivePanel($id)
-    {
-        $panel = User ::findOrFail($id);
+    public function PSM2ArchivePanel($id){
 
-        //dd($panel);
-
-        $panel->update([
-            'isArchivePSM2' => 1,
-            'isSupervisorPSM2' => 0,
-            'isPanelPSM2' => 0,
-        ]);
+        $this->panelService->archivePanel($id, 'PSM2');
 
         return redirect()->back()->with('success', 'Panel archived successfully.');
     }
 
-    public function PSM2RestorePanel($id)
-    {
-        $panel = User ::findOrFail($id);
+    public function PSM2RestorePanel($id){
 
-        $panel->update([
-            'isArchivePSM2' => 0,
-        ]);
+        $this->panelService->restorePanel($id, 'PSM2');
 
         return back()->with('success', 'Panel restore successfully.');
     }
 
-    public function PSM2DeletePanel($id)
-    {
-        $panel = User::findOrFail($id);
-        $panel->forceDelete(); 
+    public function PSM2DeletePanel($id){
+
+        $this->panelService->deletePanel($id);
+
         return redirect()->back()->with('success', 'Panel deleted successfully.');
     }
 
     public function PSM2BulkArchivePanel(Request $request){
 
-        User::whereIn('id', $request->ids)->update([
-            'isArchivePSM2' => 1,
-            'isSupervisorPSM2' => 0,
-            'isPanelPSM2' => 0,
-        ]);
+        $this->panelService->bulkArchivePanel($request->ids, 'PSM2');
 
         return redirect()->back()->with('success', 'Selected panels have been archived successfully!');
     }
 
-    public function PSM2StorePanel(Request $request)
-    {
-        //dd( $request->all());
+    public function PSM2StorePanel(Request $request){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -299,18 +211,12 @@ class PanelController extends Controller
             'role' => 'required',
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
-
-        User::create($validated);
+        $this->panelService->createPanel($validated);
 
         return redirect()->back()->with('success', 'Panel added successfully!');
     }
 
-    public function PSM2UpdatePanel(Request $request, $id)
-    {
-        //dd( $request->all());
-
-        $panel = User::findOrFail($id);
+    public function PSM2UpdatePanel(Request $request, $id){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -322,13 +228,7 @@ class PanelController extends Controller
             'password' => 'nullable|string|max:255',
         ]);        
 
-        if (!$request->filled('password')) {
-            unset($validated['password']);
-        } else {
-            $validated['password'] = Hash::make($validated['password']);
-        }
-
-        $panel->update($validated);
+        $this->panelService->updatePanel($id, $validated);
 
         return redirect()->back()->with('success', 'Panel added successfully!');
     }

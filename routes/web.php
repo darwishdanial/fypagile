@@ -123,19 +123,19 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/view-result', [RubricCriteriaController::class, 'PSM1ViewResult'])->name('viewResult');
 
-        Route::get('/development-rubric', [RubricCriteriaController::class, 'PSM1DevelopmentRurbric'])->name('developmentRubric');
+        Route::get('/development-rubric', [RubricCriteriaController::class, 'PSM1DevelopmentRubric'])->name('developmentRubric');
 
-        Route::get('/research-rubric', [RubricCriteriaController::class, 'PSM1ResearchRurbric'])->name('researchRubric');
+        Route::get('/research-rubric', [RubricCriteriaController::class, 'PSM1ResearchRubric'])->name('researchRubric');
 
-        Route::post('/evaluation-rubric/store', [RubricCriteriaController::class, 'PSM1StoreEvaluationRurbric'])->name('evaluationRubric.store');
+        Route::post('/evaluation-rubric/store', [RubricCriteriaController::class, 'PSM1StoreEvaluationRubric'])->name('evaluationRubric.store');
 
-        Route::put('/evaluation-rubric/{id}/update', [RubricCriteriaController::class, 'PSM1UpdateEvaluationRurbric'])->name('evaluationRubric.update');
+        Route::put('/evaluation-rubric/{id}/update', [RubricCriteriaController::class, 'PSM1UpdateEvaluationRubric'])->name('evaluationRubric.update');
 
-        Route::delete('/evaluation-rubric/{id}/archive', [RubricCriteriaController::class, 'PSM1ArchiveEvaluationRurbric'])->name('evaluationRubric.archive');
+        Route::delete('/evaluation-rubric/{id}/archive', [RubricCriteriaController::class, 'PSM1ArchiveEvaluationRubric'])->name('evaluationRubric.archive');
 
-        Route::delete('/evaluation-rubric/{id}/delete', [RubricCriteriaController::class, 'PSM1DeleteEvaluationRurbric'])->name('evaluationRubric.delete');
+        Route::delete('/evaluation-rubric/{id}/delete', [RubricCriteriaController::class, 'PSM1DeleteEvaluationRubric'])->name('evaluationRubric.delete');
 
-        Route::post('/evaluation-rubric/{id}/restore', [RubricCriteriaController::class, 'PSM1RestoreEvaluationRurbric'])->name('evaluationRubric.restore');
+        Route::post('/evaluation-rubric/{id}/restore', [RubricCriteriaController::class, 'PSM1RestoreEvaluationRubric'])->name('evaluationRubric.restore');
 
         Route::post('/evaluation-critertia/store', [RubricCriteriaController::class, 'PSM1StoreEvaluationCriteria'])->name('evaluationCriteria.store');
 
@@ -221,19 +221,19 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/view-result', [RubricCriteriaController::class, 'PSM2ViewResult'])->name('viewResult');
 
-        Route::get('/development-rubric', [RubricCriteriaController::class, 'PSM2DevelopmentRurbric'])->name('developmentRubric');
+        Route::get('/development-rubric', [RubricCriteriaController::class, 'PSM2DevelopmentRubric'])->name('developmentRubric');
 
-        Route::get('/research-rubric', [RubricCriteriaController::class, 'PSM2ResearchRurbric'])->name('researchRubric');
+        Route::get('/research-rubric', [RubricCriteriaController::class, 'PSM2ResearchRubric'])->name('researchRubric');
 
-        Route::post('/evaluation-rubric/store', [RubricCriteriaController::class, 'PSM2StoreEvaluationRurbric'])->name('evaluationRubric.store');
+        Route::post('/evaluation-rubric/store', [RubricCriteriaController::class, 'PSM2StoreEvaluationRubric'])->name('evaluationRubric.store');
 
-        Route::put('/evaluation-rubric/{id}/update', [RubricCriteriaController::class, 'PSM2UpdateEvaluationRurbric'])->name('evaluationRubric.update');
+        Route::put('/evaluation-rubric/{id}/update', [RubricCriteriaController::class, 'PSM2UpdateEvaluationRubric'])->name('evaluationRubric.update');
 
-        Route::delete('/evaluation-rubric/{id}/archive', [RubricCriteriaController::class, 'PSM2ArchiveEvaluationRurbric'])->name('evaluationRubric.archive');
+        Route::delete('/evaluation-rubric/{id}/archive', [RubricCriteriaController::class, 'PSM2ArchiveEvaluationRubric'])->name('evaluationRubric.archive');
 
-        Route::delete('/evaluation-rubric/{id}/delete', [RubricCriteriaController::class, 'PSM2DeleteEvaluationRurbric'])->name('evaluationRubric.delete');
+        Route::delete('/evaluation-rubric/{id}/delete', [RubricCriteriaController::class, 'PSM2DeleteEvaluationRubric'])->name('evaluationRubric.delete');
 
-        Route::post('/evaluation-rubric/{id}/restore', [RubricCriteriaController::class, 'PSM2RestoreEvaluationRurbric'])->name('evaluationRubric.restore');
+        Route::post('/evaluation-rubric/{id}/restore', [RubricCriteriaController::class, 'PSM2RestoreEvaluationRubric'])->name('evaluationRubric.restore');
 
         Route::post('/evaluation-critertia/store', [RubricCriteriaController::class, 'PSM2StoreEvaluationCriteria'])->name('evaluationCriteria.store');
 

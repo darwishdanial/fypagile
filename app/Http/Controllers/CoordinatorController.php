@@ -1,12 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\StudentPSM1;
-use App\Models\StudentPSM2;
 use App\Models\User;
-use App\Models\Rubric;
-use App\Models\Criteria;
-use App\Models\Score;
 use Illuminate\Http\Request;
 use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
@@ -17,13 +12,7 @@ use App\Services\CompareMachineLearningService;
 use App\Jobs\EmailPanelAssignmentCompleteJob;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Illuminate\Validation\Rule;
-use App\Imports\PSM1StudentsImport;
-use App\Imports\PSM2StudentsImport;
-use App\Imports\PanelsImport;
-use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
+
 
 class CoordinatorController extends Controller
 {

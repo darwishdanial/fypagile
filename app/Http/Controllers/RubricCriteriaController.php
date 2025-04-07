@@ -8,75 +8,49 @@ use Inertia\Inertia;
 use App\Models\Criteria;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
+use App\Services\RubricCriteriaService;
 
 class RubricCriteriaController extends Controller
 {
+
+    protected RubricCriteriaService $service;
+
+    public function __construct(RubricCriteriaService $service){
+
+        $this->service = $service;
+
+    }
+
     //VIEW RESULT
     //PSM1
 
     public function PSM1ViewResult()
     {
-        $this->authorize('view psm1 result table');
+         $this->authorize('view psm1 result table');
 
-        $students = StudentPSM1::with(['score.rubric' => function ($query) {
-            $query->withTrashed(); // Include soft-deleted rubrics
-        }])->get();
+        $data = $this->service->getPSM1ViewData();
 
-        //dd($students[0]);
-
-        $rubricDevelopment = Rubric:: where('PSMType',  'PSM1')
-            ->where('rubricType',  1)->withTrashed()->get();
-
-        $rubricResearch = Rubric:: where('PSMType',  'PSM1')
-            ->where('rubricType',  2)->withTrashed()->get();
-
-        return Inertia::render('Coordinator/PSM1/ViewResult',[
-            'students' => $students,
-            'rubricDevelopment' => $rubricDevelopment,
-            'rubricResearch' => $rubricResearch,
-        ]);
+        return Inertia::render('Coordinator/PSM1/ViewResult', $data);
     }
 
     //VIEW RESULT
     //PSM2
 
-    public function PSM2ViewResult()
-    {
+    public function PSM2ViewResult(){
 
-        $students = StudentPSM2::with(['score.rubric' => function ($query) {
-            $query->withTrashed(); // Include soft-deleted rubrics
-        }])->get();
+        $data = $this->service->getPSM2ViewData();
 
-        // dd($students[0]);
-
-        $rubricDevelopment = Rubric:: where('PSMType',  'PSM2')
-            ->where('rubricType',  1)->withTrashed()->get();
-
-        $rubricResearch = Rubric:: where('PSMType',  'PSM2')
-            ->where('rubricType',  2)->withTrashed()->get();
-
-        return Inertia::render('Coordinator/PSM2/ViewResult',[
-            'students' => $students,
-            'rubricDevelopment' => $rubricDevelopment,
-            'rubricResearch' => $rubricResearch,
-        ]);
+        return Inertia::render('Coordinator/PSM2/ViewResult', $data);
     }
 
     //RUBRIC AND CRITERIA
     //PSM1
 
-    public function PSM1DevelopmentRurbric()
-    {
-        $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM1')
-                    ->where('rubricType',  1)
-                    ->get();
+    public function PSM1DevelopmentRubric(){
 
-        $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM1')
-                    ->where('rubricType',  1)
-                    ->onlyTrashed()
-                    ->get();
+        $rubricsDevelopmentActive = $this->service->getRubricsWithCriteria('PSM1', 1);
+
+        $rubricsDevelopmentArchive = $this->service->getRubricsWithCriteria('PSM1', 1, true);
 
         return Inertia::render('Coordinator/PSM1/DevelopmentRubric',[
             'rubricsDevelopmentActive' => $rubricsDevelopmentActive,
@@ -84,22 +58,13 @@ class RubricCriteriaController extends Controller
         ]);
     }
 
-    public function PSM1ResearchRurbric()
-    {
+    public function PSM1ResearchRubric(){
+
         $this->authorize('view psm1 evaluation rubric');
 
-        $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM1')
-                    ->where('rubricType',  2)
-                    ->get();
+        $rubricsResearchActive = $this->service->getRubricsWithCriteria('PSM1', 2);
 
-        $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM1')
-                    ->where('rubricType',  2)
-                    ->onlyTrashed()
-                    ->get();
-
-        // dd($rubricsResearchActive);   
+        $rubricsResearchArchive = $this->service->getRubricsWithCriteria('PSM1', 2, true);
 
         return Inertia::render('Coordinator/PSM1/ResearchRubric',[
             'rubricsResearchActive' => $rubricsResearchActive,
@@ -108,8 +73,7 @@ class RubricCriteriaController extends Controller
     }
 
 
-    public function PSM1StoreEvaluationRurbric(Request $request)
-    {
+    public function PSM1StoreEvaluationRubric(Request $request){
 
         // role = 1 = coordinator
         // role = 2 = panel
@@ -125,16 +89,12 @@ class RubricCriteriaController extends Controller
             'roleType' => 'required|integer|min:1|max:3',
         ]);
 
-        //   dd( $request->all());
-
-        Rubric::create($validated);
+        $this->service->createRubric($validated);
 
         return redirect()->back()->with('success', 'Rubric added successfully!');
     }
 
-    public function PSM1StoreEvaluationCriteria(Request $request)
-    {
-        //dd( $request->all());
+    public function PSM1StoreEvaluationCriteria(Request $request){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -142,16 +102,12 @@ class RubricCriteriaController extends Controller
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
-        Criteria::create($validated);
+        $this->service->createCriteria($validated);
 
         return redirect()->back()->with('success', 'Criteria added successfully!');
     }
 
-    public function PSM1UpdateEvaluationRurbric(Request $request, $id)
-    {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
-
-        //dd($rubric);
+    public function PSM1UpdateEvaluationRubric(Request $request, $id){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -163,17 +119,13 @@ class RubricCriteriaController extends Controller
             'roleType' => 'required|integer|min:1|max:3',
         ]);
 
-        $rubric->update($validated);
+        $this->service->updateRubric($id, $validated);
 
         return redirect()->back()->with('success', 'Rubric updated successfully!');
     }
 
 
-    public function PSM1UpdateEvaluationCriteria(Request $request, $id)
-    {
-        //dd( $request->all());
-
-        $criteria = Criteria::findOrFail($id);
+    public function PSM1UpdateEvaluationCriteria(Request $request, $id){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -181,60 +133,48 @@ class RubricCriteriaController extends Controller
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
-        $criteria->update($validated);
+        $this->service->updateCriteria($id, $validated);
 
         return redirect()->back()->with('success', 'Criteria updated successfully!');
     }
 
-    public function PSM1ArchiveEvaluationRurbric($id)
-    {
-        $rubric = Rubric::findOrFail($id);
+    public function PSM1ArchiveEvaluationRubric($id){
 
-        $rubric->delete();
+        $this->service->archiveRubric($id);
 
         return redirect()->back()->with('success', 'Rubric archived successfully.');
         
     }
 
-    public function PSM1DeleteEvaluationRurbric($id)
-    {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
+    public function PSM1DeleteEvaluationRubric($id){
 
-        $rubric->forceDelete();
+        $this->service->deleteRubric($id);
 
         return redirect()->back()->with('success', 'Rubric deleted successfully.');
     }
-    public function PSM1RestoreEvaluationRurbric($id)
-    {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
 
-        $rubric->restore();
+    public function PSM1RestoreEvaluationRubric($id){
+
+        $this->service->restoreRubric($id);
 
         return redirect()->back()->with('success', 'Rubric restored successfully.');
     }
 
-    public function PSM1DeleteEvaluationCriteria($id)
-    {
-        $criteria = Criteria::findOrFail($id);
-        $criteria->delete(); // Soft delete
+    public function PSM1DeleteEvaluationCriteria($id){
+
+        $this->service->deleteCriteria($id);
+
         return redirect()->back()->with('success', 'Criteria deleted successfully.');
     }
 
     //RUBRIC AND CRITERIA
     //PSM2
 
-    public function PSM2DevelopmentRurbric()
-    {
-        $rubricsDevelopmentActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM2')
-                    ->where('rubricType',  1)
-                    ->get();
+    public function PSM2DevelopmentRubric(){
 
-        $rubricsDevelopmentArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM2')
-                    ->where('rubricType',  1)
-                    ->onlyTrashed()
-                    ->get();
+        $rubricsDevelopmentActive = $this->service->getRubricsWithCriteria('PSM2', 1);
+
+        $rubricsDevelopmentArchive = $this->service->getRubricsWithCriteria('PSM2', 1, true);
 
         return Inertia::render('Coordinator/PSM2/DevelopmentRubric',[
             'rubricsDevelopmentActive' => $rubricsDevelopmentActive,
@@ -242,19 +182,11 @@ class RubricCriteriaController extends Controller
         ]);
     }
 
-    public function PSM2ResearchRurbric()
-    {
+    public function PSM2ResearchRubric(){
 
-        $rubricsResearchActive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM2')
-                    ->where('rubricType',  2)
-                    ->get();
+        $rubricsResearchActive = $this->service->getRubricsWithCriteria('PSM2', 2);
 
-        $rubricsResearchArchive = Rubric::with(['criteria'])  // Only load criteria, not grading levels
-                    ->where('PSMType',  'PSM2')
-                    ->where('rubricType',  2)
-                    ->onlyTrashed()
-                    ->get();
+        $rubricsResearchArchive = $this->service->getRubricsWithCriteria('PSM2', 2, true);
 
         return Inertia::render('Coordinator/PSM2/ResearchRubric',[
             'rubricsResearchActive' => $rubricsResearchActive,
@@ -263,9 +195,7 @@ class RubricCriteriaController extends Controller
     }
 
 
-    public function PSM2StoreEvaluationRurbric(Request $request)
-    {
-        //dd( $request->all());
+    public function PSM2StoreEvaluationRubric(Request $request){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -277,14 +207,12 @@ class RubricCriteriaController extends Controller
             'roleType' => 'required|integer|min:1|max:3',
         ]);
 
-        Rubric::create($validated);
+        $this->service->createRubric($validated);
 
         return redirect()->back()->with('success', 'Rubric added successfully!');
     }
 
-    public function PSM2StoreEvaluationCriteria(Request $request)
-    {
-        //dd( $request->all());
+    public function PSM2StoreEvaluationCriteria(Request $request) {
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -292,16 +220,12 @@ class RubricCriteriaController extends Controller
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
-        Criteria::create($validated);
+        $this->service->createCriteria($validated);
 
         return redirect()->back()->with('success', 'Criteria added successfully!');
     }
 
-    public function PSM2UpdateEvaluationRurbric(Request $request, $id)
-    {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
-
-        //dd($rubric);
+    public function PSM2UpdateEvaluationRubric(Request $request, $id){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -313,17 +237,13 @@ class RubricCriteriaController extends Controller
             'roleType' => 'required|integer|min:1|max:3',
         ]);
 
-        $rubric->update($validated);
+        $this->service->updateRubric($id, $validated);
 
         return redirect()->back()->with('success', 'Rubric updated successfully!');
     }
 
 
-    public function PSM2UpdateEvaluationCriteria(Request $request, $id)
-    {
-        //dd( $request->all());
-
-        $criteria = Criteria::findOrFail($id);
+    public function PSM2UpdateEvaluationCriteria(Request $request, $id){
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -331,42 +251,37 @@ class RubricCriteriaController extends Controller
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
-        $criteria->update($validated);
+        $this->service->updateCriteria($id, $validated);
 
         return redirect()->back()->with('success', 'Criteria updated successfully!');
     }
 
-    public function PSM2ArchiveEvaluationRurbric($id)
-    {
-        $rubric = Rubric::findOrFail($id);
+    public function PSM2ArchiveEvaluationRubric($id){
 
-        $rubric->delete();
+        $this->service->archiveRubric($id);
 
         return redirect()->back()->with('success', 'Rubric archived successfully.');
         
     }
 
-    public function PSM2DeleteEvaluationRurbric($id)
-    {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
+    public function PSM2DeleteEvaluationRubric($id){
 
-        $rubric->forceDelete();
+        $this->service->deleteRubric($id);
 
         return redirect()->back()->with('success', 'Rubric deleted successfully.');
     }
-    public function PSM2RestoreEvaluationRurbric($id)
-    {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
 
-        $rubric->restore();
+    public function PSM2RestoreEvaluationRubric($id){
+
+        $this->service->restoreRubric($id);
 
         return redirect()->back()->with('success', 'Rubric restored successfully.');
     }
 
-    public function PSM2DeleteEvaluationCriteria($id)
-    {
-        $criteria = Criteria::findOrFail($id);
-        $criteria->delete(); // Soft delete
+    public function PSM2DeleteEvaluationCriteria($id){
+
+        $this->service->deleteCriteria($id);
+
         return redirect()->back()->with('success', 'Criteria deleted successfully.');
     }
 }
