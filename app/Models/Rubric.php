@@ -18,12 +18,7 @@ class Rubric extends Model
         'total_weight',
         'session',
         'isEnable',
-        'isCoordinatorPSM1',
-        'isSupervisorPSM1',
-        'isPanelPSM1',
-        'isCoordinatorPSM2',
-        'isSupervisorPSM2',
-        'isPanelPSM2',
+        'roleType',
         'isDevelopment',
         'isResearch'
     ];

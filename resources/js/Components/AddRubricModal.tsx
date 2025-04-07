@@ -14,7 +14,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
     isOpen,
     onClose,
     psmType,
-    rubric
+    rubric,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -35,7 +35,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         isEnable: false,
         roleType: "", // Single role selection
         rubricType: rubric,
-        session: ""
+        session: "",
     });
 
     const [processing, setIsProcessing] = useState(false);
@@ -73,19 +73,19 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        const roleTypeValue =
+            data.roleType === "coordinator"
+                ? 1
+                : data.roleType === "panel"
+                ? 2
+                : data.roleType === "supervisor"
+                ? 3
+                : null;
+
         // Transform the roleType into the expected format for the backend
         const transformedData = {
             ...data,
-            isCoordinatorPSM1:
-                psmType === "PSM1" && data.roleType === "coordinator",
-            isSupervisorPSM1:
-                psmType === "PSM1" && data.roleType === "supervisor",
-            isPanelPSM1: psmType === "PSM1" && data.roleType === "panel",
-            isCoordinatorPSM2:
-                psmType === "PSM2" && data.roleType === "coordinator",
-            isSupervisorPSM2:
-                psmType === "PSM2" && data.roleType === "supervisor",
-            isPanelPSM2: psmType === "PSM2" && data.roleType === "panel",
+            roleType: roleTypeValue,
             isResearch: data.rubricType === "research",
             isDevelopment: data.rubricType === "development",
         };
@@ -115,7 +115,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                     isEnable: false,
                     roleType: "",
                     rubricType: "",
-                    session: ""
+                    session: "",
                 });
             },
         });
@@ -293,115 +293,58 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                             <h3 className="font-medium text-[#808080] mb-3">
                                 Role Selection (Select One)
                             </h3>
-                            {psmType === "PSM1" ? (
-                                <div className="space-y-4">
-                                    <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-25">
-                                            Coordinator:
-                                        </label>
-                                        <input
-                                            title="Coordinator"
-                                            id="coordinator"
-                                            type="radio"
-                                            name="roleType"
-                                            value="coordinator"
-                                            checked={
-                                                data.roleType === "coordinator"
-                                            }
-                                            onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
-                                        />
-                                    </div>
-
-                                    <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-25">
-                                            Supervisor:
-                                        </label>
-                                        <input
-                                            title="Supervisor"
-                                            id="supervisor"
-                                            type="radio"
-                                            name="roleType"
-                                            value="supervisor"
-                                            checked={
-                                                data.roleType === "supervisor"
-                                            }
-                                            onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
-                                        />
-                                    </div>
-
-                                    <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-25">
-                                            Panel PSM1:
-                                        </label>
-                                        <input
-                                            title="Panel"
-                                            id="panel"
-                                            type="radio"
-                                            name="roleType"
-                                            value="panel"
-                                            checked={data.roleType === "panel"}
-                                            onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
-                                        />
-                                    </div>
+                            <div className="space-y-4">
+                                <div className="flex items-center">
+                                    <label className="font-medium text-gray-700 w-25">
+                                        Coordinator:
+                                    </label>
+                                    <input
+                                        title="Coordinator"
+                                        id="coordinator"
+                                        type="radio"
+                                        name="roleType"
+                                        value="coordinator"
+                                        checked={
+                                            data.roleType === "coordinator"
+                                        }
+                                        onChange={handleChange}
+                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                    />
                                 </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-25">
-                                            Coordinator:
-                                        </label>
-                                        <input
-                                            title="Coordinator"
-                                            id="coordinator"
-                                            type="radio"
-                                            name="roleType"
-                                            value="coordinator"
-                                            checked={
-                                                data.roleType === "coordinator"
-                                            }
-                                            onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
-                                        />
-                                    </div>
 
-                                    <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-32">
-                                            Supervisor:
-                                        </label>
-                                        <input
-                                            title="Supervisor"
-                                            id="supervisor"
-                                            type="radio"
-                                            name="roleType"
-                                            value="supervisor"
-                                            checked={
-                                                data.roleType === "supervisor"
-                                            }
-                                            onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
-                                        />
-                                    </div>
-
-                                    <div className="flex items-center">
-                                        <label className="font-medium text-gray-700 w-32">
-                                            Panel PSM2:
-                                        </label>
-                                        <input
-                                            title="Panel"
-                                            id="panel"
-                                            type="radio"
-                                            name="roleType"
-                                            value="panel"
-                                            checked={data.roleType === "panel"}
-                                            onChange={handleChange}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
-                                        />
-                                    </div>
+                                <div className="flex items-center">
+                                    <label className="font-medium text-gray-700 w-25">
+                                        Supervisor:
+                                    </label>
+                                    <input
+                                        title="Supervisor"
+                                        id="supervisor"
+                                        type="radio"
+                                        name="roleType"
+                                        value="supervisor"
+                                        checked={data.roleType === "supervisor"}
+                                        onChange={handleChange}
+                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                    />
                                 </div>
-                            )}
+
+                                <div className="flex items-center">
+                                    <label className="font-medium text-gray-700 w-25">
+                                        Panel:
+                                    </label>
+                                    <input
+                                        title="Panel"
+                                        id="panel"
+                                        type="radio"
+                                        name="roleType"
+                                        value="panel"
+                                        checked={data.roleType === "panel"}
+                                        onChange={handleChange}
+                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+
                             {errors.roleType && (
                                 <p className="text-red-500 mt-2">
                                     {errors.roleType}

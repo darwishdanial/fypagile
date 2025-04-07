@@ -17,7 +17,7 @@ interface PanelHistoryModalProps {
     isOpen: boolean;
     onClose: () => void;
     panelHistory: PanelHistory[] | null;
-    panelName: string;
+    panelName: string | null;
 }
 
 const PanelHistoryModal: React.FC<PanelHistoryModalProps> = ({

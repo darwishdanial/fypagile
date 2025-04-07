@@ -17,7 +17,7 @@ import EditCriteriaModal from "../../../Components/EditCriteriaModal";
 import EditRubricModal from "../../../Components/EditRubricModal";
 import { route } from "ziggy-js";
 
-// Interfaces
+// Updated Interfaces
 interface Rubric {
     id: number;
     name: string;
@@ -27,13 +27,7 @@ interface Rubric {
     isEnable: boolean;
     isResearch: boolean;
     isDevelopment: boolean;
-    isCoordinatorPSM1: boolean;
-    isSupervisorPSM1: boolean;
-    isPanelPSM1: boolean;
-    isArchivePSM1: boolean;
-    isCoordinatorPSM2: boolean;
-    isSupervisorPSM2: boolean;
-    isPanelPSM2: boolean;
+    roleType: number; // 1 = coordinator, 2 = panel, 3 = supervisor
     deleted_at: Date;
     criteria: Criteria[] | null;
 }
@@ -97,6 +91,26 @@ export default function ResearchRubric() {
     const calculateCurrentRubricWeight = (rubric: Rubric[] | null) => {
         if (!rubric || rubric.length === 0) return 0;
         return rubric.reduce((sum, item) => sum + Number(item.total_weight), 0);
+    };
+
+    // Helper function to get role name based on roleType
+    const getRoleName = (roleType: number) => {
+        switch(roleType) {
+            case 1: return "Coordinator";
+            case 2: return "Panel";
+            case 3: return "Supervisor";
+            default: return "None";
+        }
+    };
+
+    // Helper function to get role style based on roleType
+    const getRoleStyle = (roleType: number) => {
+        switch(roleType) {
+            case 1: return "bg-blue-100 text-blue-800";
+            case 2: return "bg-purple-100 text-purple-800";
+            case 3: return "bg-green-100 text-green-800";
+            default: return "bg-gray-100 text-gray-600";
+        }
     };
 
     // Handle delete actions
@@ -381,34 +395,15 @@ export default function ResearchRubric() {
                                             }
                                         >
                                             <div className="flex flex-col items-center text-sm">
-                                                {Boolean(
-                                                    rubric.isCoordinatorPSM1
-                                                ) && (
-                                                    <span className="py-1 px-2 bg-blue-100 text-blue-800 rounded mb-1">
-                                                        Coordinator
+                                                {rubric.roleType ? (
+                                                    <span className={`py-1 px-2 ${getRoleStyle(rubric.roleType)} rounded mb-1`}>
+                                                        {getRoleName(rubric.roleType)}
+                                                    </span>
+                                                ) : (
+                                                    <span className="py-1 px-2 bg-gray-100 text-gray-600 rounded">
+                                                        None
                                                     </span>
                                                 )}
-                                                {Boolean(
-                                                    rubric.isSupervisorPSM1
-                                                ) && (
-                                                    <span className="py-1 px-2 bg-green-100 text-green-800 rounded mb-1">
-                                                        Supervisor
-                                                    </span>
-                                                )}
-                                                {Boolean(
-                                                    rubric.isPanelPSM1
-                                                ) && (
-                                                    <span className="py-1 px-2 bg-purple-100 text-purple-800 rounded mb-1">
-                                                        Panel
-                                                    </span>
-                                                )}
-                                                {!rubric.isCoordinatorPSM1 &&
-                                                    !rubric.isSupervisorPSM1 &&
-                                                    !rubric.isPanelPSM1 && (
-                                                        <span className="py-1 px-2 bg-gray-100 text-gray-600 rounded">
-                                                            None
-                                                        </span>
-                                                    )}
                                             </div>
                                         </td>
                                         <td
@@ -442,6 +437,7 @@ export default function ResearchRubric() {
                                                                 className="transition-transform duration-200 hover:scale-125"
                                                             />
                                                         </button>
+                                                        
                                                     </div>
                                                 ) : (
                                                     <div className="flex space-x-2">
@@ -665,7 +661,7 @@ export default function ResearchRubric() {
             <AddCriteriaModal
                 isOpen={isAddCriteriaModalOpen}
                 onClose={() => setIsAddCriteriaModalOpen(false)}
-                psmType="PSM2"
+                psmType="PSM1"
                 rubricID={selectedRubricId}
                 rubricName={selectedRubricName}
             />

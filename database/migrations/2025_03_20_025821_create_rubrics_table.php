@@ -20,12 +20,7 @@ return new class extends Migration
             $table->boolean('isDevelopment');
             $table->boolean('isResearch');
             $table->boolean('isEnable');
-            $table->boolean('isCoordinatorPSM1');
-            $table->boolean('isSupervisorPSM1');
-            $table->boolean('isPanelPSM1');
-            $table->boolean('isCoordinatorPSM2');
-            $table->boolean('isSupervisorPSM2');
-            $table->boolean('isPanelPSM2');
+            $table->tinyInteger('roleType')->unsigned();
             $table->timestamps();
             $table->softDeletes();
 

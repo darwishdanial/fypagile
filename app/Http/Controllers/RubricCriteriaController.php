@@ -99,6 +99,8 @@ class RubricCriteriaController extends Controller
                     ->onlyTrashed()
                     ->get();
 
+        // dd($rubricsResearchActive);   
+
         return Inertia::render('Coordinator/PSM1/ResearchRubric',[
             'rubricsResearchActive' => $rubricsResearchActive,
             'rubricsResearchArchive' => $rubricsResearchArchive
@@ -108,8 +110,11 @@ class RubricCriteriaController extends Controller
 
     public function PSM1StoreEvaluationRurbric(Request $request)
     {
-        //dd( $request->all());
 
+        // role = 1 = coordinator
+        // role = 2 = panel
+        // role = 3 = supervisor
+       
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'PSMType' => 'required|string|max:255',
@@ -118,13 +123,10 @@ class RubricCriteriaController extends Controller
             'isEnable' => 'required|boolean',
             'isResearch' => 'required|boolean',
             'isDevelopment' => 'required|boolean',
-            'isCoordinatorPSM1' => 'required|boolean',
-            'isSupervisorPSM1' => 'required|boolean',
-            'isPanelPSM1' => 'required|boolean',
-            'isCoordinatorPSM2' => 'required|boolean',
-            'isSupervisorPSM2' => 'required|boolean',
-            'isPanelPSM2' => 'required|boolean',
+            'roleType' => 'required|integer|min:1|max:3',
         ]);
+
+        //  dd( $request->all());
 
         Rubric::create($validated);
 
@@ -160,9 +162,7 @@ class RubricCriteriaController extends Controller
             'isEnable' => 'required|boolean',
             'isResearch' => 'required|boolean',
             'isDevelopment' => 'required|boolean',
-            'isCoordinatorPSM1' => 'required|boolean',
-            'isSupervisorPSM1' => 'required|boolean',
-            'isPanelPSM1' => 'required|boolean',
+            'roleType' => 'required|integer|min:1|max:3',
         ]);
 
         $rubric->update($validated);
@@ -277,12 +277,7 @@ class RubricCriteriaController extends Controller
             'isEnable' => 'required|boolean',
             'isResearch' => 'required|boolean',
             'isDevelopment' => 'required|boolean',
-            'isCoordinatorPSM1' => 'required|boolean',
-            'isSupervisorPSM1' => 'required|boolean',
-            'isPanelPSM1' => 'required|boolean',
-            'isCoordinatorPSM2' => 'required|boolean',
-            'isSupervisorPSM2' => 'required|boolean',
-            'isPanelPSM2' => 'required|boolean',
+            'roleType' => 'required|integer|min:1|max:3',
         ]);
 
         Rubric::create($validated);
@@ -319,9 +314,7 @@ class RubricCriteriaController extends Controller
             'isEnable' => 'required|boolean',
             'isResearch' => 'required|boolean',
             'isDevelopment' => 'required|boolean',
-            'isCoordinatorPSM1' => 'required|boolean',
-            'isSupervisorPSM1' => 'required|boolean',
-            'isPanelPSM1' => 'required|boolean',
+            'roleType' => 'required|integer|min:1|max:3',
         ]);
 
         $rubric->update($validated);
