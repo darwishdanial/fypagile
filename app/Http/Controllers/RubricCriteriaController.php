@@ -118,6 +118,7 @@ class RubricCriteriaController extends Controller
             'isEnable' => 'required|boolean',
             'rubricType' => 'required|integer|min:1|max:3',
             'roleType' => 'required|integer|min:1|max:3',
+            'progress' => 'required|string',
         ]);
 
         $this->service->updateRubric($id, $validated);
@@ -237,6 +238,7 @@ class RubricCriteriaController extends Controller
             'isEnable' => 'required|boolean',
             'rubricType' => 'required|integer|min:1|max:3',
             'roleType' => 'required|integer|min:1|max:3',
+            'progress' => 'required|string',
         ]);
 
         $this->service->updateRubric($id, $validated);
