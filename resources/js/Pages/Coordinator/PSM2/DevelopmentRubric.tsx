@@ -27,6 +27,7 @@ interface Rubric {
     isEnable: boolean;
     rubricType: number;
     roleType: number; // 1 = coordinator, 2 = panel, 3 = supervisor
+    progress: string;
     deleted_at: Date;
     criteria: Criteria[] | null;
 }
@@ -90,6 +91,22 @@ export default function DevelopmentRubric() {
     const calculateCurrentRubricWeight = (rubric: Rubric[] | null) => {
         if (!rubric || rubric.length === 0) return 0;
         return rubric.reduce((sum, item) => sum + Number(item.total_weight), 0);
+    };
+
+    const getProgressStyle = (progress: string) => {
+        if (progress === "Proposal") {
+            return "bg-blue-100 text-blue-800";
+        } else if (progress === "Progress 1") {
+            return "bg-blue-200 text-blue-800";
+        } else if (progress === "Progress 2") {
+            return "bg-blue-300 text-white";
+        } else if (progress === "Final Progress") {
+            return "bg-blue-400 text-white";
+        } else if (progress === "Correction") {
+            return "bg-blue-500 text-white";
+        } else {
+            return "bg-gray-100 text-gray-800"; // Default style
+        }
     };
 
     // Helper function to get role name based on roleType
@@ -315,6 +332,9 @@ export default function DevelopmentRubric() {
                                     Enable
                                 </th>
                                 <th className="px-4 py-2 border-b border-gray-300">
+                                    Progress
+                                </th>
+                                <th className="px-4 py-2 border-b border-gray-300">
                                     Role
                                 </th>
                                 <th className="px-4 py-2 border-b border-gray-300">
@@ -392,6 +412,32 @@ export default function DevelopmentRubric() {
                                                     />
                                                 </div>
                                             )}
+                                        </td>
+                                        <td
+                                            className="px-4 py-2 cursor-pointer"
+                                            onClick={() =>
+                                                setExpandedRow(
+                                                    expandedRow === rubric.id
+                                                        ? null
+                                                        : rubric.id
+                                                )
+                                            }
+                                        >
+                                            <div className="flex flex-col items-center text-sm">
+                                                {rubric.progress ? (
+                                                    <span
+                                                        className={`py-1 px-2 ${getProgressStyle(
+                                                            rubric.progress
+                                                        )} rounded mb-1`}
+                                                    >
+                                                        {rubric.progress}
+                                                    </span>
+                                                ) : (
+                                                    <span className="py-1 px-2 bg-gray-100 text-gray-600 rounded">
+                                                        None
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td
                                             className="px-4 py-2 cursor-pointer"
