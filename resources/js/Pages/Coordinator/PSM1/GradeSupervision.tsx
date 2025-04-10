@@ -39,6 +39,7 @@ interface Rubric {
     isArchivePSM1: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
+    progress: string; 
     criteria: Criteria[] | null;
 }
 
@@ -85,6 +86,21 @@ export default function GradeSupervision() {
     const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
     const [selectedRubric, setSelectedRubric] = useState<Rubric | null>(null);
 
+    // Define progress options based on PSM type
+    const progressOptions =
+        studentType === "PSM1"
+            ? [
+                  "Progress 1",
+                  "Progress 2",
+                  "Final Progress",
+                  "Correction",
+              ]
+            : ["Progress 1", "Progress 2", "Final Progress", "Correction"];
+
+    // State for selected progress
+    const [selectedProgress, setSelectedProgress] =
+        useState<string>("Progress 1");
+
     const handleRestore = (id: number) => {
         router.post(
             route("coordinator.PSM1.students.restore", id),
@@ -110,9 +126,13 @@ export default function GradeSupervision() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const currentRubric = showStudentResearch
-        ? rubricsResearch
-        : rubricsDevelopment;
+    // Filter rubrics based on progress selection
+    const filteredRubrics = (
+        showStudentResearch ? rubricsResearch : rubricsDevelopment
+    ).filter(
+        (rubric) =>
+            selectedProgress === "All" || rubric.progress === selectedProgress
+    );
 
     // Filter students based on search query
     const filteredStudents = (
@@ -152,6 +172,7 @@ export default function GradeSupervision() {
                 selectedStudents.includes(student.id)
             );
         } else {
+            // Handle empty page case if needed
         }
     }, [selectedStudents, paginatedStudents]);
 
@@ -159,6 +180,11 @@ export default function GradeSupervision() {
     useEffect(() => {
         setSelectedStudents([]);
     }, [searchQuery]);
+
+    // Reset to first page when changing progress filter
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedProgress]);
 
     const [flashMessage, setFlashMessage] = useState<{
         type: "success" | "error";
@@ -187,7 +213,7 @@ export default function GradeSupervision() {
     const totalActiveStudents = filteredStudents.length;
     const selectedCount = selectedStudents.length;
 
-    const totalColumns = 5 + currentRubric.length;
+    const totalColumns = 5 + filteredRubrics.length;
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
@@ -209,10 +235,10 @@ export default function GradeSupervision() {
                         <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
                             <button
                                 type="button"
-                                className={`p-1 px-3 transition  text-center ${
+                                className={`p-1 px-3 transition text-center ${
                                     !showStudentResearch
                                         ? "bg-blue-400 hover:bg-blue-500 transition text-white"
-                                        : "bg-white hover:bg-gray-100 border-r "
+                                        : "bg-white hover:bg-gray-100 "
                                 }`}
                                 onClick={() => {
                                     setStudentResearch(false);
@@ -236,7 +262,29 @@ export default function GradeSupervision() {
                         </div>
                     </div>
 
+                    {/* Progress Filter Buttons */}
+                    <div className="mx-4 my-4">
+                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
+                            {progressOptions.map((progress) => (
+                                <button
+                                    key={progress}
+                                    type="button"
+                                    className={`p-1 px-3 transition text-center ${
+                                        selectedProgress === progress
+                                            ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                            : "bg-white hover:bg-gray-100"
+                                    }`}
+                                    onClick={() =>
+                                        setSelectedProgress(progress)
+                                    }
+                                >
+                                    {progress}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
+
                 {/* Search Input */}
                 <div className="flex justify-between mx-4 mt-3">
                     <div className="flex">
@@ -286,7 +334,7 @@ export default function GradeSupervision() {
                             <th className="px-4 py-2 text-left border-b border-gray-300">
                                 Name
                             </th>
-                            {currentRubric.map((rubric) => (
+                            {filteredRubrics.map((rubric) => (
                                 <th
                                     key={rubric.id}
                                     className="px-4 py-2 border-b border-gray-300"
@@ -356,7 +404,7 @@ export default function GradeSupervision() {
                                     >
                                         {student.name}
                                     </td>
-                                    {currentRubric.map((rubric) => (
+                                    {filteredRubrics.map((rubric) => (
                                         <td
                                             key={`${student.id}-${rubric.id}`}
                                             className="px-4 py-2"
@@ -366,15 +414,12 @@ export default function GradeSupervision() {
                                                 className="p-1 text-blue-600 hover:text-blue-800 transition"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    // Handle rubric editing (you can add your logic here)
+                                                    // Handle rubric editing
                                                     setSelectedStudent(
                                                         student.id
                                                     );
                                                     setSelectedRubric(rubric);
                                                     setIsGradeModalOpen(true);
-                                                    console.log(
-                                                        `Edit rubric ${rubric.id} for student ${student.id}`
-                                                    );
                                                 }}
                                                 title={`Edit ${rubric.name}`}
                                             >
@@ -443,25 +488,21 @@ export default function GradeSupervision() {
                     </button>
 
                     <span>
-                        Page {currentPage} of {totalPages}
+                        Page {currentPage} of {totalPages || 1}
                     </span>
 
                     <button
                         type="button"
                         className="px-3 py-1 bg-white rounded disabled:opacity-50 hover:bg-gray-100 transition border border-gray-300"
-                        disabled={currentPage === totalPages}
+                        disabled={
+                            currentPage === totalPages || totalPages === 0
+                        }
                         onClick={() => setCurrentPage((prev) => prev + 1)}
                     >
                         Next
                     </button>
                 </div>
             </div>
-
-            {/* <AddStudentModal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
-                studentType = {studentType}
-            /> */}
 
             <GradeRubricModal
                 isOpen={isGradeModalOpen}
@@ -475,16 +516,6 @@ export default function GradeSupervision() {
                 userType={1}
                 panelId={panelId}
             />
-
-            {/* <EditStudentModal
-                isOpen={isEditModalOpen}
-                onClose={() => {
-                    setIsEditModalOpen(false);
-                    setSelectedStudent(null);
-                }}
-                student={selectedStudent}
-                studentType={studentType}
-            /> */}
 
             <ImportStudentModal
                 isOpen={isImportModalOpen}

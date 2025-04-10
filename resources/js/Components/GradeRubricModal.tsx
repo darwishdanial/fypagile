@@ -14,6 +14,7 @@ interface Rubric {
     isArchivePSM1: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
+    progress: string;
     criteria: Criteria[] | null;
 }
 
