@@ -17,6 +17,7 @@ class Rubric extends Model
         'PSMType',
         'total_weight',
         'session',
+        'progress',
         'isEnable',
         'roleType',
         'isDevelopment',

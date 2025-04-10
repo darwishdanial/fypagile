@@ -46,6 +46,7 @@ class RubricCriteriaService
 
     public function createRubric(array $data)
     {
+        // dd($data);
         return Rubric::create($data);
     }
 
