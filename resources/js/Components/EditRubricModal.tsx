@@ -12,6 +12,7 @@ interface Rubric {
     isEnable: boolean;
     roleType: number;
     rubricType: number;
+    progress: string;
 }
 
 interface EditRubricModalProps {
@@ -73,6 +74,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
         isEnable: rubric?.isEnable || false,
         roleType: determineInitialRoleType(rubric, psmType),
         rubricType: determineInitialRubricType(rubric, psmType),
+        progress: rubric?.progress || "",
     });
 
     useEffect(() => {
@@ -85,6 +87,7 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                 isEnable: rubric?.isEnable || false,
                 roleType: determineInitialRoleType(rubric, psmType),
                 rubricType: determineInitialRubricType(rubric, psmType),
+                progress: rubric?.progress || "",
             });
         }
     }, [rubric, setData, psmType]);
@@ -167,6 +170,17 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
             },
         });
     };
+
+    const progressOptions =
+        psmType === "PSM1"
+            ? [
+                  "Proposal",
+                  "Progress 1",
+                  "Progress 2",
+                  "Final Progress",
+                  "Correction",
+              ]
+            : ["Progress 1", "Progress 2", "Final Progress", "Correction"];
 
     if (!isOpen) return null;
 
@@ -255,6 +269,32 @@ const EditRubricModal: React.FC<EditRubricModalProps> = ({
                                 {errors.session && (
                                     <p className="text-red-500 col-start-2 col-span-4">
                                         {errors.session}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="grid grid-cols-5 mb-4 items-center">
+                                <label className="col-span-1 font-medium">
+                                    Progress:
+                                </label>
+                                <select
+                                    title="Progress"
+                                    name="progress"
+                                    value={data.progress}
+                                    onChange={handleChange}
+                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    required
+                                >
+                                    <option value="">Select Progress</option>
+                                    {progressOptions.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.progress && (
+                                    <p className="text-red-500 col-start-2 col-span-4">
+                                        {errors.progress}
                                     </p>
                                 )}
                             </div>
