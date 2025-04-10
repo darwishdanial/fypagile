@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             UserSeederNew::class,
             SupervisorSeeder::class,
             ProjectAreaMappingSeeder::class,
+            PanelHistorySeeder::class,
         ]);
 
     }

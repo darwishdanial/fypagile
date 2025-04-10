@@ -43,9 +43,7 @@ interface Rubric {
     id: number;
     name: string;
     total_weight: number;
-    isCoordinatorPSM1: number;
-    isSupervisorPSM1: number;
-    isPanelPSM1: number;
+    roleType: number;
 }
 
 interface Flash {
@@ -378,21 +376,21 @@ export default function ViewResult() {
                                                         >
                                                             <div className="font-medium mb-2">
                                                                 {Boolean(
-                                                                    rubric.isCoordinatorPSM1
+                                                                    rubric.roleType === 1
                                                                 ) && (
                                                                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-2">
                                                                         Coordinator
                                                                     </span>
                                                                 )}
                                                                 {Boolean(
-                                                                    rubric.isSupervisorPSM1
+                                                                    rubric.roleType === 3
                                                                 ) && (
                                                                     <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs mr-2">
                                                                         Supervisor
                                                                     </span>
                                                                 )}
                                                                 {Boolean(
-                                                                    rubric.isPanelPSM1
+                                                                    rubric.roleType === 2
                                                                 ) && (
                                                                     <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs mr-2">
                                                                         Panel

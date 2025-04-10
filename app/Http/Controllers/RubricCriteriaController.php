@@ -24,9 +24,9 @@ class RubricCriteriaController extends Controller
     //VIEW RESULT
     //PSM1
 
-    public function PSM1ViewResult()
-    {
-         $this->authorize('view psm1 result table');
+    public function PSM1ViewResult(){
+        
+        $this->authorize('view psm1 result table');
 
         $data = $this->service->getPSM1ViewData();
 

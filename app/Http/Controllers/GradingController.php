@@ -54,7 +54,6 @@ class GradingController extends Controller
 
         $userType = Auth::user()->role;
 
-
         $studentsDevelopment = $this->studentService->getStudentsPanelGradePSM1($id, 1);
 
         $studentResearch = $this->studentService->getStudentsPanelGradePSM1($id, 2);
@@ -91,7 +90,7 @@ class GradingController extends Controller
     
     public function PSM1StoreScore(Request $request){
 
-        $$this->gradingService->storeScore($request->all(), 'PSM1');
+        $this->gradingService->storeScore($request->all(), "PSM1");
 
         return redirect()->back()->with('success', 'Score successfully stored.');
     }
