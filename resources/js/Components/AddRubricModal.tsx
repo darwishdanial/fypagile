@@ -7,7 +7,7 @@ interface AddRubricModalProps {
     isOpen: boolean;
     onClose: () => void;
     psmType: string;
-    rubric: string;
+    rubric: number;
 }
 
 const AddRubricModal: React.FC<AddRubricModalProps> = ({
@@ -22,10 +22,14 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
             document.body.style.overflow = "hidden";
         }
 
+        console.log(rubric);
+
         return () => {
             // Re-enable scrolling when component unmounts or modal closes
             document.body.style.overflow = "unset";
         };
+
+        
     }, [isOpen]);
 
     const { data, setData } = useForm({
@@ -36,6 +40,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         roleType: "", // Single role selection
         rubricType: rubric,
         session: "",
+        progress: "", // New field for progress
     });
 
     const [processing, setIsProcessing] = useState(false);
@@ -82,14 +87,12 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                 ? 3
                 : null;
 
-        const rubricTypeValue =
-            data.rubricType === "development" ? 1 : 2;
 
         // Transform the roleType into the expected format for the backend
         const transformedData = {
             ...data,
             roleType: roleTypeValue,
-            rubricType: rubricTypeValue,
+            rubricType: data.rubricType,
             // isResearch: data.rubricType === "research",
             // isDevelopment: data.rubricType === "development",
         };
@@ -102,6 +105,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
         router.post(route(route_path), transformedData, {
             onStart: () => {
                 setIsProcessing(true);
+                console.log(data.rubricType);
             },
             onFinish: () => {
                 setIsProcessing(false);
@@ -118,12 +122,25 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                     PSMType: psmType,
                     isEnable: false,
                     roleType: "",
-                    rubricType: "",
+                    rubricType: rubric,
                     session: "",
+                    progress: "",
                 });
             },
         });
     };
+
+    // Define progress options based on PSM type
+    const progressOptions =
+        psmType === "PSM1"
+            ? [
+                  "Proposal",
+                  "Progress 1",
+                  "Progress 2",
+                  "Final Progress",
+                  "Correction",
+              ]
+            : ["Progress 1", "Progress 2", "Final Progress", "Correction"];
 
     if (!isOpen) return null;
 
@@ -216,6 +233,32 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                 )}
                             </div>
 
+                            <div className="grid grid-cols-5 mb-4 items-center">
+                                <label className="col-span-1 font-medium">
+                                    Progress:
+                                </label>
+                                <select
+                                    title="Progress"
+                                    name="progress"
+                                    value={data.progress}
+                                    onChange={handleChange}
+                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    required
+                                >
+                                    <option value="">Select Progress</option>
+                                    {progressOptions.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.progress && (
+                                    <p className="text-red-500 col-start-2 col-span-4">
+                                        {errors.progress}
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="flex items-center mb-4">
                                 <label className="font-medium text-gray-700 w-25">
                                     Enable:
@@ -235,63 +278,7 @@ const AddRubricModal: React.FC<AddRubricModalProps> = ({
                                     </p>
                                 )}
                             </div>
-
-                            {/* <div className="flex items-center">
-                                <label className="font-medium text-gray-700 w-25">
-                                    Type:
-                                </label>
-                                //research radio button //development radio
-                                button
-                            </div> */}
                         </div>
-
-                        {/* <div className="p-4 border rounded border-gray-300 my-3 mx-2">
-                            <h3 className="font-medium text-[#808080] mb-3">
-                                Rubric Type Selection (Select One)
-                            </h3>
-
-                            <div className="space-y-4">
-                                <div className="flex items-center">
-                                    <label className="font-medium text-gray-700 w-32">
-                                        Research:
-                                    </label>
-                                    <input
-                                        title="Research"
-                                        id="research"
-                                        type="radio"
-                                        name="rubricType"
-                                        value="research"
-                                        checked={data.rubricType === "research"}
-                                        onChange={handleChange}
-                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
-                                    />
-                                </div>
-
-                                <div className="flex items-center">
-                                    <label className="font-medium text-gray-700 w-32">
-                                        Development:
-                                    </label>
-                                    <input
-                                        title="Development"
-                                        id="development"
-                                        type="radio"
-                                        name="rubricType"
-                                        value="development"
-                                        checked={
-                                            data.rubricType === "development"
-                                        }
-                                        onChange={handleChange}
-                                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
-                                    />
-                                </div>
-                            </div>
-
-                            {errors.rubricType && (
-                                <p className="text-red-500 mt-2">
-                                    {errors.rubricType}
-                                </p>
-                            )}
-                        </div> */}
 
                         <div className="p-4 border rounded border-gray-300 my-3 mx-2">
                             <h3 className="font-medium text-[#808080] mb-3">
