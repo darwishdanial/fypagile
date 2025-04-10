@@ -94,21 +94,29 @@ export default function ResearchRubric() {
 
     // Helper function to get role name based on roleType
     const getRoleName = (roleType: number) => {
-        switch(roleType) {
-            case 1: return "Coordinator";
-            case 2: return "Panel";
-            case 3: return "Supervisor";
-            default: return "None";
+        switch (roleType) {
+            case 1:
+                return "Coordinator";
+            case 2:
+                return "Panel";
+            case 3:
+                return "Supervisor";
+            default:
+                return "None";
         }
     };
 
     // Helper function to get role style based on roleType
     const getRoleStyle = (roleType: number) => {
-        switch(roleType) {
-            case 1: return "bg-blue-100 text-blue-800";
-            case 2: return "bg-purple-100 text-purple-800";
-            case 3: return "bg-green-100 text-green-800";
-            default: return "bg-gray-100 text-gray-600";
+        switch (roleType) {
+            case 1:
+                return "bg-blue-100 text-blue-800";
+            case 2:
+                return "bg-purple-100 text-purple-800";
+            case 3:
+                return "bg-green-100 text-green-800";
+            default:
+                return "bg-gray-100 text-gray-600";
         }
     };
 
@@ -331,7 +339,9 @@ export default function ResearchRubric() {
                                                 )
                                             }
                                         >
-                                            {index + 1}
+                                            {index +
+                                                1 +
+                                                (currentPage - 1) * rowsPerPage}
                                         </td>
                                         <td
                                             className="px-4 py-2 cursor-pointer"
@@ -395,8 +405,14 @@ export default function ResearchRubric() {
                                         >
                                             <div className="flex flex-col items-center text-sm">
                                                 {rubric.roleType ? (
-                                                    <span className={`py-1 px-2 ${getRoleStyle(rubric.roleType)} rounded mb-1`}>
-                                                        {getRoleName(rubric.roleType)}
+                                                    <span
+                                                        className={`py-1 px-2 ${getRoleStyle(
+                                                            rubric.roleType
+                                                        )} rounded mb-1`}
+                                                    >
+                                                        {getRoleName(
+                                                            rubric.roleType
+                                                        )}
                                                     </span>
                                                 ) : (
                                                     <span className="py-1 px-2 bg-gray-100 text-gray-600 rounded">
@@ -436,7 +452,6 @@ export default function ResearchRubric() {
                                                                 className="transition-transform duration-200 hover:scale-125"
                                                             />
                                                         </button>
-                                                        
                                                     </div>
                                                 ) : (
                                                     <div className="flex space-x-2">
@@ -644,7 +659,7 @@ export default function ResearchRubric() {
                 isOpen={isAddRubricModalOpen}
                 onClose={() => setIsAddRubricModalOpen(false)}
                 psmType="PSM2"
-                rubric="research"
+                rubric={2}
             />
 
             <EditRubricModal
