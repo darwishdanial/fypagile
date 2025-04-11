@@ -6,7 +6,8 @@ import {
     PanelRightOpen,
     ListChecks,
     LogOut,
-    House
+    House,
+    FileText
 } from "lucide-react";
 
 interface MenuItemType {
@@ -44,6 +45,11 @@ export function PanelSidebar() {
             icon: <ListChecks />,
             label: "Grade PSM1",
             link: route('panel.PSM1.gradePSM1'),
+        },
+        {
+            icon: <FileText />,
+            label: "View Result",
+            link: route('panel.PSM1.viewResult'),
         },
     ];
 

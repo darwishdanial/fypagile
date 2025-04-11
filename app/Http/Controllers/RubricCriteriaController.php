@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Rubric;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Criteria;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
 use App\Services\RubricCriteriaService;
+use Illuminate\Support\Facades\Auth;
 
 class RubricCriteriaController extends Controller
 {
@@ -32,6 +34,44 @@ class RubricCriteriaController extends Controller
 
         return Inertia::render('Coordinator/PSM1/ViewResult', $data);
     }
+
+    public function PSM1ViewResultPanel(){
+        
+        $userId = Auth::user()->id;
+
+        // $students = StudentPSM1::with(['score.rubric' => fn($q) => $q->withTrashed()])->get();
+
+        $userId = Auth::id();
+
+        $students = StudentPSM1::with([
+                'score' => function ($query) use ($userId) {
+                    $query->where('panel_id', $userId)
+                        ->with(['rubric' => fn($q) => $q->withTrashed()]);
+                }
+            ])
+            ->where(function ($query) use ($userId) {
+                $query->where('supervisorId', $userId)
+                    ->orWhere('panelId', $userId)
+                    ->orWhere('panel2Id', $userId);
+            })
+            ->get();
+
+
+        $rubricDevelopment =  Rubric::where('PSMType', "PSM1")
+                        ->where('rubricType', 1)->get();
+        $rubricResearch = Rubric::where('PSMType', "PSM1")
+                        ->where('rubricType', 2)->withTrashed()->get();
+
+        // dd($rubricDevelopment);
+
+        return Inertia::render('Panel/PSM1/ViewResult', [
+            'students' => $students,
+            'rubricDevelopment' => $rubricDevelopment,
+            'rubricResearch' => $rubricResearch,
+        ]);
+    }
+
+
 
     //VIEW RESULT
     //PSM2

@@ -273,6 +273,8 @@ Route::middleware(EnsurePanel::class)
 
         Route::post('/store-score', [GradingController::class, 'PSM1StoreScore'])->name('score.store');
 
+        Route::get('/view-result', [RubricCriteriaController::class, 'PSM1ViewResultPanel'])->name('viewResult');
+
     });
 
     Route::prefix('PSM2')

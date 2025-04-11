@@ -7,11 +7,15 @@ use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
 use App\Models\User;
 use App\Models\Score;
+use Illuminate\Support\Facades\Auth;
 
 class GradingService
 {
     public function getRubrics(string $psmType, int $rubricType, int $roleType)
     {
+
+        $userId = Auth::user()->id;
+
         return Rubric::with('criteria')
             ->where('PSMType', $psmType)
             ->where('rubricType', $rubricType)
