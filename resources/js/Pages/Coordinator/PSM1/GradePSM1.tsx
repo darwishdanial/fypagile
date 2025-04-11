@@ -86,17 +86,13 @@ export default function GradePSM1() {
     const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
     const [selectedRubric, setSelectedRubric] = useState<Rubric | null>(null);
 
-    const progressOptions =
-        studentType === "PSM1"
-            ? [
-                  "Proposal",
-                  "Progress 1",
-                  "Progress 2",
-                  "Final Progress",
-                  "Correction",
-              ]
-            : ["Progress 1", "Progress 2", "Final Progress", "Correction"];
-
+    const progressOptions = [
+        "Proposal",
+        "Progress 1",
+        "Progress 2",
+        "Final Progress",
+        "Correction",
+    ];
     // State for selected progress
     const [selectedProgress, setSelectedProgress] =
         useState<string>("Proposal");

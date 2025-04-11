@@ -39,7 +39,7 @@ interface Rubric {
     isArchivePSM1: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
-    progress: string; 
+    progress: string;
     criteria: Criteria[] | null;
 }
 
@@ -87,15 +87,12 @@ export default function GradeSupervision() {
     const [selectedRubric, setSelectedRubric] = useState<Rubric | null>(null);
 
     // Define progress options based on PSM type
-    const progressOptions =
-        studentType === "PSM1"
-            ? [
-                  "Progress 1",
-                  "Progress 2",
-                  "Final Progress",
-                  "Correction",
-              ]
-            : ["Progress 1", "Progress 2", "Final Progress", "Correction"];
+    const progressOptions = [
+        "Progress 1",
+        "Progress 2",
+        "Final Progress",
+        "Correction",
+    ];
 
     // State for selected progress
     const [selectedProgress, setSelectedProgress] =
