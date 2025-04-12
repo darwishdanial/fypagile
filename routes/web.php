@@ -121,7 +121,7 @@ Route::middleware( EnsureCoordinator::class)
 
         //RURBIC AND CRITERIA
 
-        Route::get('/view-result', [RubricCriteriaController::class, 'PSM1ViewResult'])->name('viewResult');
+        Route::get('/view-result', [RubricCriteriaController::class, 'PSM1ViewResultCoordinator'])->name('viewResult');
 
         Route::get('/development-rubric', [RubricCriteriaController::class, 'PSM1DevelopmentRubric'])->name('developmentRubric');
 
@@ -219,7 +219,7 @@ Route::middleware( EnsureCoordinator::class)
 
         //RUBRIC AND CRITERIA
 
-        Route::get('/view-result', [RubricCriteriaController::class, 'PSM2ViewResult'])->name('viewResult');
+        Route::get('/view-result', [RubricCriteriaController::class, 'PSM2ViewResultCoordinator'])->name('viewResult');
 
         Route::get('/development-rubric', [RubricCriteriaController::class, 'PSM2DevelopmentRubric'])->name('developmentRubric');
 
@@ -286,6 +286,8 @@ Route::middleware(EnsurePanel::class)
         Route::get('/grade-PSM2', [GradingController::class, 'PSM2GradePanel'])->name('gradePSM2');
 
         Route::post('/store-score', [GradingController::class, 'PSM2StoreScore'])->name('score.store');
+
+        Route::get('/view-result', [RubricCriteriaController::class, 'PSM2ViewResultPanel'])->name('viewResult');
     });
 });
 

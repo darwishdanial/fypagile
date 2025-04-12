@@ -578,7 +578,7 @@ export default function ResearchRubric() {
                                     {expandedRow === rubric.id && (
                                         <tr className="bg-gray-50 border-b border-gray-300">
                                             <td
-                                                colSpan={7}
+                                                colSpan={8}
                                                 className="px-4 py-2 text-left"
                                             >
                                                 <div className="mb-2">

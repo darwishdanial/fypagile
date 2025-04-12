@@ -64,6 +64,11 @@ export function PanelSidebar() {
             label: "Grade PSM2",
             link: route('panel.PSM2.gradePSM2'),
         },
+        {
+            icon: <FileText />,
+            label: "View Result",
+            link: route('panel.PSM2.viewResult'),
+        },
     ];
 
     let menuItems: MenuItemType[] = [];
