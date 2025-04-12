@@ -43,13 +43,17 @@ export default function MLData() {
     } = props;
 
     // Convert panel assignment data for table
-    const panelAssignmentData = Object.entries(asgCountPerPanel).map(
-        ([name, count], index) => ({
-            id: index + 1,
+    // Convert panel assignment data for table, sort, and then assign IDs in the new order
+    const panelAssignmentData = Object.entries(asgCountPerPanel)
+        .map(([name, count]) => ({
             name,
             assignmentCount: count,
-        })
-    );
+        }))
+        .sort((a, b) => b.assignmentCount - a.assignmentCount)
+        .map((item, index) => ({
+            ...item,
+            id: index + 1, // Assign ID after sorting
+        }));
 
     // State for pagination and search
     const [rowsPerPage, setRowsPerPage] = useState(10);
