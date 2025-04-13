@@ -1,5 +1,7 @@
 import React, { ReactNode, useState } from "react";
-import { Head, usePage } from "@inertiajs/react";
+import { Head, usePage, router } from "@inertiajs/react";
+import { FileUp } from "lucide-react";
+import { route } from "ziggy-js";
 
 interface MLDataProps {
     totalPanel: number;
@@ -80,6 +82,10 @@ export default function MLData() {
         currentPage * rowsPerPage
     );
 
+    const handleExport = () => {
+        window.location.href = route("coordinator.export.ai-data");
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 flex w-full pb-6 border-b">
             <Head title="Machine Learning Data Overview" />
@@ -88,9 +94,27 @@ export default function MLData() {
             <main className="w-full">
                 <div className="py-6 min-w-full">
                     <div className="max-w-7xl">
+
+                        <div className="flex justify-between">
+
                         <h1 className="text-2xl font-semibold text-gray-900 ml-2">
                             Machine Learning Data Overview
                         </h1>
+
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 font-semibold"
+                            onClick={() => handleExport()}
+                            title="Import Students"
+                        >
+                            <div className="flex">
+                                <FileUp className="mr-2"/> 
+                                Export ML Data
+                            </div>
+                        </button>
+
+                        </div>
+                        
 
                         {/* Flash Messages */}
                         {flash?.success && (

@@ -47,6 +47,8 @@ Route::middleware( EnsureCoordinator::class)
 
     Route::get('/Home/ml-data', [CoordinatorController::class, 'getMLData'])->name('panel.ml-data');
 
+    Route::get('/export-ai-data', [CoordinatorController::class, 'exportAiData'])->name('export.ai-data');
+
 
     Route::prefix('PSM1')
         ->as('PSM1.')

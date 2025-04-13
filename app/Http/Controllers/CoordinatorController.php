@@ -12,6 +12,8 @@ use App\Services\CompareMachineLearningService;
 use App\Jobs\EmailPanelAssignmentCompleteJob;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Exports\AiDataExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class CoordinatorController extends Controller
@@ -294,6 +296,17 @@ class CoordinatorController extends Controller
             'users' => $users
         ]);
 
+    }
+
+    public function exportAiData()
+    {
+        // return Excel::download(new AiDataExport, 'ai_data.xlsx');
+
+        try {
+            return Excel::download(new AiDataExport, 'ai_data.xlsx');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 
 
