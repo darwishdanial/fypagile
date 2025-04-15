@@ -49,6 +49,8 @@ Route::middleware( EnsureCoordinator::class)
 
     Route::get('/export-ai-data', [CoordinatorController::class, 'exportAiData'])->name('export.ai-data');
 
+    Route::get('/matched-categories', [CoordinatorController::class, 'getSampleData'])->name('matched-categories.ai-data');
+
 
     Route::prefix('PSM1')
         ->as('PSM1.')

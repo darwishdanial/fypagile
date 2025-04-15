@@ -55,36 +55,50 @@ class ProjectLecturerMergerService
         return $projectArea;
     }
 
+    private function getCategories(): array
+{
+    return [
+        'Mobile Application' => ['mobile', 'android', 'ios'],
+        'Web Development' => ['web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
+        'Machine Learning' => ['machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
+        'Security' => ['security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
+        'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented'],
+        'Game Development' => ['game', 'game development', 'gaming'],
+        'Management' => ['project management', 'management', 'communication', 'schedule', 'booking'],
+        'Education' => ['education', 'learning', 'teaching'],
+        'Networking' => ['network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
+        'Data Science & Analytics' => ['data analytics', 'data visualization', 'data science', 'predictive analysis', 'text mining'],
+        'Health & Medical' => ['health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
+        'Financial & Business' => ['financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
+        'Human-Computer Interaction (HCI)' => ['interactive computer graphics', 'human computer interaction', 'hci', 'gesture recognition', 'graphics design', 'usability'],
+        'Computer Vision' => ['computer vision', 'object detection', 'facial detection', 'image denoising', 'real-time computer graphics', 'image filtering', 'realtime computer graphics'],
+        'Social & Tourism' => ['social', 'tourism', 'accommodation', 'online drivers', 'public transportation', 'travel', 'tourism planning'],
+        'Multimedia' => ['multimedia', 'multimedia and hci'],
+        'Others' => [] 
+    ];
+}
+
     public function mergePanelAndProjectData(): array{
 
         $panelData = $this->fetchPanelData();
         $studentData = $this->fetchStudentData();
         $panelMap = [];
 
-        foreach ($panelData as $panel) {
-            $id = $panel['id_project_62base'];
-            $panelMap[$id][] = $panel['lecturer_name'];
+        $categorizedProjects = [];
+        foreach (array_keys($this->getCategories()) as $category) {
+            $categorizedProjects[$category] = [];
         }
 
-        $categories = [
-            'Mobile Application' => ['mobile', 'android', 'ios'],
-            'Web Development' => ['web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
-            'Machine Learning' => ['machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
-            'Security' => ['security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
-            'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented'],
-            'Game Development' => ['game', 'game development', 'gaming'],
-            'Management' => ['project management', 'management', 'communication', 'schedule'],
-            'Education' => ['education', 'learning', 'teaching'],
-            'Networking' => ['network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
-            'Data Science & Analytics' => ['data analytics', 'data visualization', 'data science', 'predictive analysis', 'text mining'],
-            'Health & Medical' => ['health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
-            'Financial & Business' => ['financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
-            'Human-Computer Interaction (HCI)' => ['interactive computer graphics', 'human computer interaction', 'hci', 'gesture recognition', 'graphics design', 'usability'],
-            'Computer Vision' => ['computer vision', 'object detection', 'facial detection', 'image denoising', 'real-time computer graphics', 'image filtering', 'realtime computer graphics'],
-            'Social & Tourism' => ['social', 'tourism', 'accommodation', 'online drivers', 'public transportation', 'travel', 'tourism planning'],
-            'Multimedia' => ['multimedia', 'multimedia and hci'],
-            'Others' => [] 
-        ];
+        foreach ($panelData as $panel) {
+            $id = $panel['id_project_62base'];
+
+            $panelMap[$id][] = [
+                'lecturer_name' => $panel['lecturer_name'],
+                'examiner_status' => $panel['examiner_status']
+            ];
+        }
+
+        $categories = $this->getCategories();
 
         $mergedData = [];
 
@@ -110,16 +124,21 @@ class ProjectLecturerMergerService
                 }
             }
 
+            $categorizedProjects[$matchedCategory][] = $project['project_area'];
+
             // Replace project_area with the matching category
-            foreach ($lecturers as $lecturer) {
+            foreach ($lecturers as $lecturerInfo) {
                 $mergedData[] = [
                     'id_project_62base' => $id,
                     'project_area' => $matchedCategory,  // Replacing project_area with the matched category
                     'project_type' => $project['project_type'],
-                    'lecturer_name' => $lecturer,
+                    'lecturer_name' => $lecturerInfo['lecturer_name'],
+                    'examiner_status' => $lecturerInfo['examiner_status'] 
                 ];
             }
         }
+
+        // dd($categorizedProjects);
 
         return $mergedData;
     }
@@ -144,6 +163,9 @@ class ProjectLecturerMergerService
             $projectArea = $data['project_area'];
             $projectType = $data['project_type'];
             $lecturerName = $data['lecturer_name'];
+            $examinerStatus = $data['examiner_status'];
+
+            $examinerStatusValue = ($examinerStatus === 'MAIN') ? 0 : 1;
 
             if (!isset($areaMapping[$projectArea])) {
                 $areaMapping[$projectArea] = count($areaMapping);
@@ -164,7 +186,8 @@ class ProjectLecturerMergerService
 
             $samplesWithMapping[] = [
                 'project_area' => [$areaMapping[$projectArea], $projectArea],
-                'project_type' => [$typeMapping[$projectType], $projectType]
+                'project_type' => [$typeMapping[$projectType], $projectType],
+                'examiner_status' => [$examinerStatusValue, $examinerStatus]
             ];
 
             $labelsWithMapping[] = [$lecturerMapping[$lecturerName], $lecturerName];
@@ -172,6 +195,7 @@ class ProjectLecturerMergerService
             $samples[] = [
                 $areaMapping[$projectArea],
                 $typeMapping[$projectType],
+                $examinerStatusValue
             ];
             $labels[] = $lecturerMapping[$lecturerName];
         }

@@ -9,6 +9,7 @@ import {
     CirclePlus,
     Check,
     Search,
+    FileUp,
 } from "lucide-react";
 import { route } from "ziggy-js";
 import PanelHistoryModal from "../../../Components/PanelHistoryModal";
@@ -17,7 +18,7 @@ interface Supervisor {
     id: number;
     name: string;
     matricNo: string;
-    panel_histories: PanelHistory[]; 
+    panel_histories: PanelHistory[];
 }
 
 interface PanelHistory {
@@ -48,7 +49,7 @@ export default function PanelHistory() {
     const handleOpenModal = (supervisor: Supervisor) => {
         setSelectedSupervisor({
             panelHistories: supervisor.panel_histories,
-            name: supervisor.name
+            name: supervisor.name,
         });
         setIsModalOpen(true);
     };
@@ -100,6 +101,14 @@ export default function PanelHistory() {
         console.log("Fetched users:", props.users);
     }, [props.users]);
 
+    const handleExport = () => {
+        router.get(
+            route("coordinator.matched-categories.ai-data"),
+            {},
+            { preserveScroll: true }
+        );
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
             {flashMessage && (
@@ -136,16 +145,28 @@ export default function PanelHistory() {
                         </label>
                     </div>
 
-                    <input
-                        type="text"
-                        className="border border-gray-300 rounded p-2 w-1/5 bg-white hover:border-[#6D2323]"
-                        placeholder="Search "
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setCurrentPage(1); // Reset to first page on search
-                        }}
-                    />
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 font-semibold"
+                            onClick={() => handleExport()}
+                            title="Import Students"
+                        >
+                            <div className="flex">
+                                <FileUp className="mr-2" />
+                                Export ML Data
+                            </div>
+                        </button>
+
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded p-2 w-1/5 bg-white hover:border-[#6D2323]"
+                            placeholder="Search "
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setCurrentPage(1); // Reset to first page on search
+                            }}
+                        />
                 </div>
 
                 {/* Table */}
@@ -191,12 +212,12 @@ export default function PanelHistory() {
                                             title="Assign Student"
                                             className="p-1 text-blue-600 hover:text-blue-800 transition"
                                             onClick={() => {
-                                                handleOpenModal(supervisor)
+                                                handleOpenModal(supervisor);
                                                 // console.log(supervisor.panel_histories)
                                             }}
                                         >
                                             <div className="flex">
-                                                <Search  
+                                                <Search
                                                     size={20}
                                                     className="transition-transform duration-200 hover:scale-125"
                                                 />

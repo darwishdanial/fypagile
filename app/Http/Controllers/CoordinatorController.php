@@ -309,5 +309,10 @@ class CoordinatorController extends Controller
         }
     }
 
+    public function getSampleData(ProjectLecturerMergerService $mergerService){
+
+        $mergerService->mergePanelAndProjectData();
+    }
+
 
 }

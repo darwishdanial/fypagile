@@ -40,6 +40,7 @@ class AiDataSeeder extends Seeder
             $seedData[] = [
                 'project_area' => $sample[0],
                 'project_type' => $sample[1],
+                'examiner_status' => $sample[2],
                 'panel_name' => $labels[$index],
                 'created_at' => $now,
                 'updated_at' => $now

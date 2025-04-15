@@ -14,6 +14,7 @@ class AIData extends Model
     protected $fillable = [
         'project_area',
         'project_type',
+        'examiner_status',
         'panel_name',
     ];
 }
