@@ -27,7 +27,6 @@ class AiDataExport implements FromQuery, WithHeadings, WithMapping, WithStrictNu
         return [
             'Project Area',
             'Project Type',
-            'Examiner Status',
             'Panel Name',
         ];
     }
@@ -41,7 +40,6 @@ class AiDataExport implements FromQuery, WithHeadings, WithMapping, WithStrictNu
         return [
             $aiData->project_area,
             $aiData->project_type,
-            $aiData->examiner_status,
             $aiData->panel_name,
         ];
     }

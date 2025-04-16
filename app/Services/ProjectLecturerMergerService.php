@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ProjectLecturerMergerService
 {
@@ -27,7 +28,26 @@ class ProjectLecturerMergerService
 
             $body = $response->body();  
         
-            $normalizedBody = utf8_encode($body); // Convert to UTF-8
+            // $normalizedBody = utf8_encode($body); // Convert to UTF-8
+
+            $encoding = mb_detect_encoding($body, mb_list_encodings(), true);
+
+            // If encoding can't be detected, assume a common encoding (like ISO-8859-1)
+            if (!$encoding) {
+                // Assuming ISO-8859-1 if encoding is not detected
+                $encoding = 'ISO-8859-1';
+            }
+    
+            // Convert to UTF-8 using detected or fallback encoding
+            $normalizedBody = mb_convert_encoding($body, 'UTF-8', $encoding);
+
+            // try {
+            //     $normalizedBody = mb_convert_encoding($body, 'UTF-8', 'auto');
+            // } catch (\Exception $e) {
+            //     // Log the error or handle gracefully
+            //     Log::error('Encoding conversion failed: ' . $e->getMessage());
+            //     return [];
+            // }
 
             $cleanedBody = preg_replace('/^b"""/', '', $normalizedBody); // Then clean as usual
 
@@ -58,18 +78,18 @@ class ProjectLecturerMergerService
     private function getCategories(): array
 {
     return [
-        'Mobile Application' => ['mobile', 'android', 'ios'],
+        'Mobile Application' => ['mobile', 'android', 'ios','application'],
         'Web Development' => ['web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
-        'Machine Learning' => ['machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
-        'Security' => ['security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
+        'Machine Learning' => ['autonomous','speech','machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
+        'Security' => ['cyber','passcode','security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
         'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented'],
         'Game Development' => ['game', 'game development', 'gaming'],
         'Management' => ['project management', 'management', 'communication', 'schedule', 'booking'],
         'Education' => ['education', 'learning', 'teaching'],
         'Networking' => ['network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
         'Data Science & Analytics' => ['data analytics', 'data visualization', 'data science', 'predictive analysis', 'text mining'],
-        'Health & Medical' => ['health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
-        'Financial & Business' => ['financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
+        'Health & Medical' => ['counseling','sports','health','fitness','wellness','antimicrobial','cancer','disease','diabetes',',health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
+        'Financial & Business' => ['fintech','financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
         'Human-Computer Interaction (HCI)' => ['interactive computer graphics', 'human computer interaction', 'hci', 'gesture recognition', 'graphics design', 'usability'],
         'Computer Vision' => ['computer vision', 'object detection', 'facial detection', 'image denoising', 'real-time computer graphics', 'image filtering', 'realtime computer graphics'],
         'Social & Tourism' => ['social', 'tourism', 'accommodation', 'online drivers', 'public transportation', 'travel', 'tourism planning'],
@@ -110,6 +130,10 @@ class ProjectLecturerMergerService
                 continue;
             }
 
+            if (empty($project['project_area'])) {
+                continue; // Skip projects with no project_area
+            }
+
             // Determine the category based on the project_area
             $projectArea = strtolower($project['project_area']);
             $category = 'Others'; // Default category
@@ -133,12 +157,11 @@ class ProjectLecturerMergerService
                     'project_area' => $matchedCategory,  // Replacing project_area with the matched category
                     'project_type' => $project['project_type'],
                     'lecturer_name' => $lecturerInfo['lecturer_name'],
-                    'examiner_status' => $lecturerInfo['examiner_status'] 
                 ];
             }
         }
 
-        // dd($categorizedProjects);
+         dd($categorizedProjects);
 
         return $mergedData;
     }
@@ -163,9 +186,6 @@ class ProjectLecturerMergerService
             $projectArea = $data['project_area'];
             $projectType = $data['project_type'];
             $lecturerName = $data['lecturer_name'];
-            $examinerStatus = $data['examiner_status'];
-
-            $examinerStatusValue = ($examinerStatus === 'MAIN') ? 0 : 1;
 
             if (!isset($areaMapping[$projectArea])) {
                 $areaMapping[$projectArea] = count($areaMapping);
@@ -187,7 +207,6 @@ class ProjectLecturerMergerService
             $samplesWithMapping[] = [
                 'project_area' => [$areaMapping[$projectArea], $projectArea],
                 'project_type' => [$typeMapping[$projectType], $projectType],
-                'examiner_status' => [$examinerStatusValue, $examinerStatus]
             ];
 
             $labelsWithMapping[] = [$lecturerMapping[$lecturerName], $lecturerName];
@@ -195,7 +214,6 @@ class ProjectLecturerMergerService
             $samples[] = [
                 $areaMapping[$projectArea],
                 $typeMapping[$projectType],
-                $examinerStatusValue
             ];
             $labels[] = $lecturerMapping[$lecturerName];
         }

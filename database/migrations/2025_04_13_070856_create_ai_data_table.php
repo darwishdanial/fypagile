@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->tinyInteger('project_area')->unsigned();
             $table->tinyInteger('project_type')->unsigned();
-            $table->tinyInteger('examiner_status')->unsigned();
             $table->tinyInteger('panel_name')->unsigned();
             $table->timestamps();
         });
