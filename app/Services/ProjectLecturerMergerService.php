@@ -76,27 +76,28 @@ class ProjectLecturerMergerService
     }
 
     private function getCategories(): array
-{
-    return [
-        'Mobile Application' => ['mobile', 'android', 'ios','application'],
-        'Web Development' => ['web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
-        'Machine Learning' => ['autonomous','speech','machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
-        'Security' => ['cyber','passcode','security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
-        'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented'],
-        'Game Development' => ['game', 'game development', 'gaming'],
-        'Management' => ['project management', 'management', 'communication', 'schedule', 'booking'],
-        'Education' => ['education', 'learning', 'teaching'],
-        'Networking' => ['network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
-        'Data Science & Analytics' => ['data analytics', 'data visualization', 'data science', 'predictive analysis', 'text mining'],
-        'Health & Medical' => ['counseling','sports','health','fitness','wellness','antimicrobial','cancer','disease','diabetes',',health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
-        'Financial & Business' => ['fintech','financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
-        'Human-Computer Interaction (HCI)' => ['interactive computer graphics', 'human computer interaction', 'hci', 'gesture recognition', 'graphics design', 'usability'],
-        'Computer Vision' => ['computer vision', 'object detection', 'facial detection', 'image denoising', 'real-time computer graphics', 'image filtering', 'realtime computer graphics'],
-        'Social & Tourism' => ['social', 'tourism', 'accommodation', 'online drivers', 'public transportation', 'travel', 'tourism planning'],
-        'Multimedia' => ['multimedia', 'multimedia and hci'],
-        'Others' => [] 
-    ];
-}
+    {
+        return [
+            'Mobile Application' => ['mobile', 'android', 'ios','application'],
+            'Web Development' => ['full','stack','web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
+            'Machine Learning' => ['text-mining','autonomous','speech','machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
+            'Security' => ['penetration','steganography','identifiable','cyber','passcode','security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
+            'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented'],
+            'Game Development' => ['game', 'game development', 'gaming'],
+            'Management' => ['timetable','scheduling','project management', 'management', 'communication', 'schedule', 'booking'],
+            'Education' => ['university','education', 'learning', 'teaching'],
+            'Networking' => ['network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
+            'Data Science & Analytics' => ['multi-omics','data analytics', 'data visualization', 'data science', 'predictive analysis', 'text mining'],
+            'Health & Medical' => ['biology','donation','counseling','sports','health','fitness','wellness','antimicrobial','cancer','disease','diabetes',',health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
+            'Financial & Business' => ['fintech','financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
+            'Human-Computer Interaction (HCI)' => ['interactive computer graphics', 'human computer interaction', 'hci', 'gesture recognition', 'graphics design', 'usability'],
+            'Computer Vision' => ['computer vision', 'object detection', 'facial detection', 'image denoising', 'real-time computer graphics', 'image filtering', 'realtime computer graphics'],
+            'Social & Tourism' => ['social', 'tourism', 'accommodation', 'online drivers', 'public transportation', 'travel', 'tourism planning'],
+            'Multimedia' => ['multimedia', 'multimedia and hci'],
+            'UTM' => ['utm', 'multimedia and hci'],
+            'Others' => [] 
+        ];
+    }
 
     public function mergePanelAndProjectData(): array{
 
@@ -161,7 +162,7 @@ class ProjectLecturerMergerService
             }
         }
 
-         dd($categorizedProjects);
+        //  dd($categorizedProjects);
 
         return $mergedData;
     }
