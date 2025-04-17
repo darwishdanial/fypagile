@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class ProjectLecturerMergerService
 {
@@ -194,15 +195,32 @@ class ProjectLecturerMergerService
             }
 
             if (!isset($typeMapping[$projectType])) {
-                $typeMapping[$projectType] = count($typeMapping);
-                $projectTypeCount++;
+                if ($projectType === 'System Development') {
+                    $typeMapping[$projectType] = 0;
+                } elseif ($projectType === 'Research Based') {
+                    $typeMapping[$projectType] = 1;
+                }
             }
 
+            // if (!isset($lecturerMapping[$lecturerName])) {
+            //     $lecturerMapping[$lecturerName] = count($lecturerMapping);
+            //     $panelAssignments[$lecturerName] = 0;
+            //     $panelCount++;
+            // }
+
             if (!isset($lecturerMapping[$lecturerName])) {
-                $lecturerMapping[$lecturerName] = count($lecturerMapping);
-                $panelAssignments[$lecturerName] = 0;
-                $panelCount++;
+                $user = User::where('name', $lecturerName)->first();
+            
+                if ($user) {
+                    $lecturerMapping[$lecturerName] = $user->id - 1;
+                    $panelAssignments[$lecturerName] = 0;
+                    $panelCount++;
+                } else {
+                    // Optionally handle missing user (log, throw, or skip)
+                    continue; // skip this record if no matching user
+                }
             }
+            
             $panelAssignments[$lecturerName]++;
 
             $samplesWithMapping[] = [
