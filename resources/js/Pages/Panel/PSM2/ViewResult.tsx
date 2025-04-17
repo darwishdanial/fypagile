@@ -53,7 +53,7 @@ export default function ViewResult() {
     const students = props.students;
     const rubricDevelopment = props.rubricDevelopment;
     const rubricResearch = props.rubricResearch;
-    const studentType = "PSM1";
+    const studentType = "PSM2";
 
     const [showrubricsResearch, setShowrubricsResearch] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
@@ -325,14 +325,6 @@ export default function ViewResult() {
                                                                     rubric.id
                                                             ) || [];
 
-                                                        const averageScore =
-                                                            calculateRubricAverage(
-                                                                student,
-                                                                rubric.id
-                                                            );
-                                                        const hasScores =
-                                                            scores.length > 0;
-
                                                         return (
                                                             <div
                                                                 key={`${student.id}-${rubric.id}`}
@@ -373,38 +365,8 @@ export default function ViewResult() {
                                                                         %)
                                                                     </span>
                                                                 </div>
-
-                                                                {/* Average Score Display */}
-                                                                {hasScores && (
-                                                                    <div className="mb-3 bg-yellow-50 p-2 rounded border border-yellow-200">
-                                                                        <span className="font-medium">
-                                                                            Average
-                                                                            Score:{" "}
-                                                                        </span>
-                                                                        <span className="text-lg font-semibold">
-                                                                            {averageScore.toFixed(
-                                                                                1
-                                                                            )}
-                                                                            /
-                                                                            {
-                                                                                rubric.total_weight
-                                                                            }
-                                                                        </span>
-                                                                        <span className="text-sm text-gray-500 ml-1">
-                                                                            (
-                                                                            {
-                                                                                scores.length
-                                                                            }{" "}
-                                                                            {scores.length ===
-                                                                            1
-                                                                                ? "evaluation"
-                                                                                : "evaluations"}
-                                                                            )
-                                                                        </span>
-                                                                    </div>
-                                                                )}
-
                                                                 <div>
+                                                                    <hr className="my-2"></hr>
                                                                     {scores.map(
                                                                         (
                                                                             score,
