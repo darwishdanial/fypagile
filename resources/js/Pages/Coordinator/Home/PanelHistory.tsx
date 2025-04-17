@@ -153,7 +153,7 @@ export default function PanelHistory() {
                         >
                             <div className="flex">
                                 <FileUp className="mr-2" />
-                                Export ML Data
+                                Show Categories
                             </div>
                         </button>
 

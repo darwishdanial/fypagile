@@ -29,6 +29,10 @@ class StudentPSM2SeederNew extends Seeder
 
             foreach ($limitedStudentData as $student) {
 
+                if (empty($student['project_title']) || empty($student['project_area']) || empty($student['project_type'])) {
+                    continue;
+                }
+
                 $name = $faker->name;
                 $email = strtolower(str_replace(' ', '.', $name)) . '@graduate.utm.my';
 
@@ -36,9 +40,9 @@ class StudentPSM2SeederNew extends Seeder
                     'course' => 'SECJ',
                     'matric' =>  $faker->unique()->bothify('A##EC####'),
                     'name' => $name, 
-                    'title' => $student['project_title'] ?? "Speech recognition",
-                    'project_area' => $student['project_area'] ?? "AI",
-                    'project_type' => $student['project_type'] ?? "System Development",
+                    'title' => $student['project_title'],
+                    'project_area' => $student['project_area'],
+                    'project_type' => $student['project_type'],
                     'email' => $email,
                     'phone' => $faker->phoneNumber,
                     'cohort' => '2019/2020',

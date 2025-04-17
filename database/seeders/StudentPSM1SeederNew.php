@@ -28,17 +28,21 @@ class StudentPSM1SeederNew extends Seeder
             $faker = Faker::create('ms_MY');
 
             foreach ($limitedStudentData as $student) {
-
+                // Skip if any of the required fields are missing
+                if (empty($student['project_title']) || empty($student['project_area']) || empty($student['project_type'])) {
+                    continue;
+                }
+            
                 $name = $faker->name;
                 $email = strtolower(str_replace(' ', '.', $name)) . '@graduate.utm.my';
-
+            
                 StudentPSM1::create([
                     'course' => 'SECJ',
                     'matric' =>  $faker->unique()->bothify('A##EC####'),
                     'name' => $name, 
-                    'title' => $student['project_title'] ?? null,
-                    'project_area' => $student['project_area'] ?? null,
-                    'project_type' => $student['project_type'] ?? null,
+                    'title' => $student['project_title'],
+                    'project_area' => $student['project_area'],
+                    'project_type' => $student['project_type'],
                     'email' => $email,
                     'phone' => $faker->phoneNumber,
                     'cohort' => '2019/2023',
@@ -46,6 +50,7 @@ class StudentPSM1SeederNew extends Seeder
                     'supervisorId' => null,
                 ]);
             }
+            
 
         } catch (\Exception $e) {
             $this->command->error('Error seeding users: ' . $e->getMessage());
