@@ -109,6 +109,14 @@ export default function PanelHistory() {
         );
     };
 
+    const handleAPI = () => {
+        router.get(
+            route("coordinator.api.test"),
+            {},
+            { preserveScroll: true }
+        );
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
             {flashMessage && (
@@ -154,6 +162,18 @@ export default function PanelHistory() {
                             <div className="flex">
                                 <FileUp className="mr-2" />
                                 Show Categories
+                            </div>
+                        </button>
+
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 font-semibold"
+                            onClick={() => handleAPI()}
+                            title="Import Students"
+                        >
+                            <div className="flex">
+                                <FileUp className="mr-2" />
+                                Test API
                             </div>
                         </button>
 

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Exports\AiDataExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Http;
 
 
 class CoordinatorController extends Controller
@@ -313,6 +314,21 @@ class CoordinatorController extends Controller
 
         $mergerService->mergePanelAndProjectData();
     }
+
+    public function testPanelApi(){
+
+        $response = Http::timeout(5)->post('http://127.0.0.1:8001/predict-panel', [
+            'project_area' => 0,
+            'project_type' => 0,
+        ]);
+        
+        $predictions = $response->json()['predictions'];
+
+        $sorted = collect($predictions)->sortDesc();
+
+        dd($sorted->all());
+
+    }    
 
 
 }

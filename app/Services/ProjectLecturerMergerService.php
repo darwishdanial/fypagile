@@ -212,7 +212,7 @@ class ProjectLecturerMergerService
                 $user = User::where('name', $lecturerName)->first();
             
                 if ($user) {
-                    $lecturerMapping[$lecturerName] = $user->id - 1;
+                    $lecturerMapping[$lecturerName] = $user->id;
                     $panelAssignments[$lecturerName] = 0;
                     $panelCount++;
                 } else {

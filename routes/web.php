@@ -51,6 +51,8 @@ Route::middleware( EnsureCoordinator::class)
 
     Route::get('/matched-categories', [CoordinatorController::class, 'getSampleData'])->name('matched-categories.ai-data');
 
+    Route::get('/test-panel-api', [CoordinatorController::class, 'testPanelApi'])->name('api.test');
+
 
     Route::prefix('PSM1')
         ->as('PSM1.')
