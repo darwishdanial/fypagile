@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('students_psm2', function (Blueprint $table) {
             $table->string('project_area')->after('title'); // Adds 'project_area' after 'title'
+            $table->string('project_area_ai')->after('project_area');
             $table->string('project_type')->after('project_area'); // Adds 'project_type' after 'project_area'
         });
     }
@@ -24,6 +25,7 @@ return new class extends Migration
     {
         Schema::table('students_psm2', function (Blueprint $table) {
             $table->dropColumn('project_area');
+            $table->dropColumn('project_area_ai');
             $table->dropColumn('project_type');
         });
     }

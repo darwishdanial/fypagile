@@ -28,14 +28,14 @@ class StudentService
         $students = StudentPSM1::leftJoin('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
             ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
             ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
-            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_area_ai','students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
             ->orWhereNull('students_psm1.supervisorId')
             ->get();
 
         $students_with_supervisor = StudentPSM1::join('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
             ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
             ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
-            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_area_ai','students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
             ->get();
 
         $totalStudents = $students->concat($students_with_supervisor);
@@ -58,6 +58,7 @@ class StudentService
                 'students_psm1.matric',
                 'students_psm1.title',
                 'students_psm1.project_area',
+                'students_psm1.project_area_ai',
                 'students_psm1.project_type',
                 'students_psm1.sessionpsm',
                 'students_psm1.cohort',
@@ -79,14 +80,14 @@ class StudentService
         $students = StudentPSM2::leftJoin('users', 'students_psm2.supervisorId', '=', 'users.id')
         ->leftJoin('users as panel_users', 'students_psm2.panelId', '=', 'panel_users.id')
         ->leftJoin('users as panel2_users', 'students_psm2.panel2Id', '=', 'panel2_users.id')
-        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title','students_psm2.project_area','students_psm2.project_type','students_psm2.sessionpsm','students_psm2.cohort','students_psm2.phone','students_psm2.email', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title','students_psm2.project_area','students_psm2.project_area_ai','students_psm2.project_type','students_psm2.sessionpsm','students_psm2.cohort','students_psm2.phone','students_psm2.email', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
         ->orWhereNull('students_psm2.supervisorId')
         ->get();
   
         $students_with_supervisor = StudentPSM2::join('users', 'students_psm2.supervisorId', '=', 'users.id')
         ->leftJoin('users as panel_users', 'students_psm2.panel2Id', '=', 'panel_users.id')
         ->leftJoin('users as panel2_users', 'students_psm2.panelId', '=', 'panel2_users.id')
-        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title','students_psm2.project_area','students_psm2.project_type','students_psm2.sessionpsm','students_psm2.cohort','students_psm2.phone','students_psm2.email', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title','students_psm2.project_area','students_psm2.project_area_ai','students_psm2.project_type','students_psm2.sessionpsm','students_psm2.cohort','students_psm2.phone','students_psm2.email', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
         ->get();
   
         $totalstudents = $students->concat($students_with_supervisor);
@@ -107,6 +108,7 @@ class StudentService
                 'students_psm2.matric',
                 'students_psm2.title',
                 'students_psm2.project_area',
+                'students_psm2.project_area_ai',
                 'students_psm2.project_type',
                 'students_psm2.sessionpsm',
                 'students_psm2.cohort',
