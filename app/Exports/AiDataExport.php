@@ -25,9 +25,9 @@ class AiDataExport implements FromQuery, WithHeadings, WithMapping, WithStrictNu
     public function headings(): array
     {
         return [
-            'Project Area',
-            'Project Type',
-            'Panel Name',
+            'project_area',
+            'project_type',
+            'panel_name',
         ];
     }
 
