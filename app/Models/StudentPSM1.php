@@ -26,6 +26,7 @@ class StudentPSM1 extends Model
         'sessionpsm',
         'project_type',
         'project_area',
+        'project_area_ai',
         'title',
         'supervisorId',
         'panelId',
