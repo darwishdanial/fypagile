@@ -75,12 +75,12 @@ class ProjectLecturerMergerService
 
         return $projectArea;
     }
-
-    private function getCategories(): array
+    
+    public function getCategories(): array
     {
         return [
-            'Mobile Application' => ['mobile', 'android', 'ios','application'],
-            'Web Development' => ['full','stack','web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
+            'Mobile Application' => ['mobile', 'android', 'ios','apps'],
+            'Web Development' => ['full','web-based','stack','web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
             'Machine Learning' => ['text-mining','autonomous','speech','machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
             'Security' => ['penetration','steganography','identifiable','cyber','passcode','security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
             'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented'],
@@ -100,27 +100,35 @@ class ProjectLecturerMergerService
         ];
     }
 
-    public function mergePanelAndProjectData(): array{
+    public function matchCategory(string $projectArea): string 
+    {
+        $projectArea = strtolower($projectArea);
+        $categories = $this->getCategories();
+        
+        foreach ($categories as $category => $keywords) {
+            foreach ($keywords as $keyword) {
+                if (strpos($projectArea, $keyword) !== false) {
+                    return $category;
+                }
+            }
+        }
+        
+        return 'Others';
+    }
 
+    public function mergePanelAndProjectData(): array
+    {
         $panelData = $this->fetchPanelData();
         $studentData = $this->fetchStudentData();
         $panelMap = [];
 
-        $categorizedProjects = [];
-        foreach (array_keys($this->getCategories()) as $category) {
-            $categorizedProjects[$category] = [];
-        }
-
         foreach ($panelData as $panel) {
             $id = $panel['id_project_62base'];
-
             $panelMap[$id][] = [
                 'lecturer_name' => $panel['lecturer_name'],
                 'examiner_status' => $panel['examiner_status']
             ];
         }
-
-        $categories = $this->getCategories();
 
         $mergedData = [];
 
@@ -128,49 +136,35 @@ class ProjectLecturerMergerService
             $id = $project['id_project_62base'];
             $lecturers = $panelMap[$id] ?? [];
 
-            if (empty($lecturers)) {
+            if (empty($lecturers) || empty($project['project_area'])) {
                 continue;
             }
 
-            if (empty($project['project_area'])) {
-                continue; // Skip projects with no project_area
-            }
+            // Use matchCategory function to determine the category
+            $matchedCategory = $this->matchCategory($project['project_area']);
 
-            // Determine the category based on the project_area
-            $projectArea = strtolower($project['project_area']);
-            $category = 'Others'; // Default category
-
-            $matchedCategory = 'Others'; // Default category if no match is found
-            foreach ($categories as $category => $keywords) {
-                foreach ($keywords as $keyword) {
-                    if (strpos($projectArea, $keyword) !== false) {
-                        $matchedCategory = $category; // Assign the matched category
-                        break 2; // Exit both loops once a match is found
-                    }
-                }
-            }
-
-            $categorizedProjects[$matchedCategory][] = $project['project_area'];
-
-            // Replace project_area with the matching category
             foreach ($lecturers as $lecturerInfo) {
                 $mergedData[] = [
                     'id_project_62base' => $id,
-                    'project_area' => $matchedCategory,  // Replacing project_area with the matched category
+                    'old_project_area' => $project['project_area'],
+                    'project_area' => $matchedCategory,
                     'project_type' => $project['project_type'],
                     'lecturer_name' => $lecturerInfo['lecturer_name'],
                 ];
             }
         }
 
-        //  dd($categorizedProjects);
+        // dd($mergedData);
 
         return $mergedData;
     }
 
-    public function mergePanelAndProjectDataWithMapping(){
+
+    public function mergePanelAndProjectDataWithMapping(bool $user){
 
         $mergedData = $this->mergePanelAndProjectData();
+
+        // dd($mergedData);
 
         $samples=[];
         $labels=[];
@@ -202,23 +196,10 @@ class ProjectLecturerMergerService
                 }
             }
 
-            // if (!isset($lecturerMapping[$lecturerName])) {
-            //     $lecturerMapping[$lecturerName] = count($lecturerMapping);
-            //     $panelAssignments[$lecturerName] = 0;
-            //     $panelCount++;
-            // }
-
             if (!isset($lecturerMapping[$lecturerName])) {
-                $user = User::where('name', $lecturerName)->first();
-            
-                if ($user) {
-                    $lecturerMapping[$lecturerName] = $user->id;
-                    $panelAssignments[$lecturerName] = 0;
-                    $panelCount++;
-                } else {
-                    // Optionally handle missing user (log, throw, or skip)
-                    continue; // skip this record if no matching user
-                }
+                $lecturerMapping[$lecturerName] = $user ? count($lecturerMapping) + 1 : count($lecturerMapping);
+                $panelAssignments[$lecturerName] = 0;
+                $panelCount++;
             }
             
             $panelAssignments[$lecturerName]++;
@@ -236,6 +217,8 @@ class ProjectLecturerMergerService
             ];
             $labels[] = $lecturerMapping[$lecturerName];
         }
+
+        // dd($labels);
 
         //save areaMappingg and typeMappingg to database
 
