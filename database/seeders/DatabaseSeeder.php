@@ -29,15 +29,14 @@ class DatabaseSeeder extends Seeder
         // $this->call(UserSeeder::class);
 
         $this->call([
-            
-            StudentPSM1SeederNew::class,
-            StudentPSM2SeederNew::class,
             PermissionSeeder::class,
             UserSeederNew::class,
-            SupervisorSeeder::class,
             ProjectAreaMappingSeeder::class,
+            StudentPSM1SeederNew::class,
+            // StudentPSM2SeederNew::class,
             PanelHistorySeeder::class,
             AiDataSeeder::class,
+            // SupervisorSeeder::class,
         ]);
 
     }
