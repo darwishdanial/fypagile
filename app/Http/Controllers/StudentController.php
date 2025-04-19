@@ -11,8 +11,10 @@ use Inertia\Inertia;
 use Illuminate\Validation\Rule;
 use App\Imports\PSM1StudentsImport;
 use App\Imports\PSM2StudentsImport;
+use App\Services\ProjectLecturerMergerService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class StudentController extends Controller
 {
@@ -59,7 +61,7 @@ class StudentController extends Controller
         return redirect()->back()->with('success', 'Student deleted successfully.');
     }
 
-    public function PSM1StoreStudent(Request $request)
+    public function PSM1StoreStudent(Request $request, ProjectLecturerMergerService $service)
     {
         // dd( $request->all());
         $validated = $request->validate([
@@ -74,6 +76,11 @@ class StudentController extends Controller
             'title' => 'required|string|max:255',
             'sessionpsm' => 'required|string|max:50',
         ]);
+
+        $project_area_ai = $service->matchCategory($validated['project_area']);
+        
+        // Add project_area_ai to validated data
+        $validated['project_area_ai'] = $project_area_ai;
 
         StudentPSM1::create($validated);
 
@@ -185,7 +192,7 @@ class StudentController extends Controller
         return redirect()->back()->with('success', 'Student deleted successfully.');
     }
 
-    public function PSM2StoreStudent(Request $request)
+    public function PSM2StoreStudent(Request $request, ProjectLecturerMergerService $service)
     {
         //dd( $request->all());
         $validated = $request->validate([
@@ -200,6 +207,11 @@ class StudentController extends Controller
             'title' => 'required|string|max:255',
             'sessionpsm' => 'required|string|max:50',
         ]);
+
+        $project_area_ai = $service->matchCategory($validated['project_area']);
+        
+        // Add project_area_ai to validated data
+        $validated['project_area_ai'] = $project_area_ai;
 
         StudentPSM2::create($validated);
 
@@ -263,5 +275,7 @@ class StudentController extends Controller
 
         return redirect()->back()->with('success', 'Selected students have been archived successfully!');
     }
+
+
 
 }
