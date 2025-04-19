@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\StudentPSM1;
 use Illuminate\Http\Request;
 use App\Services\ProjectLecturerMergerService;
 use App\Services\CoordinatorService;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Exports\AiDataExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 
@@ -242,7 +244,7 @@ class CoordinatorController extends Controller
 
     public function getMLData(ProjectLecturerMergerService $mergerService){
 
-        $projectArea = $mergerService->mergePanelAndProjectDataWithMapping();
+        $projectArea = $mergerService->mergePanelAndProjectDataWithMapping(true);
         $sampleCount = count($projectArea['samples']);
         $labelCount = count($projectArea['labels']);
         $samples = $projectArea['samples'];
@@ -312,23 +314,123 @@ class CoordinatorController extends Controller
 
     public function getSampleData(ProjectLecturerMergerService $mergerService){
 
-        $mergerService->mergePanelAndProjectData();
+        $mergerService->mergePanelAndProjectDataWithMapping(true);
     }
 
     public function testPanelApi(){
 
-        $response = Http::timeout(5)->post('http://127.0.0.1:8001/predict-panel', [
-            'project_area' => 0,
-            'project_type' => 0,
-        ]);
+        // $response = Http::timeout(5)->post('http://127.0.0.1:8001/predict-panel', [
+        //     'project_area' => 5,
+        //     'project_type' => 0,
+        // ]);
         
-        $predictions = $response->json()['predictions'];
+        // $predictions = $response->json()['predictions'];
 
-        $sorted = collect($predictions)->sortDesc();
+        // $sorted = collect($predictions)->sortDesc();
 
-        dd($sorted->all());
+        // dd($sorted->all());
 
-    }    
+        $predictions = $this->predictAllStudentPanels();
+
+        // return response()->json($predictions);
+
+        dd($predictions);
+
+    }
+    
+    public function predictAllStudentPanels()
+    {
+        try {
+            // Get all students from StudentPSM1 model
+            $students = StudentPSM1::all();
+            
+            // Get project area mappings from the database
+            $projectAreaMappings = DB::table('project_area_mappings')->get()->keyBy('name');
+            
+            $results = [];
+            $failedPredictions = [];
+            
+            foreach ($students as $student) {
+                try {
+                    // Convert project_area_ai string to number using mappings
+                    $areaName = $student->project_area_ai;
+                    
+                    // Check if the area exists in mappings
+                    if (!isset($projectAreaMappings[$areaName])) {
+                        $failedPredictions[] = [
+                            'student_id' => $student->id,
+                            'name' => $student->name,
+                            'error' => "Project area mapping not found for: {$areaName}"
+                        ];
+                        continue;
+                    }
+                    
+                    $areaNumber = $projectAreaMappings[$areaName]->number;
+                    
+                    // Convert project_type to number (0 for System Development, 1 for Research)
+                    $typeNumber = ($student->project_type === 'Research') ? 1 : 0;
+                    
+                    // Call prediction API
+                    $response = Http::timeout(5)->post('http://127.0.0.1:8001/predict-panel', [
+                        'project_area' => $areaNumber,
+                        'project_type' => $typeNumber,
+                    ]);
+                    
+                    // Check if the request was successful
+                    if ($response->successful()) {
+                        $predictions = $response->json()['predictions'];
+                        $sorted = collect($predictions)->sortDesc();
+                        
+                        // Store the prediction results
+                        $results[] = [
+                            // 'student_id' => $student->id,
+                            // 'name' => $student->name,
+                            'matric' => $student->matric,
+                            // 'project_area' => $student->project_area,
+                            'project_area_ai' => $student->project_area_ai,
+                            // 'project_area_number' => $areaNumber,
+                            'project_type' => $student->project_type,
+                            // 'project_type_number' => $typeNumber,
+                            'predictions' => $sorted->all()
+                        ];
+                        
+                        // Optional: Update student with prediction results if needed
+                        // $student->panel_predictions = json_encode($sorted->all());
+                        // $student->save();
+                        
+                    } else {
+                        $failedPredictions[] = [
+                            'student_id' => $student->id,
+                            'name' => $student->name,
+                            'error' => "API returned error: " . $response->status()
+                        ];
+                    }
+                } catch (\Exception $e) {
+                    $failedPredictions[] = [
+                        'student_id' => $student->id,
+                        'name' => $student->name,
+                        'error' => "Exception: " . $e->getMessage()
+                    ];
+                }
+            }
+            
+            return [
+                'success' => true,
+                'total_students' => $students->count(),
+                'successful_predictions' => count($results),
+                'failed_predictions' => count($failedPredictions),
+                'results' => $results,
+                'failed' => $failedPredictions
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to process panel predictions',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
 
 
 }
