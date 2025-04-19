@@ -12,7 +12,7 @@ class ProjectAreaMappingSeeder extends Seeder
     {
         $service = new ProjectLecturerMergerService();
 
-        $mappingData = $service->mergePanelAndProjectDataWithMapping();
+        $mappingData = $service->mergePanelAndProjectDataWithMapping(true);
 
         $areaMapping = $mappingData['areaMapping'];
 

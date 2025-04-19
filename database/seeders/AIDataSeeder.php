@@ -23,7 +23,7 @@ class AiDataSeeder extends Seeder
     public function run()
     {
         // Get data from your service method
-        $data = $this->service->mergePanelAndProjectDataWithMapping();
+        $data = $this->service->mergePanelAndProjectDataWithMapping(true);
         
         $samples = $data['samples'];
         $labels = $data['labels'];

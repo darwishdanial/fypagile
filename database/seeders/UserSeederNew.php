@@ -19,9 +19,11 @@ class UserSeederNew extends Seeder
 
         $service = new ProjectLecturerMergerService();
 
-        $mappingData = $service->mergePanelAndProjectDataWithMapping();
+        $mappingData = $service->mergePanelAndProjectDataWithMapping(false);
 
         $lecturerMapping = $mappingData['lecturerMapping'];
+
+        // dd($lecturerMapping);
 
 
         foreach ($lecturerMapping as $name => $number) {

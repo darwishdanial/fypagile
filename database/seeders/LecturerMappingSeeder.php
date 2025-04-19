@@ -18,7 +18,7 @@ class LecturerMappingSeeder extends Seeder
     {
         $service = new ProjectLecturerMergerService();
 
-        $mappingData = $service->mergePanelAndProjectDataWithMapping();
+        $mappingData = $service->mergePanelAndProjectDataWithMapping(true);
 
         $lecturerMapping = $mappingData['lecturerMapping'];
 
