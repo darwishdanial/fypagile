@@ -43,13 +43,14 @@ export default function AssignPSM1Panel() {
     const [isPanel1ModalOpen, setIsPanel1ModalOpen] = useState(false);
     const [isPanel2ModalOpen, setIsPanel2ModalOpen] = useState(false);
 
-     const handleAISuggestions = () => {
-            router.post(
-                route("coordinator.PSM1.panel.autoAssign"),
-                {},
-                { preserveScroll: true }
-            );
-        };
+    const handleAISuggestions = () => {
+        // router.post(
+        //     route("coordinator.PSM1.panel.autoAssign"),
+        //     {},
+        //     { preserveScroll: true }
+        // );
+        router.get(route("coordinator.api.test"), {}, { preserveScroll: true });
+    };
 
     const handleOpenPanel1Modal = (id: number) => {
         setSelectedPanel(id);

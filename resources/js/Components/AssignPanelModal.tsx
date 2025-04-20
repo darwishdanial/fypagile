@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Bot } from "lucide-react";
 import { route } from "ziggy-js";
 import axios from "axios";
 
@@ -8,11 +8,14 @@ interface Student {
     name: string;
     title: string;
     project_area: string;
+    project_area_ai: string;
     project_type: string;
     panelProposalId: number | null;
     panelProposal2Id: number | null;
     panelId: number | null;
     panel2Id: number | null;
+    panelId_ai: number | null;
+    panel2Id_ai: number | null;
 }
 
 interface AssignPanelModalProps {
@@ -116,24 +119,32 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
             .then(() => {
                 //fetchStudents();
                 setStudents((prevStudents) =>
-                    prevStudents.map((student) =>{
+                    prevStudents.map((student) => {
                         if (student.id === studentId) {
                             if (panelType === "PSM1ProposalPanel1") {
-                                return { ...student, panelProposalId: panelId};
+                                return { ...student, panelProposalId: panelId };
                             }
                             if (panelType === "PSM1ProposalPanel2") {
-                                return { ...student, panelProposal2Id: panelId};
+                                return {
+                                    ...student,
+                                    panelProposal2Id: panelId,
+                                };
                             }
-                            if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
+                            if (
+                                panelType === "PSM1Panel1" ||
+                                panelType === "PSM2Panel1"
+                            ) {
                                 return { ...student, panelId, assigned: true };
                             }
-                            if (panelType === "PSM1Panel2" || panelType === "PSM2Panel2") {
+                            if (
+                                panelType === "PSM1Panel2" ||
+                                panelType === "PSM2Panel2"
+                            ) {
                                 return { ...student, panel2Id: panelId };
                             }
                         }
                         return student;
-                        }
-                    )
+                    })
                 );
             })
             .catch((error) => {
@@ -162,30 +173,50 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
             .then(() => {
                 //fetchStudents();
                 setStudents((prevStudents) =>
-                    prevStudents.map((student) =>
-                        {
-                            if (student.id === studentId) {
-                                if (panelType === "PSM1ProposalPanel1") {
-                                    return { ...student, panelProposalId: null};
-                                }
-                                if (panelType === "PSM1ProposalPanel2") {
-                                    return { ...student, panelProposal2Id: null};
-                                }
-                                if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
-                                    return { ...student, panelId: null};
-                                }
-                                if (panelType === "PSM1Panel2" || panelType === "PSM2Panel2") {
-                                    return { ...student, panel2Id: null};
-                                }
+                    prevStudents.map((student) => {
+                        if (student.id === studentId) {
+                            if (panelType === "PSM1ProposalPanel1") {
+                                return { ...student, panelProposalId: null };
                             }
-                            return student;
+                            if (panelType === "PSM1ProposalPanel2") {
+                                return { ...student, panelProposal2Id: null };
                             }
-                    )
+                            if (
+                                panelType === "PSM1Panel1" ||
+                                panelType === "PSM2Panel1"
+                            ) {
+                                return { ...student, panelId: null };
+                            }
+                            if (
+                                panelType === "PSM1Panel2" ||
+                                panelType === "PSM2Panel2"
+                            ) {
+                                return { ...student, panel2Id: null };
+                            }
+                        }
+                        return student;
+                    })
                 );
             })
             .catch((error) => {
                 console.error("Error unassigning supervisor:", error);
             });
+    };
+
+    // Check if a student has AI panel assignment
+    const hasAiPanel = (student: Student) => {
+        return (
+            student.panelId_ai === panelId || student.panel2Id_ai === panelId
+        );
+    };
+
+    // Sort students - AI panel students first
+    const sortStudents = (students: Student[]) => {
+        return [...students].sort((a, b) => {
+            if (hasAiPanel(a) && !hasAiPanel(b)) return -1;
+            if (!hasAiPanel(a) && hasAiPanel(b)) return 1;
+            return 0;
+        });
     };
 
     if (!isOpen) return null;
@@ -194,8 +225,10 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
         student.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const totalPages = Math.ceil(filteredStudents.length / rowsPerPage);
-    const paginatedStudents = filteredStudents.slice(
+    const sortedFilteredStudents = sortStudents(filteredStudents);
+
+    const totalPages = Math.ceil(sortedFilteredStudents.length / rowsPerPage);
+    const paginatedStudents = sortedFilteredStudents.slice(
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
     );
@@ -293,14 +326,38 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                                                             rowsPerPage}
                                                 </td>
                                                 <td className="px-4 py-2 text-left max-w-[200px]">
-                                                    {student.name}
+                                                    <div className="flex">
+                                                        {student.name}
+                                                        {hasAiPanel(student) && (
+                                                            <Bot
+                                                                size={18}
+                                                                className="ml-2 mt-1 text-blue-500 flex-shrink-0"
+                                                            />
+                                                        )}
+                                                    </div>
+
                                                 </td>
                                                 <td className="px-4 py-2">
-                                                    {(panelType === "PSM1ProposalPanel1" && student.panelProposalId === null) ||
-                                                    (panelType === "PSM1ProposalPanel2" && student.panelProposal2Id === null) ||
-                                                    (["PSM1Panel1", "PSM2Panel1"].includes(panelType) && student.panelId === null) ||
-                                                    (["PSM1Panel2", "PSM2Panel2"].includes(panelType) && student.panel2Id === null)
-                                                             ? (
+                                                    {(panelType ===
+                                                        "PSM1ProposalPanel1" &&
+                                                        student.panelProposalId ===
+                                                            null) ||
+                                                    (panelType ===
+                                                        "PSM1ProposalPanel2" &&
+                                                        student.panelProposal2Id ===
+                                                            null) ||
+                                                    ([
+                                                        "PSM1Panel1",
+                                                        "PSM2Panel1",
+                                                    ].includes(panelType) &&
+                                                        student.panelId ===
+                                                            null) ||
+                                                    ([
+                                                        "PSM1Panel2",
+                                                        "PSM2Panel2",
+                                                    ].includes(panelType) &&
+                                                        student.panel2Id ===
+                                                            null) ? (
                                                         <button
                                                             type="button"
                                                             className="px-3 py-1 bg-blue-400 text-white rounded hover:bg-blue-500 transition"
@@ -356,6 +413,15 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
                                                             </strong>{" "}
                                                             {
                                                                 student.project_type
+                                                            }
+                                                        </p>
+                                                        <p>
+                                                            <strong>
+                                                                Project
+                                                                Area(AI):
+                                                            </strong>{" "}
+                                                            {
+                                                                student.project_area_ai
                                                             }
                                                         </p>
                                                     </td>

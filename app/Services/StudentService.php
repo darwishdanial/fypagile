@@ -28,14 +28,16 @@ class StudentService
         $students = StudentPSM1::leftJoin('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
             ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
             ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
-            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_area_ai','students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_area_ai',
+                'students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
             ->orWhereNull('students_psm1.supervisorId')
             ->get();
 
         $students_with_supervisor = StudentPSM1::join('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
             ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
             ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
-            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_area_ai','students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
+            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_area_ai',
+                'students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
             ->get();
 
         $totalStudents = $students->concat($students_with_supervisor);
@@ -178,11 +180,11 @@ class StudentService
     public function getStudentsPSM1lPanel(?int $panelId, int $type){
 
         $assignedStudents = ($type == 1) 
-            ? StudentPSM1::where('panelId', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panelId'])->map(function ($student){
+            ? StudentPSM1::where('panelId', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panelId', 'panelId_ai'])->map(function ($student){
             $student->assigned = true;
             return $student;
             })
-            : StudentPSM1::where('panel2Id', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panel2Id'])->map(function ($student){
+            : StudentPSM1::where('panel2Id', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panel2Id', 'panel2Id_ai'])->map(function ($student){
             $student->assigned = true;
             return $student;
             });
@@ -197,7 +199,7 @@ class StudentService
                 $query->whereNull('supervisorId')
                     ->orWhere('supervisorId', '!=', $panelId);
             })
-            ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panelId'])
+            ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panelId', 'panelId_ai','project_area_ai'])
         : StudentPSM1::whereNull('panel2Id')
             ->where(function($query) use ($panelId) {
                 $query->whereNull('panelId')
@@ -207,7 +209,7 @@ class StudentService
                 $query->whereNull('supervisorId')
                     ->orWhere('supervisorId', '!=', $panelId);
             })
-            ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panel2Id']);
+            ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panel2Id', 'panel2Id_ai','project_area_ai']);
         // logger($unassignedStudents);
 
         
