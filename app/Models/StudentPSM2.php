@@ -30,7 +30,9 @@ class StudentPSM2 extends Model
         'password',
         'supervisorId',
         'panelId',
-        'panel2Id'
+        'panel2Id',
+        'panelId_ai',
+        'panel2Id_ai',
     ];
 
     public function score(){

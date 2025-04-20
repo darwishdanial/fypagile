@@ -31,6 +31,8 @@ class StudentPSM1 extends Model
         'supervisorId',
         'panelId',
         'panel2Id',
+        'panelId_ai',
+        'panel2Id_ai',
         'panelProposalId',
         'panelProposal2Id'
     ];
