@@ -213,8 +213,25 @@ const AssignPanelModal: React.FC<AssignPanelModalProps> = ({
     // Sort students - AI panel students first
     const sortStudents = (students: Student[]) => {
         return [...students].sort((a, b) => {
-            if (hasAiPanel(a) && !hasAiPanel(b)) return -1;
-            if (!hasAiPanel(a) && hasAiPanel(b)) return 1;
+            if (panelType === "PSM1Panel1" || panelType === "PSM2Panel1") {
+                // Sort students with panelId not null first
+                if (a.panelId !== null && b.panelId === null) return -1;
+                if (a.panelId === null && b.panelId !== null) return 1;
+    
+                // Then sort by hasAiPanel
+                if (hasAiPanel(a) && !hasAiPanel(b)) return -1;
+                if (!hasAiPanel(a) && hasAiPanel(b)) return 1;
+            } else if (panelType === "PSM1Panel2" || panelType === "PSM2Panel2") {
+                // Sort students with panel2Id not null first
+                if (a.panel2Id !== null && b.panel2Id === null) return -1;
+                if (a.panel2Id === null && b.panel2Id !== null) return 1;
+    
+                // Then sort by hasAiPanel
+                if (hasAiPanel(a) && !hasAiPanel(b)) return -1;
+                if (!hasAiPanel(a) && hasAiPanel(b)) return 1;
+            }
+    
+            // Default sorting (no specific condition met)
             return 0;
         });
     };
