@@ -94,27 +94,23 @@ export default function MLData() {
             <main className="w-full">
                 <div className="py-6 min-w-full">
                     <div className="max-w-7xl">
-
                         <div className="flex justify-between">
+                            <h1 className="text-2xl font-semibold text-gray-900 ml-2">
+                                Machine Learning Data Overview
+                            </h1>
 
-                        <h1 className="text-2xl font-semibold text-gray-900 ml-2">
-                            Machine Learning Data Overview
-                        </h1>
-
-                        <button
-                            type="button"
-                            className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 font-semibold"
-                            onClick={() => handleExport()}
-                            title="Import Students"
-                        >
-                            <div className="flex">
-                                <FileUp className="mr-2"/> 
-                                Export ML Data
-                            </div>
-                        </button>
-
+                            <button
+                                type="button"
+                                className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 font-semibold"
+                                onClick={() => handleExport()}
+                                title="Import Students"
+                            >
+                                <div className="flex">
+                                    <FileUp className="mr-2" />
+                                    Export ML Data
+                                </div>
+                            </button>
                         </div>
-                        
 
                         {/* Flash Messages */}
                         {flash?.success && (
@@ -226,12 +222,21 @@ export default function MLData() {
                             <div className="mt-4 shadow overflow-hidden border-gray-200 w-full">
                                 <Table
                                     headers={[
-                                        { label: "No.", key: "id" },
-                                        { label: "Panel Name", key: "name" },
+                                        {
+                                            label: "No.",
+                                            key: "id",
+                                            className: "text-center",
+                                        }, // Center align
+                                        {
+                                            label: "Panel Name",
+                                            key: "name",
+                                            className: "text-left",
+                                        }, // Left align
                                         {
                                             label: "Assignment Count",
                                             key: "assignmentCount",
-                                        },
+                                            className: "text-center",
+                                        }, // Center align
                                     ]}
                                     data={paginatedData}
                                 />
@@ -296,7 +301,7 @@ function Table({
     data,
     className = "w-full",
 }: {
-    headers: TableHeader[];
+    headers: (TableHeader & { className?: string })[]; // Add optional className for headers
     data: Record<string, any>[];
     className?: string;
 }) {
@@ -308,7 +313,9 @@ function Table({
                         <th
                             key={header.key}
                             scope="col"
-                            className="px-4 py-2 border-b border-gray-300 text-left"
+                            className={`px-4 py-2 border-b border-gray-300 ${
+                                header.className || "text-left"
+                            }`} // Apply custom className or default to text-left
                         >
                             {header.label}
                         </th>
@@ -321,7 +328,9 @@ function Table({
                         {headers.map((header) => (
                             <td
                                 key={`${index}-${header.key}`}
-                                className="px-6 py-4 whitespace-nowrap "
+                                className={`px-4 py-2 whitespace-nowrap ${
+                                    header.className || "text-left"
+                                }`} // Apply custom className or default to text-left
                             >
                                 {row[header.key]}
                             </td>
