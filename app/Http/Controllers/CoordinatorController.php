@@ -331,7 +331,9 @@ class CoordinatorController extends Controller
 
         // dd($sorted->all());
 
-        $predictions = $this->predictAllStudentPanels("PSM1");
+        // $predictions = 
+        
+        $this->predictAllStudentPanels("PSM1");
 
         // return response()->json($predictions);
 
@@ -342,7 +344,6 @@ class CoordinatorController extends Controller
     public function predictAllStudentPanels(string $studentType)
     {
         try {
-            // Get all students from StudentPSM1 model
 
             $students = $studentType === "PSM1" ? StudentPSM1::all() : StudentPSM2::all();
             
@@ -357,14 +358,20 @@ class CoordinatorController extends Controller
             $totalStudents = $students->count();
             $totalPanels = count($allPanels);
             $maxStudentsPerPanel = ceil($totalStudents / $totalPanels) * 2;
+
+            logger("Total students: {$totalStudents}");
+            logger("Total panels: {$totalPanels}");
+            logger("Max students per panel: {$maxStudentsPerPanel}");
+
             $panelCounts = array_fill_keys($allPanels, 0); //keep track of student count per panel
     
-            
             $results = [];
             $failedPredictions = [];
             
             foreach ($students as $student) {
                 try {
+
+                    logger("Student id: {$student->id} [{$student->name}]");
                     // Convert project_area_ai string to number using mappings
                     $areaName = $student->project_area_ai;
 
@@ -399,8 +406,7 @@ class CoordinatorController extends Controller
 
                         foreach($sorted as $panelId => $score) {
 
-                            // if ($panelCounts[$panelId] < $maxStudentsPerPanel) {
-                            if($student->supervisorId !== $panelId){
+                            if ($panelCounts[$panelId] < $maxStudentsPerPanel && $student->supervisorId !== $panelId) {
                                 if (!$primaryPanel) {
                                     $primaryPanel = $panelId;
                                     $panelCounts[$panelId]++;
@@ -416,25 +422,15 @@ class CoordinatorController extends Controller
                                     break;
                                 }
                             }
-                            // }
                         }
                         
                         // Store the prediction results
                         $results[] = [
-                            // 'student_id' => $student->id,
-                            // 'name' => $student->name,
                             'matric' => $student->matric,
-                            // 'project_area' => $student->project_area,
                             'project_area_ai' => $student->project_area_ai,
-                            // 'project_area_number' => $areaNumber,
                             'project_type' => $student->project_type,
-                            // 'project_type_number' => $typeNumber,
                             'predictions' => $sorted->all()
                         ];
-                        
-                        // Optional: Update student with prediction results if needed
-                        // $student->panel_predictions = json_encode($sorted->all());
-                        // $student->save();
                         
                     } else {
                         $failedPredictions[] = [
@@ -454,23 +450,28 @@ class CoordinatorController extends Controller
 
             // dd("success");
 
+            logger(json_encode([
+                'success' => true,
+                'total_students' => $students->count(),
+                'successful_predictions' => count($results),
+                'failed_predictions' => count($failedPredictions),
+                // 'results' => $results,
+                'failed' => $failedPredictions
+            ]));
+
+            foreach ($panelCounts as $panelId => $count) {
+                logger("Panel ID: {$panelId}, Name: {$panelName[$panelId]}, Student Count: {$count}");
+            }
+
             return back()->with('success', 'AI Panel assignment successfully.');
             
-            // return [
-            //     'success' => true,
-            //     'total_students' => $students->count(),
-            //     'successful_predictions' => count($results),
-            //     'failed_predictions' => count($failedPredictions),
-            //     'results' => $results,
-            //     'failed' => $failedPredictions
-            // ];
-            
         } catch (\Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Failed to process panel predictions',
+
+            logger(json_encode([
                 'error' => $e->getMessage()
-            ];
+            ]));
+
+            return back()->with('error', $e->getMessage());
         }
     }
 
