@@ -44,12 +44,11 @@ export default function AssignPSM1Panel() {
     const [isPanel2ModalOpen, setIsPanel2ModalOpen] = useState(false);
 
     const handleAISuggestions = () => {
-        // router.post(
-        //     route("coordinator.PSM1.panel.autoAssign"),
-        //     {},
-        //     { preserveScroll: true }
-        // );
         router.get(route("coordinator.api.test"), {}, { preserveScroll: true });
+    };
+
+    const handleAIDelete = () => {
+        router.get(route("coordinator.PSM1.panel.removeAi"), {}, { preserveScroll: true });
     };
 
     const handleOpenPanel1Modal = (id: number) => {
@@ -142,6 +141,16 @@ export default function AssignPSM1Panel() {
                     </div>
 
                     <div className="flex">
+                        <button
+                            type="button"
+                            className="p-2 px-3 bg-red-400 hover:bg-red-500 transition text-white rounded  mr-2 font-semibold"
+                            onClick={() => handleAIDelete()}
+                            title="Remove AI Suggestions"
+                        >
+                            <div className="flex">
+                                <Bot />
+                            </div>
+                        </button>
                         <button
                             type="button"
                             className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded  mr-2 font-semibold"

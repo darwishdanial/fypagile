@@ -124,6 +124,8 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/auto-assign-PSM1-panel', [CoordinatorController::class, 'PSM1autoAssignPanelsToStudents'])->name('panel.autoAssign');
 
+        Route::get('/remove-ai-suggestions', [StudentController::class, 'removeAllPanelIdsFromPSM1'])->name('panel.removeAi');
+
 
         //RURBIC AND CRITERIA
 
