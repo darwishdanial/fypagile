@@ -321,8 +321,8 @@ class CoordinatorController extends Controller
     public function testPanelApi(){
 
         // $response = Http::timeout(5)->post('http://127.0.0.1:8001/predict-panel', [
-        //     'project_area' => 5,
-        //     'project_type' => 0,
+        //     'project_area' => 3,
+        //     'project_type' => 1,
         // ]);
         
         // $predictions = $response->json()['predictions'];
@@ -387,8 +387,15 @@ class CoordinatorController extends Controller
                         ];
                         continue;
                     }
-                    
+
                     $areaNumber = $projectAreaMappings[$areaName]->number;
+
+                    // if($areaNumber === 3){
+                    //     $primaryPanel = 108;
+                    //     $panelCounts[108]++;
+                    //     $student->update(['panelId_ai' => 108]); 
+                    //     logger("Primary panel: {108} [{$panelName[$primaryPanel]}], Panel count: {$panelCounts[108]}");  
+                    // }
                     
                     // Convert project_type to number (0 for System Development, 1 for Research)
                     $typeNumber = ($student->project_type === 'Research') ? 1 : 0;
@@ -405,6 +412,38 @@ class CoordinatorController extends Controller
                         $sorted = collect($predictions)->sortDesc();
 
                         foreach($sorted as $panelId => $score) {
+
+                            if ($score == 0) {
+                                // Assign random available panels if the score is 0
+                                $availablePanels = array_filter($panelCounts, fn($count) => $count < $maxStudentsPerPanel);
+                            
+                                if (!empty($availablePanels)) {
+                                    // Assign primary panel
+                                    if (!$primaryPanel) {
+                                        $randomPanelId = array_rand($availablePanels);
+                                        $primaryPanel = $randomPanelId;
+                                        $panelCounts[$randomPanelId]++;
+                                        $student->update(['panelId_ai' => $primaryPanel]);
+                                        logger("Primary panel (random due to score 0): {$primaryPanel} [{$panelName[$primaryPanel]}], Panel count: {$panelCounts[$randomPanelId]}");
+                            
+                                        // Remove the assigned panel from available panels
+                                        unset($availablePanels[$randomPanelId]);
+                                    }
+                            
+                                    // Assign secondary panel
+                                    if (!$secondaryPanel && !empty($availablePanels)) {
+                                        $randomPanelId = array_rand($availablePanels);
+                                        $secondaryPanel = $randomPanelId;
+                                        $panelCounts[$randomPanelId]++;
+                                        $student->update(['panel2Id_ai' => $secondaryPanel]);
+                                        logger("Secondary panel (random due to score 0): {$secondaryPanel} [{$panelName[$secondaryPanel]}], Panel count: {$panelCounts[$randomPanelId]}");
+                                        logger('---------------------------------------');
+                                    }
+                                }
+                            
+                                break; // Exit the loop after assigning both panels
+                            }
+
 
                             if ($panelCounts[$panelId] < $maxStudentsPerPanel && $student->supervisorId !== $panelId) {
                                 if (!$primaryPanel) {
