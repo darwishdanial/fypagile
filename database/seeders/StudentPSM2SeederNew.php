@@ -23,7 +23,7 @@ class StudentPSM2SeederNew extends Seeder
 
             $studentData = $service->fetchStudentData();
 
-            $limitedStudentData = array_slice($studentData, 206, 206);
+            $limitedStudentData = array_slice($studentData, 216, 216);
 
             $faker = Faker::create('ms_MY');
 
@@ -35,6 +35,7 @@ class StudentPSM2SeederNew extends Seeder
 
                 $name = $faker->name;
                 $email = strtolower(str_replace(' ', '.', $name)) . '@graduate.utm.my';
+                $category = $service->matchCategory($student['project_area']);
 
                 StudentPSM2::create([
                     'course' => 'SECJ',
@@ -42,6 +43,7 @@ class StudentPSM2SeederNew extends Seeder
                     'name' => $name, 
                     'title' => $student['project_title'],
                     'project_area' => $student['project_area'],
+                    'project_area_ai' => $category,
                     'project_type' => $student['project_type'],
                     'email' => $email,
                     'phone' => $faker->phoneNumber,
