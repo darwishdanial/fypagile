@@ -121,6 +121,7 @@ class ProjectLecturerMergerService
         $panelData = $this->fetchPanelData();
         $studentData = $this->fetchStudentData();
         $panelMap = [];
+        $matchedCategories = [];
 
         foreach ($panelData as $panel) {
             $id = $panel['id_project_62base'];
@@ -143,6 +144,11 @@ class ProjectLecturerMergerService
             // Use matchCategory function to determine the category
             $matchedCategory = $this->matchCategory($project['project_area']);
 
+            if (!isset($matchedCategories[$matchedCategory])) {
+                $matchedCategories[$matchedCategory] = [];
+            }
+            $matchedCategories[$matchedCategory][] = $project['project_title'];
+
             foreach ($lecturers as $lecturerInfo) {
                 $mergedData[] = [
                     'id_project_62base' => $id,
@@ -155,6 +161,8 @@ class ProjectLecturerMergerService
         }
 
         // dd($mergedData);
+
+        // dd($matchedCategories);
 
         return $mergedData;
     }
