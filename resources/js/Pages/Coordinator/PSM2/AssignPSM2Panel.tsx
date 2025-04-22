@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { usePage, router } from "@inertiajs/react";
-import {
-    Pencil,
-    Archive,
-    ArchiveRestore,
-    Trash,
-    FileDown,
-    CirclePlus,
-    Check,
-    X,
-    Bot
-} from "lucide-react";
+import { CirclePlus, Bot } from "lucide-react";
 import { route } from "ziggy-js";
-import AddPanelModal from "../../../Components/AddPanelModal";
-import EditPanelModal from "../../../Components/EditPanelModal";
-import ImportPanelsModal from "../../../Components/ImportPanelsModal";
-import ImportErrorModal from "../../../Components/ImportErrorModal";
 import AssignPanelModal from "../../../Components/AssignPanelModal";
 
 interface Panel {
@@ -42,6 +28,22 @@ export default function AssignPSM2Panel() {
     const [selectedPanel, setSelectedPanel] = useState<number | null>(null);
     const [isPanel1ModalOpen, setIsPanel1ModalOpen] = useState(false);
     const [isPanel2ModalOpen, setIsPanel2ModalOpen] = useState(false);
+
+    const handleAISuggestions = () => {
+        router.get(
+            route("coordinator.PSM2.panel.autoAssign"),
+            {},
+            { preserveScroll: true }
+        );
+    };
+
+    const handleAIDelete = () => {
+        router.get(
+            route("coordinator.PSM2.panel.removeAi"),
+            {},
+            { preserveScroll: true }
+        );
+    };
 
     const handleOpenPanel1Modal = (id: number) => {
         setSelectedPanel(id);
@@ -135,8 +137,18 @@ export default function AssignPSM2Panel() {
                     <div className="flex">
                         <button
                             type="button"
+                            className="p-2 px-3 bg-red-400 hover:bg-red-500 transition text-white rounded  mr-2 font-semibold"
+                            onClick={() => handleAIDelete()}
+                            title="Remove AI Suggestions"
+                        >
+                            <div className="flex">
+                                <Bot />
+                            </div>
+                        </button>
+                        <button
+                            type="button"
                             className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded  mr-2 font-semibold"
-                            onClick={() => console.log("AI Panel")}
+                            onClick={() => handleAISuggestions()}
                             title="Suggest Panels using AI"
                         >
                             <div className="flex">
@@ -145,16 +157,16 @@ export default function AssignPSM2Panel() {
                             </div>
                         </button>
 
-                    <input
-                        type="text"
-                        className="border border-gray-300 rounded p-2 bg-white hover:border-[#6D2323]"
-                        placeholder="Search "
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setCurrentPage(1); // Reset to first page on search
-                        }}
-                    />
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded p-2 bg-white hover:border-[#6D2323]"
+                            placeholder="Search "
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setCurrentPage(1); // Reset to first page on search
+                            }}
+                        />
                     </div>
                 </div>
 

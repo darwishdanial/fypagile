@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { usePage, router } from "@inertiajs/react";
 import {
-    Pencil,
-    Archive,
-    ArchiveRestore,
-    Trash,
-    FileDown,
     CirclePlus,
-    Check,
-    X,
     Bot,
 } from "lucide-react";
 import { route } from "ziggy-js";
-import AddPanelModal from "../../../Components/AddPanelModal";
-import EditPanelModal from "../../../Components/EditPanelModal";
-import ImportPanelsModal from "../../../Components/ImportPanelsModal";
-import ImportErrorModal from "../../../Components/ImportErrorModal";
 import AssignPanelModal from "../../../Components/AssignPanelModal";
 
 interface Panel {
@@ -44,7 +33,7 @@ export default function AssignPSM1Panel() {
     const [isPanel2ModalOpen, setIsPanel2ModalOpen] = useState(false);
 
     const handleAISuggestions = () => {
-        router.get(route("coordinator.api.test"), {}, { preserveScroll: true });
+        router.get(route("coordinator.PSM1.panel.autoAssign"), {}, { preserveScroll: true });
     };
 
     const handleAIDelete = () => {
