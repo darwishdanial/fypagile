@@ -51,7 +51,7 @@ Route::middleware( EnsureCoordinator::class)
 
     Route::get('/matched-categories', [CoordinatorController::class, 'getSampleData'])->name('matched-categories.ai-data');
 
-    Route::get('/test-panel-api', [CoordinatorController::class, 'testPanelApi'])->name('api.test');
+    Route::get('/test-panel-api', [CoordinatorController::class, 'PSM1PredictPanel'])->name('api.test');
 
 
     Route::prefix('PSM1')
@@ -122,9 +122,9 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/unassign-PSM1-panel-2/{id}', [CoordinatorController::class, 'PSM1UnassignPSMPanel2'])->name('panel2.unassign');
 
-        Route::post('/auto-assign-PSM1-panel', [CoordinatorController::class, 'PSM1autoAssignPanelsToStudents'])->name('panel.autoAssign');
+        Route::get('/auto-assign-PSM1-panel', [CoordinatorController::class, 'PSM1PredictPanel'])->name('panel.autoAssign');
 
-        Route::get('/remove-ai-suggestions', [StudentController::class, 'removeAllPanelIdsFromPSM1'])->name('panel.removeAi');
+        Route::get('/remove-ai-suggestions', [CoordinatorController::class, 'removeAllPanelIdsFromPSM1'])->name('panel.removeAi');
 
 
         //RURBIC AND CRITERIA
@@ -200,6 +200,10 @@ Route::middleware( EnsureCoordinator::class)
         Route::post('/panels/store', [PanelController::class, 'PSM2StorePanel'])->name('panels.store');
 
         Route::put('/panels/{id}/update', [PanelController::class, 'PSM2UpdatePanel'])->name('panels.update');
+
+        Route::get('/auto-assign-PSM2-panel', [CoordinatorController::class, 'PSM2PredictPanel'])->name('panel.autoAssign');
+
+        Route::get('/remove-ai-suggestions', [CoordinatorController::class, 'removeAllPanelIdsFromPSM2'])->name('panel.removeAi');
 
         //SUPERVISOR ASSIGNMENT
 

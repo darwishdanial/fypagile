@@ -276,26 +276,6 @@ class StudentController extends Controller
         return redirect()->back()->with('success', 'Selected students have been archived successfully!');
     }
 
-    public function removeAllPanelIdsFromPSM1()
-    {
-        StudentPSM1::query()->update([
-            'panelId_ai' => null,
-            'panel2Id_ai' => null,
-        ]);
-
-        return redirect()->back()->with('success', 'All AI panel IDs removed successfully!');
-    }
-
-    public function removeAllPanelIdsFromPSM2()
-    {
-        StudentPSM2::query()->update([
-            'panelId_ai' => null,
-            'panel2Id_ai' => null,
-        ]);
-
-        return redirect()->back()->with('success', 'All AI panel IDs removed successfully!');
-    }
-
 
 
 }

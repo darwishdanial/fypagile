@@ -153,7 +153,7 @@ export default function PanelHistory() {
                         </label>
                     </div>
 
-                        <button
+                        {/* <button
                             type="button"
                             className="p-2 px-3 bg-blue-400 hover:bg-blue-500 transition text-white rounded ml-2 mr-4 font-semibold"
                             onClick={() => handleExport()}
@@ -175,7 +175,7 @@ export default function PanelHistory() {
                                 <FileUp className="mr-2" />
                                 Test API
                             </div>
-                        </button>
+                        </button> */}
 
                         <input
                             type="text"
