@@ -6,6 +6,11 @@ use App\Models\StudentPSM2;
 use App\Models\StudentPSM1;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\PSM1StudentsImport;
+use App\Imports\PSM2StudentsImport;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class StudentService 
 {
@@ -414,6 +419,127 @@ class StudentService
 
         return $assignedStudents;
     }
+
+    public function archiveStudent($id, string $studentType)
+    {
+        try{
+            $student = ($studentType === 'PSM1') ? StudentPSM1::findOrFail($id) : StudentPSM2::findOrFail($id);
+            $student->delete(); // Soft delete
+            return redirect()->back()->with('success', 'Student archived successfully.');
+        }catch(\Exception $e){
+            logger($e->getMessage());   
+            return redirect()->back()->with('error', 'Failed to archive student.');
+        }
+
+    }
+
+    public function restoreStudent($id, string $studentType)
+    {
+        try{
+            $student = ($studentType === 'PSM1') ? StudentPSM1::withTrashed()->findOrFail($id) : StudentPSM2::withTrashed()->findOrFail($id);
+            $student->restore(); // Restores the soft-deleted student
+            return back()->with('success', 'Student restore successfully.');
+        }catch(\Exception $e){
+            logger($e->getMessage());   
+            return redirect()->back()->with('error', 'Failed to restore student.');
+        }
+        
+    }
+
+    public function deleteStudent($id, string $studentType)
+    {
+        try{
+
+            $student = ($studentType === 'PSM1') ? StudentPSM1::onlyTrashed()->findOrFail($id) : StudentPSM2::onlyTrashed()->findOrFail($id);
+            $student->forceDelete(); // Delete permanently
+            return redirect()->back()->with('success', 'Student deleted successfully.');
+        }catch(\Exception $e){
+            logger($e->getMessage());   
+            return redirect()->back()->with('error', 'Failed to delete student.');
+        }
+        
+    }
+
+    public function storeStudent(array $data, string $studentType)
+    {
+        try {
+
+            $studentType === 'PSM1' ? StudentPSM1::create($data) : StudentPSM2::create($data);
+
+            return redirect()->back()->with('success', 'Student added successfully!');
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to store student.');
+        }
+    }
+
+    public function updateStudent(array $data, $id, string $studentType)
+    {
+        try{
+
+            $student = ($studentType === 'PSM1') ? StudentPSM1::findOrFail($id) : StudentPSM2::findOrFail($id);
+
+            $student->update($data);
+    
+            return redirect()->back()->with('success', 'Student updated successfully!');
+        }catch(\Exception $e){
+            logger($e->getMessage());   
+            return redirect()->back()->with('error', 'Failed to update student.');
+        }
+
+    }
+
+    public function importPSM1Students($file)
+    {
+        try {
+            $import = new PSM1StudentsImport();
+            Excel::import($import, $file);
+
+            $failures = Cache::get('psm1_import_failures', []);
+
+            if ($failures) {
+                Cache::forget('psm1_import_failures');
+                return redirect()->back()->with('warning', $failures);
+            }
+
+            return redirect()->back()->with('success', 'Student imported successfully!');
+        } catch (\Exception $e) {
+            logger('Error importing PSM1 students: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error importing students.');
+        }
+    }
+
+    public function importPSM2Students($file)
+    {
+        try {
+            $import = new PSM2StudentsImport();
+            Excel::import($import, $file);
+
+            $failures = Cache::get('psm2_import_failures', []);
+
+            if ($failures) {
+                Cache::forget('psm2_import_failures');
+                return redirect()->back()->with('warning', $failures);
+            }
+
+            return redirect()->back()->with('success', 'Student imported successfully!');
+        } catch (\Exception $e) {
+            logger('Error importing PSM1 students: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error importing students.');
+        }
+    }
+
+    public function bulkArchiveStudents(array $studentIds, string $studentType)
+    {
+        try {
+            $studentType === 'PSM1' ? StudentPSM1::whereIn('id', $studentIds)->delete() : StudentPSM2::whereIn('id', $studentIds)->delete();
+            return redirect()->back()->with('success', 'Selected students have been archived successfully!');
+        } catch (\Exception $e) {
+            logger('Error archiving PSM1 students: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error archiving students');
+        }
+    }
+
 
 
 
