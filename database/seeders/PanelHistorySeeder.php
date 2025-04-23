@@ -33,6 +33,5 @@ class PanelHistorySeeder extends Seeder
             }
         }
 
-        $this->command->info('Panel History seeded successfully!');
     }
 }

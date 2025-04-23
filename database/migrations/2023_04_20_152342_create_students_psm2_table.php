@@ -19,14 +19,20 @@ return new class extends Migration
             $table->string("matric");
             $table->string("name");
             $table->string("title");
+            $table->string('project_area'); 
+            $table->string('project_area_ai');
+            $table->string('project_type'); 
             $table->string("email");
             $table->string("phone");
             $table->string("cohort");
             $table->string("sessionpsm");
-            $table->foreignId('supervisorId')->nullable()->references('id')->on('supervisors'); 
+            $table->foreignId('supervisorId')->nullable()->references('id')->on('users'); 
             $table->foreignId('panelId')->nullable()->references('id')->on('users'); 
             $table->foreignId('panel2Id')->nullable()->references('id')->on('users'); 
+            $table->foreignId('panelId_ai')->nullable()->references('id')->on('users'); 
+            $table->foreignId('panel2Id_ai')->nullable()->references('id')->on('users');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

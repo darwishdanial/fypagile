@@ -150,14 +150,14 @@ class AuthService
     public function updatePassword($old_password, $new_password)
     {
         #Match The Old Password
-        if(!Hash::check($old_password, auth()->user()->password)){
+        if(!Hash::check($old_password, auth::user()->password)){
             throw ValidationException::withMessages([
                 'old_password' => ["Old Password doesn't match!"]
             ]);
         }
 
         #Update the new Password
-        User::whereId(auth()->user()->id)->update([
+        User::whereId(auth::user()->id)->update([
             'password' => Hash::make($new_password)
         ]);
     }

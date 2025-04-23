@@ -22,8 +22,6 @@ class ProjectAreaMappingSeeder extends Seeder
                 'number' => $number,
             ]);
         }
-
-        $this->command->info('Project Area Mappings seeded successfully!');
     }
 }
 

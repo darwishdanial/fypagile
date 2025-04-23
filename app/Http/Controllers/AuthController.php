@@ -71,9 +71,7 @@ class AuthController extends Controller
     public function dashboard()
     {
         try{
-            $data = $this->authService->dashboard();
-            //return view('dashboard',$data);
-            // return redirect()->route('CoordinatorHome');
+
             $user = Auth::user();
 
             if ($user->role == 1) {
@@ -83,6 +81,8 @@ class AuthController extends Controller
             }
 
         }catch(\Exception $e){
+
+            logger($e->getMessage());
 
             return redirect()->route('login')->with('error', 'Invalid user');
         }
