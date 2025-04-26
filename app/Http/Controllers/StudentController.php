@@ -30,9 +30,9 @@ class StudentController extends Controller
     public function PSM1ListStudents()
     {
         $this->authorize('view psm1 list students table');
-
-        $students = $this->studentService->getStudentPSM1();
-        $archivedStudents = $this->studentService->getStudentPSM1Archive();
+       
+        $students = $this->studentService->getStudents("PSM1");
+        $archivedStudents = $this->studentService->getStudentsArchive("PSM1");
 
         return Inertia::render('Coordinator/PSM1/ListStudents',[
             'students' => $students,
@@ -98,7 +98,7 @@ class StudentController extends Controller
 
     public function PSM1ImportStudent(Request $request)
     {
-        $this->studentService->importPSM1Students($request->file('file'));
+        $this->studentService->importStudents("PSM1",$request->file('file'));
     }
 
     public function PSM1BulkArchiveStudent(Request $request){
@@ -125,8 +125,8 @@ class StudentController extends Controller
     {
         $this->authorize('view psm2 list students table');
 
-        $students = $this->studentService->getStudentPSM2();
-        $archivedStudents =$this->studentService->getStudentPSM2Archive();
+        $students = $this->studentService->getStudents("PSM2");
+        $archivedStudents =$this->studentService->getStudentsArchive("PSM2");
 
         return Inertia::render('Coordinator/PSM2/ListStudents',[
             'students' => $students,
@@ -198,7 +198,7 @@ class StudentController extends Controller
 
     public function PSM2ImportStudent(Request $request)
     {
-        $this->studentService->importPSM2Students($request->file('file'));
+        $this->studentService->importStudents("PSM2",$request->file('file'));
     }
 
     public function PSM2BulkArchive(Request $request){

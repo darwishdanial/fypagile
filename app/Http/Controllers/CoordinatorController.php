@@ -36,8 +36,8 @@ class CoordinatorController extends Controller
         $this->authorize('view coordinator dashboard');
 
         $userName = Auth::user()->name;
-        $studentsPSM1 = $this->studentService->getStudentPSM1()->count();
-        $studentsPSM2 = $this->studentService->getStudentPSM2()->count();
+        $studentsPSM1 = $this->studentService->getStudents("PSM1")->count();
+        $studentsPSM2 = $this->studentService->getStudents("PSM2")->count();
         $panelsPSM1 = $this->panelService->getPanelPSM1()->count();
         $panelsPSM2 = $this->panelService->getPanelPSM2()->count();
 
@@ -69,7 +69,7 @@ class CoordinatorController extends Controller
 
     public function PSM1SupervisorStudentList($id)
     {
-        $students = $this->studentService->getStudentsSupervisorPSM1($id);
+        $students = $this->studentService->getStudentsSupervisor("PSM1",$id);
 
         return $students;
     }
@@ -79,12 +79,12 @@ class CoordinatorController extends Controller
         $studentId = $request->input('studentId');
         $supervisorId = $request->input('supervisorId');
         
-        $this->studentService->assignStudentsSupervisorPSM1($studentId, $supervisorId);
+        $this->studentService->assignStudentsSupervisor("PSM1",$studentId, $supervisorId);
     }
 
     public function PSM1UnassignSupervisor($studentId)
     {
-        $this->studentService->unassignStudentsSupervisorPSM1($studentId);
+        $this->studentService->unassignStudentsSupervisor("PSM1",$studentId);
     }
 
 
@@ -104,7 +104,7 @@ class CoordinatorController extends Controller
 
     public function PSM2SupervisorStudentList($id)
     {
-        $students = $this->studentService->getStudentsSupervisorPSM2($id);
+        $students = $this->studentService->getStudentsSupervisor("PSM2",$id);
 
         return $students;
     }
@@ -114,12 +114,12 @@ class CoordinatorController extends Controller
         $studentId = $request->input('studentId');
         $supervisorId = $request->input('supervisorId');
         
-        $this->studentService->assignStudentsSupervisorPSM2($studentId, $supervisorId);
+        $this->studentService->assignStudentsSupervisor("PSM2",$studentId, $supervisorId);
     }
 
     public function PSM2UnassignSupervisor($studentId)
     {
-        $this->studentService->unassignStudentsSupervisorPSM2($studentId);
+        $this->studentService->unassignStudentsSupervisor("PSM2",$studentId);
     }
 
     //PANEL ASSIGN
@@ -141,7 +141,7 @@ class CoordinatorController extends Controller
         $panelId = $request->input('panelId');
         $type = $request->input('panelTypeValue');
 
-        $students = $this->studentService->getStudentsPSM1lPanel($panelId, $type);
+        $students = $this->studentService->getStudentsPanel("PSM1",$panelId, $type);
 
         return $students;
     }
@@ -151,7 +151,7 @@ class CoordinatorController extends Controller
         $studentId = $request->input('studentId');
         $panelId = $request->input('panelId');
         
-        $this->studentService->assignStudentsPSMPanel1PSM1($studentId, $panelId);
+        $this->studentService->assignStudentsPanel1("PSM1",$studentId, $panelId);
     }
 
     public function PSM1SAssignPanel2(Request $request)
@@ -159,17 +159,17 @@ class CoordinatorController extends Controller
         $studentId = $request->input('studentId');
         $panelId = $request->input('panelId');
         
-        $this->studentService->assignStudentsPSMPanel2PSM1($studentId, $panelId);
+        $this->studentService->assignStudentsPanel2("PSM1",$studentId, $panelId);
     }
 
     public function PSM1UnassignPSMPanel1($studentId)
     {
-        $this->studentService->unassignStudentsPSMPanel1PSM1($studentId);
+        $this->studentService->unassignStudentsPanel1("PSM1",$studentId);
     }
 
     public function PSM1UnassignPSMPanel2($studentId)
     {
-        $this->studentService->unassignStudentsPSMPanel2PSM1($studentId);
+        $this->studentService->unassignStudentsPanel2("PSM1",$studentId);
     }
 
     // public function PSM1autoAssignPanelsToStudents(){
@@ -201,7 +201,7 @@ class CoordinatorController extends Controller
         $panelId = $request->input('panelId');
         $type = $request->input('panelTypeValue');
 
-        $students = $this->studentService->getStudentsPSM2lPanel($panelId, $type);
+        $students = $this->studentService->getStudentsPanel("PSM2",$panelId, $type);
 
         return $students;
     }
@@ -211,7 +211,7 @@ class CoordinatorController extends Controller
         $studentId = $request->input('studentId');
         $panelId = $request->input('panelId');
         
-        $this->studentService->assignStudentsPSMPanel1PSM2($studentId, $panelId);
+        $this->studentService->assignStudentsPanel1("PSM2",$studentId, $panelId);
     }
 
     public function PSM2SAssignPanel2(Request $request)
@@ -219,17 +219,17 @@ class CoordinatorController extends Controller
         $studentId = $request->input('studentId');
         $panelId = $request->input('panelId');
         
-        $this->studentService->assignStudentsPSMPanel2PSM2($studentId, $panelId);
+        $this->studentService->assignStudentsPanel2("PSM2",$studentId, $panelId);
     }
 
     public function PSM2UnassignPSMPanel1($studentId)
     {
-        $this->studentService->unassignStudentsPSMPanel1PSM2($studentId);
+        $this->studentService->unassignStudentsPanel1("PSM2",$studentId);
     }
 
     public function PSM2UnassignPSMPanel2($studentId)
     {
-        $this->studentService->unassignStudentsPSMPanel2PSM2($studentId);
+        $this->studentService->unassignStudentsPanel2("PSM2",$studentId);
     }
 
     //AI

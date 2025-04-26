@@ -10,10 +10,18 @@ use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Validators\Failure;
 use Illuminate\Support\Facades\Cache;
+use App\Services\ProjectLecturerMergerService;
 
 class PSM1StudentsImport implements ToModel, WithValidation, SkipsOnFailure, WithHeadingRow
 {
     use SkipsFailures;
+
+    protected $mergerService;
+
+    public function __construct(ProjectLecturerMergerService $mergerService)
+    {
+        $this->mergerService = $mergerService;
+    }
 
     public function prepareForValidation($data)
     {
@@ -32,6 +40,7 @@ class PSM1StudentsImport implements ToModel, WithValidation, SkipsOnFailure, Wit
             'course'        => $row['course'],
             'title'         => $row['title'],
             'project_area'  => $row['project_area'],
+            'project_area_ai' => $this->mergerService->matchCategory($row['project_area']), 
             'project_type'  => $row['project_type'],
             'sessionpsm'    => $row['sessionpsm'],
             'cohort'        => $row['cohort'],
@@ -104,8 +113,8 @@ class PSM1StudentsImport implements ToModel, WithValidation, SkipsOnFailure, Wit
     public function onFailure(Failure ...$failures)
     {
         // Store failures in cache
-        $existing = Cache::get('psm1_import_failures', []);
-        Cache::put('psm1_import_failures', array_merge($existing, $failures));
+        $existing = Cache::get('PSM1_import_failures', []);
+        Cache::put('PSM1_import_failures', array_merge($existing, $failures));
     }
 
 }

@@ -28,9 +28,9 @@ class GradingController extends Controller
 
         $userType = Auth::user()->role;
 
-        $studentsDevelopment = $this->studentService->getStudentsSupervisorGradePSM1($id, 1);
+        $studentsDevelopment = $this->studentService->getStudentsSupervisorGrade("PSM1",$id, 1);
 
-        $studentResearch = $this->studentService->getStudentsSupervisorGradePSM1($id, 2);
+        $studentResearch = $this->studentService->getStudentsSupervisorGrade("PSM1",$id, 2);
 
         $rubricsDevelopment = $this->gradingService->getRubrics('PSM1', 1, 3);
 
@@ -54,9 +54,9 @@ class GradingController extends Controller
 
         $userType = Auth::user()->role;
 
-        $studentsDevelopment = $this->studentService->getStudentsPanelGradePSM1($id, 1);
+        $studentsDevelopment = $this->studentService->getStudentsPanelGrade("PSM1",$id, 1);
 
-        $studentResearch = $this->studentService->getStudentsPanelGradePSM1($id, 2);
+        $studentResearch = $this->studentService->getStudentsPanelGrade("PSM1",$id, 2);
 
         $rubricsDevelopment = $this->gradingService->getRubrics('PSM1', 1, 2);
         
@@ -103,9 +103,9 @@ class GradingController extends Controller
 
         $userType = Auth::user()->role;
 
-        $studentsDevelopment = $this->studentService->getStudentsSupervisorGradePSM2($id, 1);
+        $studentsDevelopment = $this->studentService->getStudentsSupervisorGrade("PSM2",$id, 1);
 
-        $studentResearch = $this->studentService->getStudentsSupervisorGradePSM2($id, 2);
+        $studentResearch = $this->studentService->getStudentsSupervisorGrade("PSM2",$id, 2);
 
         $rubricsDevelopment = $this->gradingService->getRubrics('PSM2', 1, 3);
 
@@ -128,9 +128,9 @@ class GradingController extends Controller
 
         $userType = Auth::user()->role;
 
-        $studentsDevelopment = $this->studentService->getStudentsPanelGradePSM2($id, 1);
+        $studentsDevelopment = $this->studentService->getStudentsPanelGrade("PSM2",$id, 1);
 
-        $studentResearch = $this->studentService->getStudentsPanelGradePSM2($id, 2);
+        $studentResearch = $this->studentService->getStudentsPanelGrade("PSM2",$id, 2);
 
         $rubricsDevelopment = $this->gradingService->getRubrics('PSM2', 1, 2);
 

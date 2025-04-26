@@ -14,127 +14,95 @@ use Illuminate\Support\Facades\Storage;
 
 class StudentService 
 {
-    public function totalStudent(){
-        
-        $count = StudentPSM1::count();
-
-        return $count;
-    }
-
-    public function totalStudent2(){
-
-        $count = StudentPSM2::count();
-
-        return $count;
-    }
-
-    public function getStudentPSM1()
+    public function getStudents(string $studentType)
     {
-        $students = StudentPSM1::leftJoin('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
-            ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
-            ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
-            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_area_ai',
-                'students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
-            ->orWhereNull('students_psm1.supervisorId')
+        if ($studentType === 'PSM1') {
+            $model = StudentPSM1::query();
+            $table = 'students_psm1';
+        } elseif ($studentType === 'PSM2') {
+            $model = StudentPSM2::query();
+            $table = 'students_psm2';
+        } else {
+            return collect(); // Invalid student type
+        }
+
+        $students = $model
+            ->leftJoin('users as sv', "$table.supervisorId", '=', 'sv.id')
+            ->leftJoin('users as panel_users', "$table.panelId", '=', 'panel_users.id')
+            ->leftJoin('users as panel2_users', "$table.panel2Id", '=', 'panel2_users.id')
+            ->select(
+                "$table.id",
+                "$table.name",
+                "$table.course",
+                "$table.matric",
+                "$table.title",
+                "$table.project_area",
+                "$table.project_area_ai",
+                "$table.project_type",
+                "$table.sessionpsm",
+                "$table.cohort",
+                "$table.phone",
+                "$table.email",
+                'sv.name as sv_name',
+                'panel_users.name as panel_name',
+                'panel2_users.name as panel2_name'
+            )
             ->get();
 
-        $students_with_supervisor = StudentPSM1::join('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
-            ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
-            ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
-            ->select('students_psm1.id', 'students_psm1.name', 'students_psm1.course', 'students_psm1.matric','students_psm1.title','students_psm1.project_area','students_psm1.project_area_ai',
-                'students_psm1.project_type','students_psm1.sessionpsm','students_psm1.cohort','students_psm1.phone','students_psm1.email','sv.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
-            ->get();
-
-        $totalStudents = $students->concat($students_with_supervisor);
-
-        // $totalStudents = StudentPSM1::all();
-
-        return $totalStudents;
+        return $students;
     }
 
-    public function getStudentPSM1Archive(){
+    public function getStudentsArchive(string $studentType)
+    {
+        if ($studentType === 'PSM1') {
+            $model = StudentPSM1::onlyTrashed();
+            $table = 'students_psm1';
+        } elseif ($studentType === 'PSM2') {
+            $model = StudentPSM2::onlyTrashed();
+            $table = 'students_psm2';
+        } else {
+            return collect(); // Return empty collection if invalid type
+        }
 
-        $archivedStudents = StudentPSM1::onlyTrashed()
-            ->leftJoin('users as sv', 'students_psm1.supervisorId', '=', 'sv.id')
-            ->leftJoin('users as panel_users', 'students_psm1.panelId', '=', 'panel_users.id')
-            ->leftJoin('users as panel2_users', 'students_psm1.panel2Id', '=', 'panel2_users.id')
+        $archivedStudents = $model
+            ->leftJoin('users as sv', "$table.supervisorId", '=', 'sv.id')
+            ->leftJoin('users as panel_users', "$table.panelId", '=', 'panel_users.id')
+            ->leftJoin('users as panel2_users', "$table.panel2Id", '=', 'panel2_users.id')
             ->select(
-                'students_psm1.id', 
-                'students_psm1.name', 
-                'students_psm1.course', 
-                'students_psm1.matric',
-                'students_psm1.title',
-                'students_psm1.project_area',
-                'students_psm1.project_area_ai',
-                'students_psm1.project_type',
-                'students_psm1.sessionpsm',
-                'students_psm1.cohort',
-                'students_psm1.phone',
-                'students_psm1.email',
-                'sv.name as sv_name', 
+                "$table.id",
+                "$table.name",
+                "$table.course",
+                "$table.matric",
+                "$table.title",
+                "$table.project_area",
+                "$table.project_area_ai",
+                "$table.project_type",
+                "$table.sessionpsm",
+                "$table.cohort",
+                "$table.phone",
+                "$table.email",
+                'sv.name as sv_name',
                 'panel_users.name as panel_name',
                 'panel2_users.name as panel2_name',
-                'students_psm1.deleted_at' // To check when it was deleted
+                "$table.deleted_at"
             )
             ->get();
 
         return $archivedStudents;
-
     }
 
-    public function getStudentPSM2(){
+    public function getStudentsSupervisor(string $studentType, ?int $supervisorId)
+    {
+        if ($studentType === 'PSM1') {
+            $model = new StudentPSM1();
+        } elseif ($studentType === 'PSM2') {
+            $model = new StudentPSM2();
+        } else {
+            return collect(); // Return empty collection if invalid type
+        }
 
-        $students = StudentPSM2::leftJoin('users', 'students_psm2.supervisorId', '=', 'users.id')
-        ->leftJoin('users as panel_users', 'students_psm2.panelId', '=', 'panel_users.id')
-        ->leftJoin('users as panel2_users', 'students_psm2.panel2Id', '=', 'panel2_users.id')
-        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title','students_psm2.project_area','students_psm2.project_area_ai','students_psm2.project_type','students_psm2.sessionpsm','students_psm2.cohort','students_psm2.phone','students_psm2.email', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
-        ->orWhereNull('students_psm2.supervisorId')
-        ->get();
-  
-        $students_with_supervisor = StudentPSM2::join('users', 'students_psm2.supervisorId', '=', 'users.id')
-        ->leftJoin('users as panel_users', 'students_psm2.panel2Id', '=', 'panel_users.id')
-        ->leftJoin('users as panel2_users', 'students_psm2.panelId', '=', 'panel2_users.id')
-        ->select('students_psm2.id','students_psm2.name', 'students_psm2.course', 'students_psm2.matric','students_psm2.title','students_psm2.project_area','students_psm2.project_area_ai','students_psm2.project_type','students_psm2.sessionpsm','students_psm2.cohort','students_psm2.phone','students_psm2.email', 'users.name as sv_name', 'panel_users.name as panel_name','panel2_users.name as panel2_name')
-        ->get();
-  
-        $totalstudents = $students->concat($students_with_supervisor);
-        // return $students_with_supervisor;
-        return $totalstudents;
-    }
-
-    public function getStudentPSM2Archive(){
-
-        $archivedStudents = StudentPSM2::onlyTrashed()
-            ->leftJoin('users as sv', 'students_psm2.supervisorId', '=', 'sv.id')
-            ->leftJoin('users as panel_users', 'students_psm2.panelId', '=', 'panel_users.id')
-            ->leftJoin('users as panel2_users', 'students_psm2.panel2Id', '=', 'panel2_users.id')
-            ->select(
-                'students_psm2.id', 
-                'students_psm2.name', 
-                'students_psm2.course', 
-                'students_psm2.matric',
-                'students_psm2.title',
-                'students_psm2.project_area',
-                'students_psm2.project_area_ai',
-                'students_psm2.project_type',
-                'students_psm2.sessionpsm',
-                'students_psm2.cohort',
-                'students_psm2.phone',
-                'students_psm2.email',
-                'sv.name as sv_name', 
-                'panel_users.name as panel_name',
-                'panel2_users.name as panel2_name',
-                'students_psm2.deleted_at' // To check when it was deleted
-            )
-            ->get();
-
-        return $archivedStudents;
-
-    }
-
-    public function getStudentsSupervisorPSM1(?int $supervisorId){
-
-        $unassignedStudents = StudentPSM1::whereNull('supervisorId')
+        $unassignedStudents = $model->newQuery()
+            ->whereNull('supervisorId')
             ->where(function($query) use ($supervisorId) {
                 $query->whereNull('panel2Id')
                     ->orWhere('panel2Id', '!=', $supervisorId);
@@ -143,13 +111,14 @@ class StudentService
                 $query->whereNull('panelId')
                     ->orWhere('panelId', '!=', $supervisorId);
             })
-            ->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])
-            ->map(function ($student){
+            ->get(['id','name','title','project_area','project_type','supervisorId'])
+            ->map(function ($student) {
                 $student->assigned = false;
                 return $student;
             });
-        
-        $assignedStudents = StudentPSM1::where('supervisorId', $supervisorId)
+
+        $assignedStudents = $model->newQuery()
+            ->where('supervisorId', $supervisorId)
             ->where(function($query) use ($supervisorId) {
                 $query->whereNull('panel2Id')
                     ->orWhere('panel2Id', '!=', $supervisorId);
@@ -158,8 +127,8 @@ class StudentService
                 $query->whereNull('panelId')
                     ->orWhere('panelId', '!=', $supervisorId);
             })
-            ->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])
-            ->map(function ($student){
+            ->get(['id','name','title','project_area','project_type','supervisorId'])
+            ->map(function ($student) {
                 $student->assigned = true;
                 return $student;
             });
@@ -169,256 +138,176 @@ class StudentService
         return $students;
     }
 
-    public function assignStudentsSupervisorPSM1($studentId, $supervisorId){
+    public function assignStudentsSupervisor(string $studentType, int $studentId, int $supervisorId)
+    {
+        if ($studentType === 'PSM1') {
+            $model = new StudentPSM1();
+        } elseif ($studentType === 'PSM2') {
+            $model = new StudentPSM2();
+        } else {
+            return false; // or throw an exception if you prefer
+        }
 
-        StudentPSM1::whereId($studentId)
+        return $model->newQuery()
+            ->whereId($studentId)
             ->update(['supervisorId' => $supervisorId]);
     }
 
-    public function unassignStudentsSupervisorPSM1($studentId){
+    public function unassignStudentsSupervisor(string $studentType, int $studentId)
+    {
+        if ($studentType === 'PSM1') {
+            $model = new StudentPSM1();
+        } elseif ($studentType === 'PSM2') {
+            $model = new StudentPSM2();
+        } else {
+            return false; // or throw an exception if needed
+        }
 
-        StudentPSM1::whereId($studentId)
-            ->update(['supervisorId' => null ]);
+        return $model->newQuery()
+            ->whereId($studentId)
+            ->update(['supervisorId' => null]);
     }
 
+    public function getStudentsPanel(string $studentType, ?int $panelId, int $type)
+    {
+        if ($studentType === 'PSM1') {
+            $model = new StudentPSM1();
+        } elseif ($studentType === 'PSM2') {
+            $model = new StudentPSM2();
+        } else {
+            return false; // or throw exception
+        }
 
-    public function getStudentsPSM1lPanel(?int $panelId, int $type){
+        $assignedStudents = ($type == 1)
+            ? $model->newQuery()->where('panelId', $panelId)
+                ->get(['id','name','title','project_area','project_type','panelId', 'panelId_ai'])
+                ->map(function ($student) {
+                    $student->assigned = true;
+                    return $student;
+                })
+            : $model->newQuery()->where('panel2Id', $panelId)
+                ->get(['id','name','title','project_area','project_type','panel2Id', 'panel2Id_ai'])
+                ->map(function ($student) {
+                    $student->assigned = true;
+                    return $student;
+                });
 
-        $assignedStudents = ($type == 1) 
-            ? StudentPSM1::where('panelId', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panelId', 'panelId_ai'])->map(function ($student){
-            $student->assigned = true;
-            return $student;
-            })
-            : StudentPSM1::where('panel2Id', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panel2Id', 'panel2Id_ai'])->map(function ($student){
-            $student->assigned = true;
-            return $student;
-            });
-
-        $unassignedStudents = ($type == 1) 
-        ? StudentPSM1::whereNull('panelId')
-            ->where(function($query) use ($panelId) {
-                $query->whereNull('panel2Id')
-                    ->orWhere('panel2Id', '!=', $panelId);
-            })
-            ->where(function($query) use ($panelId) {
-                $query->whereNull('supervisorId')
-                    ->orWhere('supervisorId', '!=', $panelId);
-            })
-            ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panelId', 'panelId_ai','project_area_ai'])
-        : StudentPSM1::whereNull('panel2Id')
-            ->where(function($query) use ($panelId) {
-                $query->whereNull('panelId')
-                    ->orWhere('panelId', '!=', $panelId);
-            })
-            ->where(function($query) use ($panelId) {
-                $query->whereNull('supervisorId')
-                    ->orWhere('supervisorId', '!=', $panelId);
-            })
-            ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panel2Id', 'panel2Id_ai','project_area_ai']);
-        // logger($unassignedStudents);
-
-        
-            
-        $students = $assignedStudents->merge($unassignedStudents);
-
-        return $students;
-    }
-
-    public function getStudentsPSM2lPanel(?int $panelId, int $type){
-
-        $assignedStudents = ($type == 1) 
-            ? StudentPSM2::where('panelId', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panelId'])->map(function ($student){
-            $student->assigned = true;
-            return $student;
-            })
-            : StudentPSM2::where('panel2Id', $panelId)->get(['id','name','title' ,'project_area', 'project_type','panel2Id'])->map(function ($student){
-            $student->assigned = true;
-            return $student;
-            });
-
-            $unassignedStudents = ($type == 1) 
-            ? StudentPSM2::whereNull('panelId')
+        $unassignedStudents = ($type == 1)
+            ? $model->newQuery()
+                ->whereNull('panelId')
                 ->where(function($query) use ($panelId) {
-                    $query->whereNull('panel2Id')
-                        ->orWhere('panel2Id', '!=', $panelId);
+                    $query->whereNull('panel2Id')->orWhere('panel2Id', '!=', $panelId);
                 })
                 ->where(function($query) use ($panelId) {
-                    $query->whereNull('supervisorId')
-                        ->orWhere('supervisorId', '!=', $panelId);
+                    $query->whereNull('supervisorId')->orWhere('supervisorId', '!=', $panelId);
                 })
-                ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panelId'])
-            : StudentPSM2::whereNull('panel2Id')
+                ->get(['id','name','title','project_area','project_type','panelId','panelId_ai','project_area_ai'])
+            : $model->newQuery()
+                ->whereNull('panel2Id')
                 ->where(function($query) use ($panelId) {
-                    $query->whereNull('panelId')
-                        ->orWhere('panelId', '!=', $panelId);
+                    $query->whereNull('panelId')->orWhere('panelId', '!=', $panelId);
                 })
                 ->where(function($query) use ($panelId) {
-                    $query->whereNull('supervisorId')
-                        ->orWhere('supervisorId', '!=', $panelId);
+                    $query->whereNull('supervisorId')->orWhere('supervisorId', '!=', $panelId);
                 })
-                ->get(['id', 'name', 'title', 'project_area', 'project_type', 'panel2Id']);
-        // logger($unassignedStudents);
-        
-            
-        $students = $assignedStudents->merge($unassignedStudents);
+                ->get(['id','name','title','project_area','project_type','panel2Id','panel2Id_ai','project_area_ai']);
 
-        return $students;
+        return $assignedStudents->merge($unassignedStudents);
     }
 
-    public function assignStudentsPSMPanel1PSM1($studentId, $panelId){
-
-        StudentPSM1::whereId($studentId)
-            ->update(['panelId' => $panelId]);
+    public function assignStudentsPanel1(string $studentType, $studentId, $panelId)
+    {
+        if ($studentType === 'PSM1') {
+            StudentPSM1::whereId($studentId)->update(['panelId' => $panelId]);
+        } elseif ($studentType === 'PSM2') {
+            StudentPSM2::whereId($studentId)->update(['panelId' => $panelId]);
+        } else {
+            return false; // or throw exception
+        }
     }
 
-    public function assignStudentsPSMPanel1PSM2($studentId, $panelId){
-
-        StudentPSM2::whereId($studentId)
-            ->update(['panelId' => $panelId]);
+    public function assignStudentsPanel2(string $studentType, $studentId, $panelId)
+    {
+        if ($studentType === 'PSM1') {
+            StudentPSM1::whereId($studentId)->update(['panel2Id' => $panelId]);
+        } elseif ($studentType === 'PSM2') {
+            StudentPSM2::whereId($studentId)->update(['panel2Id' => $panelId]);
+        } else {
+            return false; // or throw exception
+        }
     }
 
-    public function assignStudentsPSMPanel2PSM1($studentId, $panelId){
-
-        StudentPSM1::whereId($studentId)
-            ->update(['panel2Id' => $panelId]);
+    public function unassignStudentsPanel1(string $studentType, $studentId)
+    {
+        if ($studentType === 'PSM1') {
+            StudentPSM1::whereId($studentId)->update(['panelId' => null]);
+        } elseif ($studentType === 'PSM2') {
+            StudentPSM2::whereId($studentId)->update(['panelId' => null]);
+        } else {
+            return false; // or throw an exception
+        }
     }
 
-    public function assignStudentsPSMPanel2PSM2($studentId, $panelId){
-
-        StudentPSM2::whereId($studentId)
-            ->update(['panel2Id' => $panelId]);
+    public function unassignStudentsPanel2(string $studentType, $studentId)
+    {
+        if ($studentType === 'PSM1') {
+            StudentPSM1::whereId($studentId)->update(['panel2Id' => null]);
+        } elseif ($studentType === 'PSM2') {
+            StudentPSM2::whereId($studentId)->update(['panel2Id' => null]);
+        } else {
+            return false; // or throw an exception if student type is invalid
+        }
     }
 
-    public function unassignStudentsPSMPanel1PSM1($studentId){
 
-        StudentPSM1::whereId($studentId)
-            ->update(['panelId' => null ]);
+    public function getStudentsSupervisorGrade(string $studentType, ?int $supervisorId, int $type)
+    {
+        $model = $studentType === 'PSM1' ? StudentPSM1::class : StudentPSM2::class;
+
+        $projectType = $type == 1 ? 'System Development' : 'Research Based';
+
+        return $model::where('supervisorId', $supervisorId)
+                    ->where('project_type', $projectType)
+                    ->get();
     }
 
-    public function unassignStudentsPSMPanel1PSM2($studentId){
+    public function getStudentsPanelGrade(string $studentType, ?int $panelId, int $type)
+    {
+        $model = $studentType === 'PSM1' ? StudentPSM1::class : StudentPSM2::class;
 
-        StudentPSM2::whereId($studentId)
-            ->update(['panelId' => null ]);
+        $projectType = $type == 1 ? 'System Development' : 'Research Based';
+
+        return $model::where(function ($query) use ($panelId) {
+                    $query->where('panelId', $panelId)
+                        ->orWhere('panel2Id', $panelId);
+                })
+                ->where('project_type', $projectType)
+                ->get();
     }
 
-    public function unassignStudentsPSMPanel2PSM1($studentId){
+    public function importStudents(string $studentType, $file)
+    {
+        try {
+            $mergerService = app(ProjectLecturerMergerService::class); 
+            $importClass = $studentType === 'PSM1' 
+                ? new PSM1StudentsImport($mergerService) 
+                : new PSM2StudentsImport($mergerService);
+            Excel::import($importClass, $file);
 
-        StudentPSM1::whereId($studentId)
-            ->update(['panel2Id' => null ]);
+            $failures = Cache::get("{$studentType}_import_failures", []);
+
+            if ($failures) {
+                Cache::forget("{$studentType}_import_failures");
+                return redirect()->back()->with('warning', $failures);
+            }
+
+            return redirect()->back()->with('success', 'Students imported successfully!');
+        } catch (\Exception $e) {
+            logger("Error importing {$studentType} students: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error importing students.');
+        }
     }
 
-    public function unassignStudentsPSMPanel2PSM2($studentId){
-
-        StudentPSM2::whereId($studentId)
-            ->update(['panel2Id' => null ]);
-    }
-
-    public function getStudentsSupervisorPSM2(?int $supervisorId){
-
-        $unassignedStudents = StudentPSM2::whereNull('supervisorId')
-            ->where(function($query) use ($supervisorId) {
-                $query->whereNull('panel2Id')
-                    ->orWhere('panel2Id', '!=', $supervisorId);
-            })
-            ->where(function($query) use ($supervisorId) {
-                $query->whereNull('panelId')
-                    ->orWhere('panelId', '!=', $supervisorId);
-            })
-            ->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])
-            ->map(function ($student){
-                $student->assigned = false;
-                return $student;
-            });
-        
-        $assignedStudents = StudentPSM2::where('supervisorId', $supervisorId)
-            ->where(function($query) use ($supervisorId) {
-                $query->whereNull('panel2Id')
-                    ->orWhere('panel2Id', '!=', $supervisorId);
-            })
-            ->where(function($query) use ($supervisorId) {
-                $query->whereNull('panelId')
-                    ->orWhere('panelId', '!=', $supervisorId);
-            })
-            ->get(['id','name','title' ,'project_area', 'project_type','supervisorId'])
-            ->map(function ($student){
-                $student->assigned = true;
-                return $student;
-            });
-
-        $students = $assignedStudents->merge($unassignedStudents);
-
-        return $students;
-    }
-
-    public function assignStudentsSupervisorPSM2($studentId, $supervisorId){
-
-        StudentPSM2::whereId($studentId)
-            ->update(['supervisorId' => $supervisorId]);
-    }
-
-    public function unassignStudentsSupervisorPSM2($studentId){
-
-        StudentPSM2::whereId($studentId)
-            ->update(['supervisorId' => null ]);
-    }
-
-    public function getStudentsSupervisorGradePSM1(?int $supervisorId, int $type){
-
-        $assignedStudents = ($type == 1 ) ? 
-            StudentPSM1::where('supervisorId', $supervisorId)->where('project_type', "System Development")->get()
-            :StudentPSM1::where('supervisorId', $supervisorId)->where('project_type', "Research Based")->get();
-
-        return $assignedStudents;
-    }
-
-    public function getStudentsSupervisorGradePSM2(?int $supervisorId, int $type){
-
-        $assignedStudents = ($type == 1 ) ? 
-            StudentPSM2::where('supervisorId', $supervisorId)->where('project_type', "System Development")->get()
-            :StudentPSM2::where('supervisorId', $supervisorId)->where('project_type', "Research Based")->get();
-
-        return $assignedStudents;
-    }
-
-    public function getStudentsPanelGradePSM1(?int $panelId, int $type){
-
-        $assignedStudents = ($type == 1 ) ? 
-            StudentPSM1::where(function ($query) use ($panelId) {
-                $query->where('panelId', $panelId)
-                    ->orWhere('panel2Id', $panelId);
-            })
-            ->where('project_type', "System Development")
-            ->get()
-            :StudentPSM1::where(function ($query) use ($panelId) {
-                $query->where('panelId', $panelId)
-                    ->orWhere('panel2Id', $panelId);
-            })
-            ->where('project_type', "Research Based")
-            ->get();
-    
-
-        return $assignedStudents;
-    }
-
-    public function getStudentsPanelGradePSM2(?int $panelId, int $type){
-
-        $assignedStudents = ($type == 1 ) ? 
-            StudentPSM2::where(function ($query) use ($panelId) {
-                $query->where('panelId', $panelId)
-                    ->orWhere('panel2Id', $panelId);
-            })
-            ->where('project_type', "System Development")
-            ->get()
-            :StudentPSM2::where(function ($query) use ($panelId) {
-                $query->where('panelId', $panelId)
-                    ->orWhere('panel2Id', $panelId);
-            })
-            ->where('project_type', "Research Based")
-            ->get();
-    
-
-        return $assignedStudents;
-    }
 
     public function archiveStudent($id, string $studentType)
     {
@@ -489,46 +378,6 @@ class StudentService
 
     }
 
-    public function importPSM1Students($file)
-    {
-        try {
-            $import = new PSM1StudentsImport();
-            Excel::import($import, $file);
-
-            $failures = Cache::get('psm1_import_failures', []);
-
-            if ($failures) {
-                Cache::forget('psm1_import_failures');
-                return redirect()->back()->with('warning', $failures);
-            }
-
-            return redirect()->back()->with('success', 'Student imported successfully!');
-        } catch (\Exception $e) {
-            logger('Error importing PSM1 students: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error importing students.');
-        }
-    }
-
-    public function importPSM2Students($file)
-    {
-        try {
-            $import = new PSM2StudentsImport();
-            Excel::import($import, $file);
-
-            $failures = Cache::get('psm2_import_failures', []);
-
-            if ($failures) {
-                Cache::forget('psm2_import_failures');
-                return redirect()->back()->with('warning', $failures);
-            }
-
-            return redirect()->back()->with('success', 'Student imported successfully!');
-        } catch (\Exception $e) {
-            logger('Error importing PSM1 students: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error importing students.');
-        }
-    }
-
     public function bulkArchiveStudents(array $studentIds, string $studentType)
     {
         try {
@@ -541,86 +390,4 @@ class StudentService
     }
 
 
-
-
-
-
-
-    public function getStudentsSupervisorLama(?int $supervisorId){
-
-        $unassignedStudents = StudentPSM1::whereNull('supervisorId')->get(['id','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
-            $student->assigned = false;
-            return $student;
-        });
-        
-        $assignedStudents = StudentPSM1::where('supervisorId', $supervisorId)->get(['id','title' ,'project_area', 'project_type','supervisorId'])->map(function ($student){
-            $student->assigned = true;
-            return $student;
-        });
-        $students = $assignedStudents->merge($unassignedStudents);
-
-        return $students;
-    }
-
-
-    public function getStudentSupervisor(){
-
-        $students = studentPSM1::get()->where('supervisorId', '=', Session::get('id'));
-  
-        return $students;
-    }
-
-    public function getStudentSupervisor2(){
-        
-        $students = studentPSM2::get()->where('supervisorId', '=', Session::get('id'));
-  
-        return $students;
-    }
-
-    public function getStudentPanel(){
-
-        $panelId = Session::get('id');
-        
-        $students = studentPSM1::where('panelId', '=', $panelId)
-                                ->orWhere('panel2Id', '=', $panelId)
-                                ->get()
-                                ->toArray();
-        
-        return $students;
-    }
-
-    public function getStudentPanel2(){
-        
-        $panelId = Session::get('id');
-
-        $students = studentPSM2::where('panelId', '=', $panelId)
-                                ->orWhere('panel2Id', '=', $panelId)
-                                ->get()
-                                ->toArray();
-        return $students;
-    }
-
-    public function getSupervisors(){
-
-        $supervisors = DB::table('supervisors')
-            ->join('users', 'supervisors.userId','=', 'users.id')
-            ->select('supervisors.id', 'users.name')
-            ->get();
-
-        return $supervisors;
-    }
-
-    
-
-    // public function assignStudent($studentId, $supervisorId){
-
-    //     StudentPSM1::whereId($studentId)
-    //         ->update(['supervisorId' => $supervisorId]);
-    // }
-
-    public function unassignStudent($studentId){
-
-        StudentPSM1::whereId($studentId)
-            ->update(['supervisorId' => null]);
-    }
 }

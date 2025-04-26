@@ -128,13 +128,13 @@ class AuthService
             }
 
             if(Session::get('role_id')==1){
-                $student = $this->studentService->totalStudent();
-                $student2 = $this->studentService->totalStudent2();
+                $student = $this->studentService->getStudents("PSM1")->count();
+                $student2 =$this->studentService->getStudents("PSM2")->count();
                 $supervisor = $this->supervisorService->totalSupervisor();
             } 
             if(Session::get('role_id')==2){
-                $student = $this->studentService->getStudentSupervisor()->count();
-                $student2 = $this->studentService->getStudentSupervisor()->count();
+                // $student = $this->studentService->getStudentSupervisor()->count();
+                // $student2 = $this->studentService->getStudentSupervisor()->count();
 
             
                 // $supervisor = (new SupervisorController)->totalSupervisor();
