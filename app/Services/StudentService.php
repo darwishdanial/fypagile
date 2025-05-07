@@ -301,7 +301,6 @@ class StudentService
                 return redirect()->back()->with('warning', $failures);
             }
 
-            return redirect()->back()->with('success', 'Students imported successfully!');
         } catch (\Exception $e) {
             logger("Error importing {$studentType} students: " . $e->getMessage());
             return redirect()->back()->with('error', 'Error importing students.');
@@ -314,7 +313,6 @@ class StudentService
         try{
             $student = ($studentType === 'PSM1') ? StudentPSM1::findOrFail($id) : StudentPSM2::findOrFail($id);
             $student->delete(); // Soft delete
-            return redirect()->back()->with('success', 'Student archived successfully.');
         }catch(\Exception $e){
             logger($e->getMessage());   
             return redirect()->back()->with('error', 'Failed to archive student.');
@@ -327,7 +325,6 @@ class StudentService
         try{
             $student = ($studentType === 'PSM1') ? StudentPSM1::withTrashed()->findOrFail($id) : StudentPSM2::withTrashed()->findOrFail($id);
             $student->restore(); // Restores the soft-deleted student
-            return back()->with('success', 'Student restore successfully.');
         }catch(\Exception $e){
             logger($e->getMessage());   
             return redirect()->back()->with('error', 'Failed to restore student.');
@@ -341,7 +338,6 @@ class StudentService
 
             $student = ($studentType === 'PSM1') ? StudentPSM1::onlyTrashed()->findOrFail($id) : StudentPSM2::onlyTrashed()->findOrFail($id);
             $student->forceDelete(); // Delete permanently
-            return redirect()->back()->with('success', 'Student deleted successfully.');
         }catch(\Exception $e){
             logger($e->getMessage());   
             return redirect()->back()->with('error', 'Failed to delete student.');
@@ -355,7 +351,6 @@ class StudentService
 
             $studentType === 'PSM1' ? StudentPSM1::create($data) : StudentPSM2::create($data);
 
-            return redirect()->back()->with('success', 'Student added successfully!');
         } catch (\Exception $e) {
             logger($e->getMessage());
             return redirect()->back()->with('error', 'Failed to store student.');
@@ -370,7 +365,6 @@ class StudentService
 
             $student->update($data);
     
-            return redirect()->back()->with('success', 'Student updated successfully!');
         }catch(\Exception $e){
             logger($e->getMessage());   
             return redirect()->back()->with('error', 'Failed to update student.');
@@ -382,7 +376,6 @@ class StudentService
     {
         try {
             $studentType === 'PSM1' ? StudentPSM1::whereIn('id', $studentIds)->delete() : StudentPSM2::whereIn('id', $studentIds)->delete();
-            return redirect()->back()->with('success', 'Selected students have been archived successfully!');
         } catch (\Exception $e) {
             logger('Error archiving PSM1 students: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error archiving students');
