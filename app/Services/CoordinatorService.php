@@ -36,15 +36,6 @@ class CoordinatorService
         //return response()->json(['message' => 'AI Panel assignment process has started....']);
     }
 
-    public function deleteAllAssignedPanels(){
-
-        StudentPSM1::query()->update([
-            'panelId' => null,
-            'panel2Id' => null,
-        ]);
-    
-        return response()->json(['message' => 'All panel assignments have been cleared successfully.']);
-    }
 
     public function getPanelHistory(){
 
@@ -62,25 +53,23 @@ class CoordinatorService
         }
     }
 
-    public function removeAllPanelIdsFromPSM1()
-    {
-        StudentPSM1::query()->update([
-            'panelId_ai' => null,
-            'panel2Id_ai' => null,
-        ]);
 
-        return redirect()->back()->with('success', 'All AI panel IDs removed successfully!');
+    public function removeAllPanelIds(string $studentType)
+    {
+        try {
+            $model = $studentType === 'PSM1' ? StudentPSM1::query() : StudentPSM2::query();
+
+            $model->update([
+                'panelId_ai' => null,
+                'panel2Id_ai' => null,
+            ]);
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to remove AI panel IDs.');
+        }
     }
 
-    public function removeAllPanelIdsFromPSM2()
-    {
-        StudentPSM2::query()->update([
-            'panelId_ai' => null,
-            'panel2Id_ai' => null,
-        ]);
-
-        return redirect()->back()->with('success', 'All AI panel IDs removed successfully!');
-    }
     
     public function predictAllStudentPanels(string $studentType)
     {
@@ -99,15 +88,17 @@ class CoordinatorService
             $totalPanels = count($allPanels);
             
             // Calculate balanced quotas for primary and secondary panel assignments
-            $maxStudentsPerPanel = ceil($totalStudents / $totalPanels) * 2;
-            $maxStudentsPerPrimaryPanel = ceil($maxStudentsPerPanel / 2);
-            $maxStudentsPerSecondaryPanel = ceil($maxStudentsPerPanel / 2);
+            $maxStudentsPerPanel = floor($totalStudents / $totalPanels) * 2;
+            $maxStudentsPerPrimaryPanel = floor($maxStudentsPerPanel / 2);
+            $maxStudentsPerSecondaryPanel = floor($maxStudentsPerPanel / 2);
     
             logger("Total students: {$totalStudents}");
             logger("Total panels: {$totalPanels}");
             logger("Max students per panel (total): {$maxStudentsPerPanel}");
             logger("Max students per primary panel: {$maxStudentsPerPrimaryPanel}");
             logger("Max students per secondary panel: {$maxStudentsPerSecondaryPanel}");
+
+            // dd("here");
     
             // Track primary and secondary assignments separately
             $primaryPanelCounts = array_fill_keys($allPanels, 0);
@@ -210,6 +201,13 @@ class CoordinatorService
                                 $primaryPanelCounts[$randomPanelId]++;
                                 $student->update(['panelId_ai' => $primaryPanel]);
                                 logger("Primary panel (random): {$primaryPanel} [{$panelName[$primaryPanel]}], Primary count: {$primaryPanelCounts[$randomPanelId]}");
+                            }else{
+                                $randomPanelId = $allPanels[array_rand($allPanels)];
+                                $primaryPanel = $randomPanelId;
+                                $primaryPanelCounts[$randomPanelId]++;
+                                $student->update(['panelId_ai' => $primaryPanel]);
+                                logger("Primary panel (random, extra quota): {$primaryPanel} [{$panelName[$primaryPanel]}], Primary count: {$primaryPanelCounts[$randomPanelId]}");
+
                             }
                         }
     
@@ -270,6 +268,12 @@ class CoordinatorService
                                 $secondaryPanelCounts[$randomPanelId]++;
                                 $student->update(['panel2Id_ai' => $secondaryPanel]);
                                 logger("Secondary panel (random): {$secondaryPanel} [{$panelName[$secondaryPanel]}], Secondary count: {$secondaryPanelCounts[$randomPanelId]}");
+                            }else{
+                                $randomPanelId = $allPanels[array_rand($allPanels)];
+                                $secondaryPanel = $randomPanelId;
+                                $secondaryPanelCounts[$randomPanelId]++;
+                                $student->update(['panel2Id_ai' => $secondaryPanel]);
+                                logger("Secondary panel (random, extra quota): {$secondaryPanel} [{$panelName[$secondaryPanel]}], Secondary count: {$secondaryPanelCounts[$randomPanelId]}");
                             }
                         }
                         
@@ -316,7 +320,6 @@ class CoordinatorService
                 logger("Panel ID: {$panelId}, Name: {$panelName[$panelId]}, Primary: {$primaryPanelCounts[$panelId]}, Secondary: {$secondaryPanelCounts[$panelId]}, Total: {$totalCount}");
             }
     
-            return back()->with('success', 'AI Panel assignment successfully.');
             
         } catch (\Exception $e) {
             logger(json_encode([
