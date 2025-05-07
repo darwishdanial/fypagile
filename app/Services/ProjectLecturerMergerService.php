@@ -184,7 +184,7 @@ class ProjectLecturerMergerService
         $panelAssignments = [];
         $panelCount = 0;
         $projectAreaCount = 0;
-        $projectTypeCount = 0;
+        $projectTypeCount = 2;
 
         foreach ($mergedData as $data) {
             $projectArea = $data['project_area'];
