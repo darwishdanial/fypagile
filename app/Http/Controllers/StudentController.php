@@ -42,25 +42,19 @@ class StudentController extends Controller
 
     public function PSM1ArchiveStudent($id)
     {
-        $this->studentService->archiveStudent($id, "PSM1");
-
-        return redirect()->back()->with('success', 'Student archived successfully.');
+        return $this->studentService->archiveStudent($id, "PSM1");
 
     }
 
     public function PSM1RestoreStudent($id)
     {
-        $this->studentService->restoreStudent($id, "PSM1"); 
-
-        return back()->with('success', 'Student restore successfully.');
+        return $this->studentService->restoreStudent($id, "PSM1"); 
 
     }
 
     public function PSM1DeleteStudent($id)
     {
-        $this->studentService->deleteStudent($id, "PSM1");
-
-        return redirect()->back()->with('success', 'Student deleted successfully.');
+        return $this->studentService->deleteStudent($id, "PSM1");
 
     }
 
@@ -83,9 +77,7 @@ class StudentController extends Controller
         
         $validated['project_area_ai'] = $project_area_ai;
 
-        $this->studentService->storeStudent($validated, "PSM1");
-
-        return redirect()->back()->with('success', 'Student added successfully!');
+        return $this->studentService->storeStudent($validated, "PSM1");
 
     }
 
@@ -104,25 +96,19 @@ class StudentController extends Controller
             'sessionpsm' => 'required|string|max:50',
         ]);
 
-        $this->studentService->updateStudent( $request->all(),$id, "PSM1");
-
-        return redirect()->back()->with('success', 'Student updated successfully!');
+        return $this->studentService->updateStudent( $request->all(),$id, "PSM1");
 
     }
 
     public function PSM1ImportStudent(Request $request)
     {
-        $this->studentService->importStudents("PSM1",$request->file('file'));
-
-        return redirect()->back()->with('success', 'Students imported successfully!');
+        return $this->studentService->importStudents("PSM1",$request->file('file'));
 
     }
 
     public function PSM1BulkArchiveStudent(Request $request){
 
-        $this->studentService->bulkArchiveStudents($request->ids, "PSM1");
-
-        return redirect()->back()->with('success', 'Selected students have been archived successfully!');
+        return $this->studentService->bulkArchiveStudents($request->ids, "PSM1");
 
     }
 
@@ -156,25 +142,19 @@ class StudentController extends Controller
 
     public function PSM2ArchiveStudent($id)
     {
-        $this->studentService->archiveStudent($id, "PSM2");
-
-        return redirect()->back()->with('success', 'Student archived successfully.');
+        return $this->studentService->archiveStudent($id, "PSM2");
 
     }
 
     public function PSM2RestoreStudent($id)
     {
-        $this->studentService->restoreStudent($id, "PSM2"); 
-
-        return back()->with('success', 'Student restore successfully.');
+        return $this->studentService->restoreStudent($id, "PSM2"); 
 
     }
 
     public function PSM2DeleteStudent($id)
     {
-        $this->studentService->deleteStudent($id, "PSM1");
-
-        return redirect()->back()->with('success', 'Student deleted successfully.');
+        return $this->studentService->deleteStudent($id, "PSM1");
 
     }
 
@@ -199,9 +179,8 @@ class StudentController extends Controller
         // Add project_area_ai to validated data
         $validated['project_area_ai'] = $project_area_ai;
 
-        $this->studentService->storeStudent($validated, "PSM2");
+        return $this->studentService->storeStudent($validated, "PSM2");
 
-        return redirect()->back()->with('success', 'Student added successfully!');
     }
 
     public function PSM2UpdateStudent(Request $request, $id)
@@ -222,25 +201,19 @@ class StudentController extends Controller
             'sessionpsm' => 'required|string|max:50',
         ]);
 
-        $this->studentService->updateStudent( $request->all(),$id, "PSM2");
-
-        return redirect()->back()->with('success', 'Student updated successfully!');
+        return $this->studentService->updateStudent( $request->all(),$id, "PSM2");
 
     }
 
     public function PSM2ImportStudent(Request $request)
     {
-        $this->studentService->importStudents("PSM2",$request->file('file'));
-
-        return redirect()->back()->with('success', 'Students imported successfully!');
+        return $this->studentService->importStudents("PSM2",$request->file('file'));
 
     }
 
     public function PSM2BulkArchive(Request $request){
 
-        $this->studentService->bulkArchiveStudents($request->ids, "PSM2");
-
-        return redirect()->back()->with('success', 'Selected students have been archived successfully!');
+        return $this->studentService->bulkArchiveStudents($request->ids, "PSM2");
 
     }
 
