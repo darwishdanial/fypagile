@@ -64,6 +64,8 @@ class CoordinatorService
                 'panel2Id_ai' => null,
             ]);
 
+            return redirect()->back()->with('success', 'All AI panel IDs removed successfully!');
+
         } catch (\Exception $e) {
             logger($e->getMessage());
             return redirect()->back()->with('error', 'Failed to remove AI panel IDs.');
@@ -319,7 +321,8 @@ class CoordinatorService
                 $totalCount = $primaryPanelCounts[$panelId] + $secondaryPanelCounts[$panelId];
                 logger("Panel ID: {$panelId}, Name: {$panelName[$panelId]}, Primary: {$primaryPanelCounts[$panelId]}, Secondary: {$secondaryPanelCounts[$panelId]}, Total: {$totalCount}");
             }
-    
+
+            return back()->with('success', 'AI Panel assignment successfully.');
             
         } catch (\Exception $e) {
             logger(json_encode([

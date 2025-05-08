@@ -236,33 +236,25 @@ class CoordinatorController extends Controller
 
     public function PSM1PredictPanel(){
 
-        $this->coordinatorService->predictAllStudentPanels("PSM1");
-
-        return back()->with('success', 'AI Panel assignment successfully.');
+        return $this->coordinatorService->predictAllStudentPanels("PSM1");
 
     }
 
     public function PSM2PredictPanel(){
         
-        $this->coordinatorService->predictAllStudentPanels("PSM2");
-
-        return back()->with('success', 'AI Panel assignment successfully.');
+        return $this->coordinatorService->predictAllStudentPanels("PSM2");
 
     }
 
     public function removeAllPanelIdsFromPSM1()
     {
-        $this->coordinatorService->removeAllPanelIds("PSM1");
-
-        return redirect()->back()->with('success', 'All AI panel IDs removed successfully!');
+        return $this->coordinatorService->removeAllPanelIds("PSM1");
 
     }
 
     public function removeAllPanelIdsFromPSM2()
     {
-        $this->coordinatorService->removeAllPanelIds("PSM2");
-
-        return redirect()->back()->with('success', 'All AI panel IDs removed successfully!');
+        return $this->coordinatorService->removeAllPanelIds("PSM2");
 
     }
 
