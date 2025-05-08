@@ -230,82 +230,140 @@ class PanelService
 
     public function createPanel(array $data)
     {
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
+
+        try {
+
+            if (isset($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            }
+    
+            User::create($data);
+    
+            return redirect()->back()->with('success', 'Panel added successfully!');
+
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to add panel.');
         }
 
-        return User::create($data);
     }
 
     public function updatePanel($id, array $data)
     {
-        $panel = User::findOrFail($id);
 
-        if (!isset($data['password']) || empty($data['password'])) {
-            unset($data['password']);
-        } else {
-            $data['password'] = Hash::make($data['password']);
+        try {
+
+            $panel = User::findOrFail($id);
+
+            if (!isset($data['password']) || empty($data['password'])) {
+                unset($data['password']);
+            } else {
+                $data['password'] = Hash::make($data['password']);
+            }
+    
+            $panel->update($data);
+    
+            return redirect()->back()->with('success', 'Panel updated successfully!');
+
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update panel.');
         }
-
-        $panel->update($data);
-
-        return $panel;
     }
 
     public function deletePanel($id)
     {
-        $panel = User::findOrFail($id);
-        return $panel->forceDelete();
+
+        try {
+
+            $panel = User::findOrFail($id);
+            $panel->forceDelete();
+
+            return redirect()->back()->with('success', 'Panel deleted successfully.');
+
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete panel.');
+        }
+
     }
 
     public function archivePanel($id, $psmType)
     {
-        $panel = User::findOrFail($id);
-        
-        if ($psmType === 'PSM1') {
-            $panel->update([
-                'isArchivePSM1' => 1,
-                'isSupervisorPSM1' => 0,
-                'isPanelPSM1' => 0,
-            ]);
-        } else {
-            $panel->update([
-                'isArchivePSM2' => 1,
-                'isSupervisorPSM2' => 0,
-                'isPanelPSM2' => 0,
-            ]);
+
+        try {
+
+            $panel = User::findOrFail($id);
+            
+            if ($psmType === 'PSM1') {
+                $panel->update([
+                    'isArchivePSM1' => 1,
+                    'isSupervisorPSM1' => 0,
+                    'isPanelPSM1' => 0,
+                ]);
+            } else {
+                $panel->update([
+                    'isArchivePSM2' => 1,
+                    'isSupervisorPSM2' => 0,
+                    'isPanelPSM2' => 0,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Panel archived successfully.');
+
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to archive panel.');
         }
 
-        return $panel;
     }
 
     public function restorePanel($id, $psmType)
     {
-        $panel = User::findOrFail($id);
         
-        if ($psmType === 'PSM1') {
-            $panel->update(['isArchivePSM1' => 0]);
-        } else {
-            $panel->update(['isArchivePSM2' => 0]);
+        try {
+
+            $panel = User::findOrFail($id);
+        
+            if ($psmType === 'PSM1') {
+                $panel->update(['isArchivePSM1' => 0]);
+            } else {
+                $panel->update(['isArchivePSM2' => 0]);
+            }
+    
+            return back()->with('success', 'Panel restore successfully.');
+
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to restore panel.');
         }
 
-        return $panel;
     }
 
     public function bulkArchivePanel(array $ids, $psmType)
     {
-        if ($psmType === 'PSM1') {
-            return User::whereIn('id', $ids)->update([
-                'isArchivePSM1' => 1,
-                'isSupervisorPSM1' => 0,
-                'isPanelPSM1' => 0,
-            ]);
-        } else {
-            return User::whereIn('id', $ids)->update([
-                'isArchivePSM2' => 1,
-                'isSupervisorPSM2' => 0,
-                'isPanelPSM2' => 0,
-            ]);
+
+        try {
+
+            if ($psmType === 'PSM1') {
+                User::whereIn('id', $ids)->update([
+                    'isArchivePSM1' => 1,
+                    'isSupervisorPSM1' => 0,
+                    'isPanelPSM1' => 0,
+                ]);
+            } else {
+                User::whereIn('id', $ids)->update([
+                    'isArchivePSM2' => 1,
+                    'isSupervisorPSM2' => 0,
+                    'isPanelPSM2' => 0,
+                ]);
+            }
+    
+            return redirect()->back()->with('success', 'Selected panels have been archived successfully!');
+
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to bulk archive panels.');
         }
     }
 
@@ -322,17 +380,25 @@ class PanelService
 
     public function importPanels($file)
     {
-        $import = new PanelsImport();
-        Excel::import($import, $file);
+        
+        try {
 
-        $failures = Cache::get('panels_import_failures', []);
+            $import = new PanelsImport();
+            Excel::import($import, $file);
 
-        if($failures) {
-            Cache::forget('panels_import_failures');
-            return $failures;
+            $failures = Cache::get('panels_import_failures', []);
+
+            if($failures) {
+                Cache::forget('panels_import_failures');
+                return redirect()->back()->with('warning', $failures);
+            }
+
+            return redirect()->back()->with('success', 'Panels imported successfully!');
+
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to bulk import panels.');
         }
-
-        return true;
     }
 
 

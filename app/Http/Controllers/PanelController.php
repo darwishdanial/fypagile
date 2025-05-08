@@ -61,16 +61,14 @@ class PanelController extends Controller
 
     public function PSM1ArchivePanel($id){
 
-        $this->panelService->archivePanel($id, 'PSM1');
+        return $this->panelService->archivePanel($id, 'PSM1');
 
-        return redirect()->back()->with('success', 'Panel archived successfully.');
     }
 
     public function PSM1RestorePanel($id){
 
-        $this->panelService->restorePanel($id, 'PSM1');
+        return $this->panelService->restorePanel($id, 'PSM1');
 
-        return back()->with('success', 'Panel restore successfully.');
     }
 
     public function PSM1StorePanel(Request $request){
@@ -90,9 +88,8 @@ class PanelController extends Controller
             'isArchivePSM2' => 'required|boolean',
         ]);
 
-        $this->panelService->createPanel($validated);
+        return $this->panelService->createPanel($validated);
 
-        return redirect()->back()->with('success', 'Panel added successfully!');
     }
 
     public function PSM1UpdatePanel(Request $request, $id){
@@ -108,23 +105,20 @@ class PanelController extends Controller
             'password' => 'nullable|string|max:255',
         ]);        
 
-        $this->panelService->updatePanel($id, $validated);
+        return $this->panelService->updatePanel($id, $validated);
 
-        return redirect()->back()->with('success', 'Panel added successfully!');
     }
 
     public function PSM1DeletePanel($id){
 
-        $this->panelService->deletePanel($id);
+        return $this->panelService->deletePanel($id);
 
-        return redirect()->back()->with('success', 'Panel deleted successfully.');
     }
 
     public function PSM1BulkArchivePanel(Request $request){
 
-        $this->panelService->bulkArchivePanel($request->ids, 'PSM1');
+        return $this->panelService->bulkArchivePanel($request->ids, 'PSM1');
 
-        return redirect()->back()->with('success', 'Selected panels have been archived successfully!');
     }
 
     public function getPanelSample(){
@@ -140,13 +134,7 @@ class PanelController extends Controller
 
     public function ImportPanels(Request $request){
 
-        $result = $this->panelService->importPanels($request->file('file'));
-
-        if (is_array($result)) {
-            return redirect()->back()->with('warning', $result);
-        }
-
-        return redirect()->back()->with('success', 'Panels imported successfully!');
+        return $this->panelService->importPanels($request->file('file'));
 
     }
 
@@ -168,30 +156,26 @@ class PanelController extends Controller
 
     public function PSM2ArchivePanel($id){
 
-        $this->panelService->archivePanel($id, 'PSM2');
+        return $this->panelService->archivePanel($id, 'PSM2');
 
-        return redirect()->back()->with('success', 'Panel archived successfully.');
     }
 
     public function PSM2RestorePanel($id){
 
-        $this->panelService->restorePanel($id, 'PSM2');
+        return $this->panelService->restorePanel($id, 'PSM2');
 
-        return back()->with('success', 'Panel restore successfully.');
     }
 
     public function PSM2DeletePanel($id){
 
-        $this->panelService->deletePanel($id);
+        return $this->panelService->deletePanel($id);
 
-        return redirect()->back()->with('success', 'Panel deleted successfully.');
     }
 
     public function PSM2BulkArchivePanel(Request $request){
 
-        $this->panelService->bulkArchivePanel($request->ids, 'PSM2');
+        return $this->panelService->bulkArchivePanel($request->ids, 'PSM2');
 
-        return redirect()->back()->with('success', 'Selected panels have been archived successfully!');
     }
 
     public function PSM2StorePanel(Request $request){
@@ -211,9 +195,8 @@ class PanelController extends Controller
             'role' => 'required',
         ]);
 
-        $this->panelService->createPanel($validated);
+        return $this->panelService->createPanel($validated);
 
-        return redirect()->back()->with('success', 'Panel added successfully!');
     }
 
     public function PSM2UpdatePanel(Request $request, $id){
@@ -228,9 +211,8 @@ class PanelController extends Controller
             'password' => 'nullable|string|max:255',
         ]);        
 
-        $this->panelService->updatePanel($id, $validated);
+        return $this->panelService->updatePanel($id, $validated);
 
-        return redirect()->back()->with('success', 'Panel added successfully!');
     }
 
 }
