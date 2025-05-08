@@ -46,52 +46,119 @@ class RubricCriteriaService
 
     public function createRubric(array $data)
     {
-        return Rubric::create($data);
+
+        try {
+            Rubric::create($data);
+            return redirect()->back()->with('success', 'Rubric added successfully!');
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to add rubric.');
+        }
     }
 
     public function updateRubric($id, array $data)
     {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
-        $rubric->update($data);
-        return $rubric;
+
+        try {
+            $rubric = Rubric::withTrashed()->findOrFail($id);
+            $rubric->update($data);
+            return redirect()->back()->with('success', 'Rubric updated successfully!');
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update rubric.');
+        }
+        
     }
 
     public function archiveRubric($id)
     {
-        $rubric = Rubric::findOrFail($id);
-        $rubric->isEnable = 0;
-        $rubric->save();
 
-        $rubric->delete(); // Soft delete
+        try {
+            $rubric = Rubric::findOrFail($id);
+            $rubric->isEnable = 0;
+            $rubric->save();
+    
+            $rubric->delete(); // Soft delete
+            return redirect()->back()->with('success', 'Rubric archived successfully.');
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to archive rubric.');
+        }
+
     }
 
     public function restoreRubric($id)
     {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
-        $rubric->restore();
+        
+        try {
+            $rubric = Rubric::withTrashed()->findOrFail($id);
+            $rubric->restore();
+            return redirect()->back()->with('success', 'Rubric restored successfully.');
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to restore rubric.');
+        }
     }
 
     public function deleteRubric($id)
     {
-        $rubric = Rubric::withTrashed()->findOrFail($id);
-        $rubric->forceDelete();
+        
+        try {
+            $rubric = Rubric::withTrashed()->findOrFail($id);
+            $rubric->forceDelete();
+
+            return redirect()->back()->with('success', 'Rubric deleted successfully.');
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete rubric.');
+        }
     }
 
     public function createCriteria(array $data)
     {
-        return Criteria::create($data);
+        try {
+            Criteria::create($data);
+
+            return redirect()->back()->with('success', 'Criteria added successfully!');
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to create criteria.');
+        }
     }
 
     public function updateCriteria($id, array $data)
     {
-        $criteria = Criteria::findOrFail($id);
-        $criteria->update($data);
-        return $criteria;
+
+        try {
+            $criteria = Criteria::findOrFail($id);
+            $criteria->update($data);
+
+            return redirect()->back()->with('success', 'Criteria updated successfully!');
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update criteria.');
+        }
     }
 
     public function deleteCriteria($id)
     {
-        $criteria = Criteria::findOrFail($id);
-        $criteria->delete();
+        
+        try {
+            $criteria = Criteria::findOrFail($id);
+            $criteria->delete();
+
+            return redirect()->back()->with('success', 'Criteria deleted successfully.');
+
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update criteria.');
+        }
     }
 }

@@ -152,9 +152,8 @@ class RubricCriteriaController extends Controller
             'progress' => 'required|string',
         ]);
 
-        $this->service->createRubric($validated);
+        return $this->service->createRubric($validated);
 
-        return redirect()->back()->with('success', 'Rubric added successfully!');
     }
 
     public function PSM1StoreEvaluationCriteria(Request $request){
@@ -165,9 +164,8 @@ class RubricCriteriaController extends Controller
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
-        $this->service->createCriteria($validated);
+        return $this->service->createCriteria($validated);
 
-        return redirect()->back()->with('success', 'Criteria added successfully!');
     }
 
     public function PSM1UpdateEvaluationRubric(Request $request, $id){
@@ -183,9 +181,8 @@ class RubricCriteriaController extends Controller
             'progress' => 'required|string',
         ]);
 
-        $this->service->updateRubric($id, $validated);
+        return $this->service->updateRubric($id, $validated);
 
-        return redirect()->back()->with('success', 'Rubric updated successfully!');
     }
 
 
@@ -197,38 +194,32 @@ class RubricCriteriaController extends Controller
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
-        $this->service->updateCriteria($id, $validated);
+        return $this->service->updateCriteria($id, $validated);
 
-        return redirect()->back()->with('success', 'Criteria updated successfully!');
     }
 
     public function PSM1ArchiveEvaluationRubric($id){
 
-        $this->service->archiveRubric($id);
-
-        return redirect()->back()->with('success', 'Rubric archived successfully.');
+        return $this->service->archiveRubric($id);
         
     }
 
     public function PSM1DeleteEvaluationRubric($id){
 
-        $this->service->deleteRubric($id);
+        return $this->service->deleteRubric($id);
 
-        return redirect()->back()->with('success', 'Rubric deleted successfully.');
     }
 
     public function PSM1RestoreEvaluationRubric($id){
 
-        $this->service->restoreRubric($id);
+        return $this->service->restoreRubric($id);
 
-        return redirect()->back()->with('success', 'Rubric restored successfully.');
     }
 
     public function PSM1DeleteEvaluationCriteria($id){
 
-        $this->service->deleteCriteria($id);
+        return $this->service->deleteCriteria($id);
 
-        return redirect()->back()->with('success', 'Criteria deleted successfully.');
     }
 
     //RUBRIC AND CRITERIA
@@ -272,9 +263,8 @@ class RubricCriteriaController extends Controller
             'progress' => 'required|string',
         ]);
 
-        $this->service->createRubric($validated);
+        return $this->service->createRubric($validated);
 
-        return redirect()->back()->with('success', 'Rubric added successfully!');
     }
 
     public function PSM2StoreEvaluationCriteria(Request $request) {
@@ -285,9 +275,8 @@ class RubricCriteriaController extends Controller
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
-        $this->service->createCriteria($validated);
+        return $this->service->createCriteria($validated);
 
-        return redirect()->back()->with('success', 'Criteria added successfully!');
     }
 
     public function PSM2UpdateEvaluationRubric(Request $request, $id){
@@ -303,9 +292,8 @@ class RubricCriteriaController extends Controller
             'progress' => 'required|string',
         ]);
 
-        $this->service->updateRubric($id, $validated);
+        return $this->service->updateRubric($id, $validated);
 
-        return redirect()->back()->with('success', 'Rubric updated successfully!');
     }
 
 
@@ -317,37 +305,31 @@ class RubricCriteriaController extends Controller
             'weight' => 'required|decimal:0,2|max:100',
         ]);
 
-        $this->service->updateCriteria($id, $validated);
+        return $this->service->updateCriteria($id, $validated);
 
-        return redirect()->back()->with('success', 'Criteria updated successfully!');
     }
 
     public function PSM2ArchiveEvaluationRubric($id){
 
-        $this->service->archiveRubric($id);
-
-        return redirect()->back()->with('success', 'Rubric archived successfully.');
+        return $this->service->archiveRubric($id);
         
     }
 
     public function PSM2DeleteEvaluationRubric($id){
 
-        $this->service->deleteRubric($id);
+        return $this->service->deleteRubric($id);
 
-        return redirect()->back()->with('success', 'Rubric deleted successfully.');
     }
 
     public function PSM2RestoreEvaluationRubric($id){
 
-        $this->service->restoreRubric($id);
+        return $this->service->restoreRubric($id);
 
-        return redirect()->back()->with('success', 'Rubric restored successfully.');
     }
 
     public function PSM2DeleteEvaluationCriteria($id){
 
-        $this->service->deleteCriteria($id);
+        return $this->service->deleteCriteria($id);
 
-        return redirect()->back()->with('success', 'Criteria deleted successfully.');
     }
 }
