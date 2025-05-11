@@ -39,6 +39,7 @@ interface Rubric {
     isArchivePSM1: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
+    progress: string;
     criteria: Criteria[] | null;
 }
 
@@ -373,10 +374,6 @@ export default function GradePSM1Coordinator() {
                                                         Cohort:
                                                     </strong>{" "}
                                                     {student.cohort} <br />
-                                                    <strong>
-                                                        Session:
-                                                    </strong>{" "}
-                                                    {student.sessionpsm} <br />
                                                 </div>
                                             </div>
                                         </td>

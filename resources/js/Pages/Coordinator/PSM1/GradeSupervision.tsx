@@ -459,10 +459,6 @@ export default function GradeSupervision() {
                                                         Cohort:
                                                     </strong>{" "}
                                                     {student.cohort} <br />
-                                                    <strong>
-                                                        Session:
-                                                    </strong>{" "}
-                                                    {student.sessionpsm} <br />
                                                 </div>
                                             </div>
                                         </td>
