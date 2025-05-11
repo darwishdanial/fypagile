@@ -562,7 +562,7 @@ export default function ListStudents() {
                                             <div className="col-span-3">
                                                 <strong>Email:</strong> {student.email} <br />
                                                 <strong>Cohort:</strong> {student.cohort} <br />
-                                                <strong>Project Area(AI):</strong> {student.project_area_ai} <br />
+                                                <br />
                                             </div>
                                         </div>
                                     </td>
