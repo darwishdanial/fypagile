@@ -24,6 +24,8 @@ class GradingController extends Controller
     public function PSM1GradeSupervision()
     {
 
+        $this->authorize('view psm1 grade supervision');
+
         $id = Auth::user()->id;
 
         $userType = Auth::user()->role;
@@ -50,6 +52,8 @@ class GradingController extends Controller
     public function PSM1GradePanel()
     {
 
+        $this->authorize('view psm1 grade panel');
+
         $id = Auth::user()->id;
 
         $userType = Auth::user()->role;
@@ -75,6 +79,8 @@ class GradingController extends Controller
 
     public function PSM1GradeCoordinator()
     {
+        $this->authorize('view psm1 grade coordinator');
+
         $id = Auth::user()->id;
 
         $students = StudentPSM1::all();
@@ -90,6 +96,8 @@ class GradingController extends Controller
     
     public function PSM1StoreScore(Request $request){
 
+        $this->authorize('store psm1 score');
+
         $this->gradingService->storeScore($request->all(), "PSM1");
 
         return redirect()->back()->with('success', 'Score successfully stored.');
@@ -98,6 +106,8 @@ class GradingController extends Controller
     //Grade PSM2
 
     public function PSM2GradeSupervision(){
+
+        $this->authorize('view psm2 grade supervision');
 
         $id = Auth::user()->id;
 
@@ -124,6 +134,8 @@ class GradingController extends Controller
 
     public function PSM2GradePanel(){
 
+        $this->authorize('view psm2 grade panel');
+
         $id = Auth::user()->id;
 
         $userType = Auth::user()->role;
@@ -149,6 +161,8 @@ class GradingController extends Controller
 
     public function PSM2GradeCoordinator()
     {
+        $this->authorize('view psm2 grade coordinator');
+
         $id = Auth::user()->id;
 
         $students = StudentPSM2::all();
@@ -164,6 +178,8 @@ class GradingController extends Controller
 
     public function PSM2StoreScore(Request $request){
 
+        $this->authorize('store psm2 score');
+        
         $this->gradingService->storeScore($request->all(), 'PSM2');
 
         return redirect()->back()->with('success', 'Score successfully stored.');
