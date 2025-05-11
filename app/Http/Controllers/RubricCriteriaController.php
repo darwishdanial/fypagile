@@ -28,7 +28,7 @@ class RubricCriteriaController extends Controller
 
     public function PSM1ViewResultCoordinator(){
         
-        $this->authorize('view psm1 result table');
+        $this->authorize('view psm1 result coordinator table');
 
         $data = $this->service->getPSM1ViewData();
 
@@ -36,6 +36,8 @@ class RubricCriteriaController extends Controller
     }
 
     public function PSM1ViewResultPanel(){
+
+        $this->authorize('view psm1 result panel table');
         
         $userId = Auth::id();
 
@@ -71,12 +73,16 @@ class RubricCriteriaController extends Controller
 
     public function PSM2ViewResultCoordinator(){
 
+        $this->authorize('view psm2 result coordinator table');
+
         $data = $this->service->getPSM2ViewData();
 
         return Inertia::render('Coordinator/PSM2/ViewResult', $data);
     }
 
     public function PSM2ViewResultPanel(){
+
+        $this->authorize('view psm2 result panel table');
         
         $userId = Auth::id();
 
@@ -110,6 +116,8 @@ class RubricCriteriaController extends Controller
 
     public function PSM1DevelopmentRubric(){
 
+        $this->authorize('view psm1 development rubric table');
+
         $rubricsDevelopmentActive = $this->service->getRubricsWithCriteria('PSM1', 1);
 
         $rubricsDevelopmentArchive = $this->service->getRubricsWithCriteria('PSM1', 1, true);
@@ -122,7 +130,7 @@ class RubricCriteriaController extends Controller
 
     public function PSM1ResearchRubric(){
 
-        $this->authorize('view psm1 evaluation rubric');
+        $this->authorize('view psm1 research rubric');
 
         $rubricsResearchActive = $this->service->getRubricsWithCriteria('PSM1', 2);
 
@@ -140,6 +148,8 @@ class RubricCriteriaController extends Controller
         // role = 1 = coordinator
         // role = 2 = panel
         // role = 3 = supervisor
+
+        $this->authorize('store psm1 evaluation rubric');
        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -158,6 +168,8 @@ class RubricCriteriaController extends Controller
 
     public function PSM1StoreEvaluationCriteria(Request $request){
 
+        $this->authorize('store psm1 evaluation criteria');
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'rubric_id' => 'required|integer|exists:rubrics,id',
@@ -169,6 +181,8 @@ class RubricCriteriaController extends Controller
     }
 
     public function PSM1UpdateEvaluationRubric(Request $request, $id){
+
+        $this->authorize('update psm1 evaluation rubric');
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -188,6 +202,8 @@ class RubricCriteriaController extends Controller
 
     public function PSM1UpdateEvaluationCriteria(Request $request, $id){
 
+        $this->authorize('update psm1 evaluation criteria');
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'rubric_id' => 'required|integer|exists:rubrics,id',
@@ -200,11 +216,15 @@ class RubricCriteriaController extends Controller
 
     public function PSM1ArchiveEvaluationRubric($id){
 
+        $this->authorize('archive psm1 evaluation rubric');
+
         return $this->service->archiveRubric($id);
         
     }
 
     public function PSM1DeleteEvaluationRubric($id){
+
+        $this->authorize('delete psm1 evaluation rubric');
 
         return $this->service->deleteRubric($id);
 
@@ -212,11 +232,15 @@ class RubricCriteriaController extends Controller
 
     public function PSM1RestoreEvaluationRubric($id){
 
+        $this->authorize('restore psm1 evaluation rubric');
+
         return $this->service->restoreRubric($id);
 
     }
 
     public function PSM1DeleteEvaluationCriteria($id){
+
+        $this->authorize('delete psm1 evaluation criteria');
 
         return $this->service->deleteCriteria($id);
 
@@ -226,6 +250,8 @@ class RubricCriteriaController extends Controller
     //PSM2
 
     public function PSM2DevelopmentRubric(){
+
+        $this->authorize('view psm2 development rubric table');
 
         $rubricsDevelopmentActive = $this->service->getRubricsWithCriteria('PSM2', 1);
 
@@ -239,6 +265,8 @@ class RubricCriteriaController extends Controller
 
     public function PSM2ResearchRubric(){
 
+        $this->authorize('view psm2 research rubric');
+
         $rubricsResearchActive = $this->service->getRubricsWithCriteria('PSM2', 2);
 
         $rubricsResearchArchive = $this->service->getRubricsWithCriteria('PSM2', 2, true);
@@ -251,6 +279,8 @@ class RubricCriteriaController extends Controller
 
 
     public function PSM2StoreEvaluationRubric(Request $request){
+
+        $this->authorize('store psm2 evaluation rubric');
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -269,6 +299,8 @@ class RubricCriteriaController extends Controller
 
     public function PSM2StoreEvaluationCriteria(Request $request) {
 
+        $this->authorize('store psm2 evaluation criteria');
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'rubric_id' => 'required|integer|exists:rubrics,id',
@@ -280,6 +312,8 @@ class RubricCriteriaController extends Controller
     }
 
     public function PSM2UpdateEvaluationRubric(Request $request, $id){
+
+        $this->authorize('update psm2 evaluation rubric');
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -299,6 +333,8 @@ class RubricCriteriaController extends Controller
 
     public function PSM2UpdateEvaluationCriteria(Request $request, $id){
 
+        $this->authorize('update psm1 evaluation criteria');
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'rubric_id' => 'required|integer|exists:rubrics,id',
@@ -311,11 +347,15 @@ class RubricCriteriaController extends Controller
 
     public function PSM2ArchiveEvaluationRubric($id){
 
+        $this->authorize('archive psm2 evaluation rubric');
+
         return $this->service->archiveRubric($id);
         
     }
 
     public function PSM2DeleteEvaluationRubric($id){
+
+        $this->authorize('delete psm2 evaluation rubric');
 
         return $this->service->deleteRubric($id);
 
@@ -323,11 +363,15 @@ class RubricCriteriaController extends Controller
 
     public function PSM2RestoreEvaluationRubric($id){
 
+        $this->authorize('restore psm2 evaluation rubric');
+
         return $this->service->restoreRubric($id);
 
     }
 
     public function PSM2DeleteEvaluationCriteria($id){
+
+        $this->authorize('delete psm2 evaluation criteria');
 
         return $this->service->deleteCriteria($id);
 
