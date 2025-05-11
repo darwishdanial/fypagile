@@ -96,24 +96,12 @@ export default function GradePSM2() {
     const [selectedProgress, setSelectedProgress] =
         useState<string>("Progress 1");
 
-    const handleRestore = (id: number) => {
+        const handleProjectProgress = (matric: string) => {
         router.post(
-            route("coordinator.PSM1.students.restore", id),
+            route("coordinator.PSM2.students.projectProgress", matric),
             {},
             { preserveScroll: true }
         );
-    };
-
-    const handleDelete = (id: number) => {
-        const isConfirmed = confirm(
-            "Are you sure you want to delete this student? This action cannot be undone."
-        );
-
-        if (isConfirmed) {
-            router.delete(route("coordinator.PSM1.students.delete", id), {
-                preserveScroll: true,
-            });
-        }
     };
 
     // State for pagination & search
@@ -457,9 +445,20 @@ export default function GradePSM2() {
                                                     </strong>{" "}
                                                     {student.cohort} <br />
                                                     <strong>
-                                                        Session:
-                                                    </strong>{" "}
-                                                    {student.sessionpsm} <br />
+                                                        Project Progress:
+                                                    </strong>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleProjectProgress(
+                                                                student.matric
+                                                            );
+                                                        }}
+                                                        className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                                                    >
+                                                        click here
+                                                    </a>
                                                 </div>
                                             </div>
                                         </td>
