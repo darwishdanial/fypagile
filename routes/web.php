@@ -204,6 +204,8 @@ Route::middleware( EnsureCoordinator::class)
         Route::get('/auto-assign-PSM2-panel', [CoordinatorController::class, 'PSM2PredictPanel'])->name('panel.autoAssign');
 
         Route::get('/remove-ai-suggestions', [CoordinatorController::class, 'removeAllPanelIdsFromPSM2'])->name('panel.removeAi');
+        
+        Route::post('/students/{matric}/project-progress/', [StudentController::class, 'PSM2ProjectProgress'])->name('students.projectProgress');
 
         //SUPERVISOR ASSIGNMENT
 
@@ -300,6 +302,9 @@ Route::middleware(EnsurePanel::class)
         Route::post('/store-score', [GradingController::class, 'PSM2StoreScore'])->name('score.store');
 
         Route::get('/view-result', [RubricCriteriaController::class, 'PSM2ViewResultPanel'])->name('viewResult');
+        
+        Route::post('/students/{matric}/project-progress/', [StudentController::class, 'PSM2ProjectProgress'])->name('students.projectProgress');
+
     });
 });
 
