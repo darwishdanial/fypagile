@@ -97,25 +97,6 @@ export default function GradePSM1() {
     const [selectedProgress, setSelectedProgress] =
         useState<string>("Proposal");
 
-    const handleRestore = (id: number) => {
-        router.post(
-            route("coordinator.PSM1.students.restore", id),
-            {},
-            { preserveScroll: true }
-        );
-    };
-
-    const handleDelete = (id: number) => {
-        const isConfirmed = confirm(
-            "Are you sure you want to delete this student? This action cannot be undone."
-        );
-
-        if (isConfirmed) {
-            router.delete(route("coordinator.PSM1.students.delete", id), {
-                preserveScroll: true,
-            });
-        }
-    };
 
     // State for pagination & search
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -457,10 +438,7 @@ export default function GradePSM1() {
                                                         Cohort:
                                                     </strong>{" "}
                                                     {student.cohort} <br />
-                                                    <strong>
-                                                        Session:
-                                                    </strong>{" "}
-                                                    {student.sessionpsm} <br />
+        
                                                 </div>
                                             </div>
                                         </td>
