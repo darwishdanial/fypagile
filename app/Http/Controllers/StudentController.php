@@ -42,24 +42,33 @@ class StudentController extends Controller
 
     public function PSM1ArchiveStudent($id)
     {
+        $this->authorize('archive psm1 students');
+
         return $this->studentService->archiveStudent($id, "PSM1");
 
     }
 
     public function PSM1RestoreStudent($id)
     {
+        $this->authorize('restore psm1 students');
+
         return $this->studentService->restoreStudent($id, "PSM1"); 
 
     }
 
     public function PSM1DeleteStudent($id)
     {
+        $this->authorize('delete psm1 students');
+
         return $this->studentService->deleteStudent($id, "PSM1");
 
     }
 
     public function PSM1StoreStudent(Request $request, ProjectLecturerMergerService $service)
     {
+        $this->authorize('store psm1 students');
+
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'matric' => 'required|string|unique:students_psm1,matric|max:50',
@@ -83,6 +92,9 @@ class StudentController extends Controller
 
     public function PSM1UpdateStudent(Request $request, $id)
     {
+
+        $this->authorize('update psm1 students');
+
         $request->validate([
             'name' => 'required|string|max:255',
             'matric' => 'required|string|max:50|unique:students_psm1,matric,' . $id,
@@ -102,11 +114,15 @@ class StudentController extends Controller
 
     public function PSM1ImportStudent(Request $request)
     {
+        $this->authorize('import psm1 students');
+
         return $this->studentService->importStudents("PSM1",$request->file('file'));
 
     }
 
     public function PSM1BulkArchiveStudent(Request $request){
+
+        $this->authorize('bulk archive psm1 students');
 
         return $this->studentService->bulkArchiveStudents($request->ids, "PSM1");
 
@@ -123,6 +139,11 @@ class StudentController extends Controller
         }
     
         return response()->download(storage_path("app/public/$filePath"));
+    }
+
+    public function PSM1ProjectProgress($matric){
+
+        dd($matric);
     }
 
     //PSM2
@@ -142,24 +163,33 @@ class StudentController extends Controller
 
     public function PSM2ArchiveStudent($id)
     {
+        $this->authorize('archive psm2 students');
+
         return $this->studentService->archiveStudent($id, "PSM2");
 
     }
 
     public function PSM2RestoreStudent($id)
     {
+        $this->authorize('restore psm2 students');
+
         return $this->studentService->restoreStudent($id, "PSM2"); 
 
     }
 
     public function PSM2DeleteStudent($id)
     {
+        $this->authorize('delete psm2 students');
+
         return $this->studentService->deleteStudent($id, "PSM1");
 
     }
 
     public function PSM2StoreStudent(Request $request, ProjectLecturerMergerService $service)
     {
+
+        $this->authorize('store psm2 students');
+
         //dd( $request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -186,7 +216,9 @@ class StudentController extends Controller
     public function PSM2UpdateStudent(Request $request, $id)
     {
 
-        $student = StudentPSM2::findOrFail($id);
+        $this->authorize('update psm2 students');
+
+        // $student = StudentPSM2::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -207,14 +239,25 @@ class StudentController extends Controller
 
     public function PSM2ImportStudent(Request $request)
     {
+        $this->authorize('import psm2 students');
+
         return $this->studentService->importStudents("PSM2",$request->file('file'));
 
     }
 
     public function PSM2BulkArchive(Request $request){
 
+        $this->authorize('bulk archive psm2 students');
+
         return $this->studentService->bulkArchiveStudents($request->ids, "PSM2");
 
+    }
+
+    public function PSM2ProjectProgress($matric){
+
+        $this->authorize('view project progress psm2 students');
+        
+        dd($matric);
     }
 
 
