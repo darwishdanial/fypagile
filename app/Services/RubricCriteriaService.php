@@ -6,33 +6,38 @@ use App\Models\Rubric;
 use App\Models\Criteria;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
+use Illuminate\Support\Facades\Auth;
 
 class RubricCriteriaService
 {
     public function getPSM1ViewData()
     {
+        $id = Auth::user()->id;
         $students = StudentPSM1::with(['score.rubric' => fn($q) => $q->withTrashed()])->get();
         $rubricDevelopment = $this->getRubrics('PSM1', 1, true);
         $rubricResearch = $this->getRubrics('PSM1', 2, true);
 
-        return compact('students', 'rubricDevelopment', 'rubricResearch');
+        return compact('students', 'rubricDevelopment', 'rubricResearch', 'id');
     }
 
     public function getPSM2ViewData()
     {
+        $id = Auth::user()->id;
         $students = StudentPSM2::with(['score.rubric' => fn($q) => $q->withTrashed()])->get();
         $rubricDevelopment = $this->getRubrics('PSM2', 1, true);
         $rubricResearch = $this->getRubrics('PSM2', 2, true);
 
-        return compact('students', 'rubricDevelopment', 'rubricResearch');
+        return compact('students', 'rubricDevelopment', 'rubricResearch', 'id');
     }
 
     public function getRubrics($type, $rubricType, $withTrashed = false)
     {
-        $query = Rubric::where('PSMType', $type)
+        $query = Rubric::with('criteria')
+            ->where('PSMType', $type)
             ->where('rubricType', $rubricType);
 
         return $withTrashed ? $query->withTrashed()->get() : $query->get();
+
     }
 
     public function getRubricsWithCriteria($type, $rubricType, $archived = false)

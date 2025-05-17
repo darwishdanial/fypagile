@@ -44,6 +44,22 @@ interface Rubric {
     name: string;
     total_weight: number;
     roleType: number;
+    psmType: string;
+    isEnable: boolean;
+    isSupervisorPSM1: boolean;
+    isPanelPSM1: boolean;
+    isArchivePSM1: boolean;
+    isSupervisorPSM2: boolean;
+    isPanelPSM2: boolean;
+    progress: string;
+    criteria: Criteria[] | null;
+}
+
+interface Criteria {
+    id: number;
+    rubric_id: number;
+    name: string;
+    weight: number;
 }
 
 interface Flash {
@@ -58,12 +74,14 @@ export default function ViewResult() {
         rubricDevelopment: Rubric[];
         rubricResearch: Rubric[];
         flash?: Flash;
+        id: number;
     }>();
 
     const students = props.students;
     const rubricDevelopment = props.rubricDevelopment;
     const rubricResearch = props.rubricResearch;
     const studentType = "PSM1";
+    const panelId = props.id;
 
     const [showrubricsResearch, setShowrubricsResearch] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
@@ -648,6 +666,19 @@ export default function ViewResult() {
                 psmType="PSM1"
                 studentId={selectedStudent}
             /> */}
+
+            <GradeRubricModal
+                isOpen={isGradeModalOpen}
+                onClose={() => {
+                    setIsGradeModalOpen(false);
+                    setSelectedRubric(null);
+                }}
+                rubric={selectedRubric}
+                psmType="PSM1"
+                studentId={selectedStudent}
+                userType={1}
+                panelId={panelId}
+            />
 
             {/* <EditStudentModal
                 isOpen={isEditModalOpen}
