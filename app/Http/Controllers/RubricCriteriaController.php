@@ -54,15 +54,23 @@ class RubricCriteriaController extends Controller
             })
             ->get();
 
-        $rubricDevelopment =  Rubric::where('PSMType', "PSM1")
-                        ->where('rubricType', 1)->withTrashed()->get();
-        $rubricResearch = Rubric::where('PSMType', "PSM1")
-                        ->where('rubricType', 2)->withTrashed()->get();
+        $rubricDevelopment = Rubric::where('PSMType', 'PSM1')
+            ->where('rubricType', 1)
+            ->withTrashed()
+            ->with('criteria')
+            ->get();
+
+        $rubricResearch = Rubric::where('PSMType', 'PSM1')
+            ->where('rubricType', 2)
+            ->withTrashed()
+            ->with('criteria')
+            ->get();
 
         return Inertia::render('Panel/PSM1/ViewResult', [
             'students' => $students,
             'rubricDevelopment' => $rubricDevelopment,
             'rubricResearch' => $rubricResearch,
+            'id' => $userId
         ]);
     }
 
@@ -99,15 +107,23 @@ class RubricCriteriaController extends Controller
             })
             ->get();
 
-        $rubricDevelopment =  Rubric::where('PSMType', "PSM2")
-                        ->where('rubricType', 1)->withTrashed()->get();
-        $rubricResearch = Rubric::where('PSMType', "PSM2")
-                        ->where('rubricType', 2)->withTrashed()->get();
+        $rubricDevelopment = Rubric::where('PSMType', 'PSM2')
+            ->where('rubricType', 1)
+            ->withTrashed()
+            ->with('criteria')
+            ->get();
+
+        $rubricResearch = Rubric::where('PSMType', 'PSM2')
+            ->where('rubricType', 2)
+            ->withTrashed()
+            ->with('criteria')
+            ->get();
 
         return Inertia::render('Panel/PSM2/ViewResult', [
             'students' => $students,
             'rubricDevelopment' => $rubricDevelopment,
             'rubricResearch' => $rubricResearch,
+            'id' => $userId
         ]);
     }
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { usePage, router } from "@inertiajs/react";
-import { ChevronDown, ChevronUp, Trash } from "lucide-react";
+import { ChevronDown, ChevronUp, Trash, Pencil } from "lucide-react";
 import { route } from "ziggy-js";
+import GradeRubricModal from "../../../Components/GradeRubricModal";
 
 interface Student {
     id: number;
@@ -31,6 +32,22 @@ interface Rubric {
     name: string;
     total_weight: number;
     roleType: number;
+    psmType: string;
+    isEnable: boolean;
+    isSupervisorPSM1: boolean;
+    isPanelPSM1: boolean;
+    isArchivePSM1: boolean;
+    isSupervisorPSM2: boolean;
+    isPanelPSM2: boolean;
+    progress: string;
+    criteria: Criteria[] | null;
+}
+
+interface Criteria {
+    id: number;
+    rubric_id: number;
+    name: string;
+    weight: number;
 }
 
 interface Flash {
@@ -45,16 +62,21 @@ export default function ViewResult() {
         rubricDevelopment: Rubric[];
         rubricResearch: Rubric[];
         flash?: Flash;
+        id: number;
     }>();
 
     const students = props.students;
     const rubricDevelopment = props.rubricDevelopment;
     const rubricResearch = props.rubricResearch;
     const studentType = "PSM2";
+    const panelId = props.id;
 
     const [showrubricsResearch, setShowrubricsResearch] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [selectedStudents, setSelectedStudents] = useState<number[]>([]);
+    const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
+    const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
+    const [selectedRubric, setSelectedRubric] = useState<Rubric | null>(null);
 
     // State for pagination & search
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -441,6 +463,33 @@ export default function ViewResult() {
                                                                                                 className="transition-transform duration-200 hover:scale-125"
                                                                                             />
                                                                                         </button>
+
+                                                                                        <button
+                                                                                            type="button"
+                                                                                            className="p-1 text-blue-600 hover:text-blue-800 transition"
+                                                                                            onClick={(
+                                                                                                e
+                                                                                            ) => {
+                                                                                                e.stopPropagation();
+                                                                                                setSelectedStudent(
+                                                                                                    student.id
+                                                                                                );
+                                                                                                setSelectedRubric(
+                                                                                                    rubric
+                                                                                                );
+                                                                                                setIsGradeModalOpen(
+                                                                                                    true
+                                                                                                );
+                                                                                            }}
+                                                                                            title={`Edit ${rubric.name} grade`}
+                                                                                        >
+                                                                                            <Pencil
+                                                                                                size={
+                                                                                                    20
+                                                                                                }
+                                                                                                className="transition-transform duration-200 hover:scale-125"
+                                                                                            />
+                                                                                        </button>
                                                                                     </div>
                                                                                 </div>
 
@@ -503,6 +552,19 @@ export default function ViewResult() {
                     </button>
                 </div>
             </div>
+
+            <GradeRubricModal
+                isOpen={isGradeModalOpen}
+                onClose={() => {
+                    setIsGradeModalOpen(false);
+                    setSelectedRubric(null);
+                }}
+                rubric={selectedRubric}
+                psmType="PSM2"
+                studentId={selectedStudent}
+                userType={2}
+                panelId={panelId}
+            />
         </div>
     );
 }
