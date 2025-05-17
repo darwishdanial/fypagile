@@ -66,4 +66,16 @@ class GradingService
             ]
         );
     }
+
+    public function deleteScore(int $scoreId)
+    {
+        $score = Score::find($scoreId);
+        if ($score) {
+            $score->delete();
+            return redirect()->back()->with('success', 'Score successfully deleted.');
+        }
+        return redirect()->back()->with('error', 'Error deleting score.');
+    }
+
+
 }

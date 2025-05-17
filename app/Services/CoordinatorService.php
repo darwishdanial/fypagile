@@ -322,6 +322,8 @@ class CoordinatorService
                 logger("Panel ID: {$panelId}, Name: {$panelName[$panelId]}, Primary: {$primaryPanelCounts[$panelId]}, Secondary: {$secondaryPanelCounts[$panelId]}, Total: {$totalCount}");
             }
 
+            dd($results);
+
             return back()->with('success', 'AI Panel assignment successfully.');
             
         } catch (\Exception $e) {
@@ -329,7 +331,7 @@ class CoordinatorService
                 'error' => $e->getMessage()
             ]));
     
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', "Error");
         }
     }
 

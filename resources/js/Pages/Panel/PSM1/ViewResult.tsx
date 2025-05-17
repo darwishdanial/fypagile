@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { usePage, router } from "@inertiajs/react";
-import {
-    ChevronDown,
-    ChevronUp,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, Trash } from "lucide-react";
 import { route } from "ziggy-js";
 
 interface Student {
@@ -127,9 +124,9 @@ export default function ViewResult() {
         }
     }, [props.flash]); // Run effect when flash message changes
 
-    const currentRubric = (
-        showrubricsResearch ? rubricResearch : rubricDevelopment
-    );
+    const currentRubric = showrubricsResearch
+        ? rubricResearch
+        : rubricDevelopment;
 
     // Calculate average score for a specific rubric for a student
     const calculateRubricAverage = (student: Student, rubricId: number) => {
@@ -172,12 +169,25 @@ export default function ViewResult() {
     // Function to get rubrics that have scores for a student
     const getRubricsWithScores = (student: Student) => {
         if (!student.score || student.score.length === 0) return [];
-        
+
         // Get unique rubric IDs from student scores
-        const scoredRubricIds = [...new Set(student.score.map(s => s.rubric?.id).filter(Boolean))];
-        
+        const scoredRubricIds = [
+            ...new Set(student.score.map((s) => s.rubric?.id).filter(Boolean)),
+        ];
+
         // Filter current rubrics to only those with scores
-        return currentRubric.filter(rubric => scoredRubricIds.includes(rubric.id));
+        return currentRubric.filter((rubric) =>
+            scoredRubricIds.includes(rubric.id)
+        );
+    };
+
+    const handleDeleteScore = (scoreId: number) => {
+        if (!window.confirm("Are you sure you want to delete this score?"))
+            return;
+
+        router.delete(route("panel.PSM1.score.delete", scoreId), {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -291,7 +301,10 @@ export default function ViewResult() {
                                                 );
 
                                                 //setShowrubricsResearch true if project_type === Research Based else false
-                                                setShowrubricsResearch(student.project_type === "Research Based");
+                                                setShowrubricsResearch(
+                                                    student.project_type ===
+                                                        "Research Based"
+                                                );
                                             }}
                                         >
                                             {expandedRow === student.id ? (
@@ -315,13 +328,17 @@ export default function ViewResult() {
                                                 Rubrics Information
                                             </div>
                                             {/* Only display rubrics with scores */}
-                                            {getRubricsWithScores(student).length > 0 ? (
+                                            {getRubricsWithScores(student)
+                                                .length > 0 ? (
                                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                    {getRubricsWithScores(student).map((rubric) => {
+                                                    {getRubricsWithScores(
+                                                        student
+                                                    ).map((rubric) => {
                                                         const scores =
                                                             student.score?.filter(
                                                                 (s) =>
-                                                                    s.rubric?.id ===
+                                                                    s.rubric
+                                                                        ?.id ===
                                                                     rubric.id
                                                             ) || [];
 
@@ -332,21 +349,24 @@ export default function ViewResult() {
                                                             >
                                                                 <div className="font-medium mb-2">
                                                                     {Boolean(
-                                                                        rubric.roleType === 1
+                                                                        rubric.roleType ===
+                                                                            1
                                                                     ) && (
                                                                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-2">
                                                                             Coordinator
                                                                         </span>
                                                                     )}
                                                                     {Boolean(
-                                                                        rubric.roleType === 3
+                                                                        rubric.roleType ===
+                                                                            3
                                                                     ) && (
                                                                         <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs mr-2">
                                                                             Supervisor
                                                                         </span>
                                                                     )}
                                                                     {Boolean(
-                                                                        rubric.roleType === 2
+                                                                        rubric.roleType ===
+                                                                            2
                                                                     ) && (
                                                                         <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs mr-2">
                                                                             Panel
@@ -389,6 +409,7 @@ export default function ViewResult() {
                                                                                             {
                                                                                                 score.mark
                                                                                             }
+
                                                                                             /
                                                                                             {
                                                                                                 rubric.total_weight
@@ -404,7 +425,23 @@ export default function ViewResult() {
                                                                                         )}
                                                                                     </div>
 
-                                                                                    
+                                                                                    <div className="flex">
+                                                                                        <button
+                                                                                            type="button"
+                                                                                            className="p-1 text-red-600 hover:text-red-800 transition"
+                                                                                            onClick={(
+                                                                                                e
+                                                                                            ) => handleDeleteScore(score.id)}
+                                                                                            title={`Delete ${rubric.name} grade`}
+                                                                                        >
+                                                                                            <Trash
+                                                                                                size={
+                                                                                                    20
+                                                                                                }
+                                                                                                className="transition-transform duration-200 hover:scale-125"
+                                                                                            />
+                                                                                        </button>
+                                                                                    </div>
                                                                                 </div>
 
                                                                                 {score.comment && (
@@ -429,7 +466,8 @@ export default function ViewResult() {
                                                 </div>
                                             ) : (
                                                 <div className="text-center py-6 text-gray-500">
-                                                    No graded rubrics found for this student.
+                                                    No graded rubrics found for
+                                                    this student.
                                                 </div>
                                             )}
                                         </td>

@@ -170,9 +170,9 @@ export default function ViewResult() {
         }
     }, [props.flash]); // Run effect when flash message changes
 
-    const currentRubric = (
-        showrubricsResearch ? rubricResearch : rubricDevelopment
-    );
+    const currentRubric = showrubricsResearch
+        ? rubricResearch
+        : rubricDevelopment;
 
     // Calculate selection statistics
     const totalActiveStudents = filteredStudents.length;
@@ -214,6 +214,15 @@ export default function ViewResult() {
 
         // Return the sum of averages, formatted to 1 decimal place
         return totalScore.toFixed(1);
+    };
+
+    const handleDeleteScore = (scoreId: number) => {
+        if (!window.confirm("Are you sure you want to delete this score?"))
+            return;
+
+        router.delete(route("coordinator.PSM1.score.delete", scoreId), {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -319,17 +328,19 @@ export default function ViewResult() {
                                         <button
                                             type="button"
                                             className="p-1 text-blue-600 hover:text-blue-800 transition"
-                                            onClick={() =>{
+                                            onClick={() => {
                                                 setExpandedRow(
                                                     expandedRow === student.id
                                                         ? null
                                                         : student.id
-                                                )
+                                                );
 
                                                 //setShowrubricsResearch true if project_type === Research Based else false
 
-                                                setShowrubricsResearch(student.project_type === "Research Based");
-
+                                                setShowrubricsResearch(
+                                                    student.project_type ===
+                                                        "Research Based"
+                                                );
                                             }}
                                         >
                                             {expandedRow === student.id ? (
@@ -376,21 +387,24 @@ export default function ViewResult() {
                                                         >
                                                             <div className="font-medium mb-2">
                                                                 {Boolean(
-                                                                    rubric.roleType === 1
+                                                                    rubric.roleType ===
+                                                                        1
                                                                 ) && (
                                                                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-2">
                                                                         Coordinator
                                                                     </span>
                                                                 )}
                                                                 {Boolean(
-                                                                    rubric.roleType === 3
+                                                                    rubric.roleType ===
+                                                                        3
                                                                 ) && (
                                                                     <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs mr-2">
                                                                         Supervisor
                                                                     </span>
                                                                 )}
                                                                 {Boolean(
-                                                                    rubric.roleType === 2
+                                                                    rubric.roleType ===
+                                                                        2
                                                                 ) && (
                                                                     <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs mr-2">
                                                                         Panel
@@ -464,6 +478,7 @@ export default function ViewResult() {
                                                                                             {
                                                                                                 score.mark
                                                                                             }
+
                                                                                             /
                                                                                             {
                                                                                                 rubric.total_weight
@@ -485,18 +500,11 @@ export default function ViewResult() {
                                                                                             className="p-1 text-red-600 hover:text-red-800 transition"
                                                                                             onClick={(
                                                                                                 e
-                                                                                            ) => {
-                                                                                                e.stopPropagation();
-                                                                                                setSelectedStudent(
-                                                                                                    student.id
-                                                                                                );
-                                                                                                setSelectedRubric(
-                                                                                                    rubric
-                                                                                                );
-                                                                                                setIsGradeModalOpen(
-                                                                                                    true
-                                                                                                );
-                                                                                            }}
+                                                                                            ) =>
+                                                                                                handleDeleteScore(
+                                                                                                    score.id
+                                                                                                )
+                                                                                            }
                                                                                             title={`Delete ${rubric.name} grade`}
                                                                                         >
                                                                                             <Trash

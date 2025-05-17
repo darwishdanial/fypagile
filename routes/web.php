@@ -160,6 +160,8 @@ Route::middleware( EnsureCoordinator::class)
         Route::get('/grade-PSM1-coordinator', [GradingController::class, 'PSM1GradeCoordinator'])->name('gradePSM1Coordinator');
 
         Route::post('/store-score', [GradingController::class, 'PSM1StoreScore'])->name('score.store');
+        
+        Route::delete('/delete-score/{id}', [GradingController::class, 'PSM1DeleteScore'])->name('score.delete');
 
     });
 
@@ -264,6 +266,8 @@ Route::middleware( EnsureCoordinator::class)
         Route::get('/grade-PSM2-coordinator', [GradingController::class, 'PSM2GradeCoordinator'])->name('gradePSM2Coordinator');
 
         Route::post('/store-score', [GradingController::class, 'PSM2StoreScore'])->name('score.store');
+        
+        Route::delete('/delete-score/{id}', [GradingController::class, 'PSM2DeleteScore'])->name('score.delete');
 
     });
 
@@ -287,6 +291,8 @@ Route::middleware(EnsurePanel::class)
 
         Route::post('/store-score', [GradingController::class, 'PSM1StoreScore'])->name('score.store');
 
+        Route::delete('/delete-score/{id}', [GradingController::class, 'PSM1DeleteScore'])->name('score.delete');
+
         Route::get('/view-result', [RubricCriteriaController::class, 'PSM1ViewResultPanel'])->name('viewResult');
 
     });
@@ -303,6 +309,8 @@ Route::middleware(EnsurePanel::class)
 
         Route::get('/view-result', [RubricCriteriaController::class, 'PSM2ViewResultPanel'])->name('viewResult');
         
+        Route::delete('/delete-score/{id}', [GradingController::class, 'PSM2DeleteScore'])->name('score.delete');
+
         Route::post('/students/{matric}/project-progress/', [StudentController::class, 'PSM2ProjectProgress'])->name('students.projectProgress');
 
     });

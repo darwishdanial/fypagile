@@ -103,6 +103,14 @@ class GradingController extends Controller
         return redirect()->back()->with('success', 'Score successfully stored.');
     }
 
+    public function PSM1DeleteScore($id){
+
+        // $this->authorize('delete psm1 score');
+
+        return $this->gradingService->deleteScore($id);
+
+    }
+
     //Grade PSM2
 
     public function PSM2GradeSupervision(){
@@ -183,6 +191,14 @@ class GradingController extends Controller
         $this->gradingService->storeScore($request->all(), 'PSM2');
 
         return redirect()->back()->with('success', 'Score successfully stored.');
+
+    }
+
+        public function PSM2DeleteScore($id){
+
+        // $this->authorize('delete psm2 score');
+
+        return $this->gradingService->deleteScore($id);
 
     }
 
