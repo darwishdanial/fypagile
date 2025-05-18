@@ -13,9 +13,10 @@ import {
     LogOut,
     Info,
     House,
-    History
+    History,
+    UsersRound,
 } from "lucide-react";
-import { route } from 'ziggy-js';
+import { route } from "ziggy-js";
 
 interface MenuItemType {
     icon: React.ReactNode;
@@ -37,17 +38,17 @@ export function CoordinatorSidebar() {
         {
             icon: <House />,
             label: "Dashobard",
-            link: route('coordinator.home'),
+            link: route("coordinator.home"),
         },
         {
             icon: <History />,
             label: "Panel History",
-            link: route('coordinator.panel.history'),
+            link: route("coordinator.panel.history"),
         },
         {
             icon: <Info />,
             label: "ML Data",
-            link: route('coordinator.panel.ml-data'),
+            link: route("coordinator.panel.ml-data"),
         },
     ];
 
@@ -55,27 +56,27 @@ export function CoordinatorSidebar() {
         {
             icon: <Users />,
             label: "List Students",
-            link: route('coordinator.PSM1.listStudents'),
+            link: route("coordinator.PSM1.listStudents"),
         },
         {
             icon: <UserCheck />,
             label: "List Panels/Supervisors",
-            link: route('coordinator.PSM1.listPanels'),
+            link: route("coordinator.PSM1.listPanels"),
         },
         {
             icon: <UserPlus />,
             label: "Assign Supervisor",
-            link: route('coordinator.PSM1.listSupervisor'),
+            link: route("coordinator.PSM1.listSupervisor"),
         },
         {
             icon: <UserPlus />,
             label: "Assign PSM1 Panel",
-            link: route('coordinator.PSM1.listPSM1Panel'),
+            link: route("coordinator.PSM1.listPSM1Panel"),
         },
         {
             icon: <FileText />,
             label: "View Result",
-            link: route('coordinator.PSM1.viewResult'),
+            link: route("coordinator.PSM1.viewResult"),
         },
         // {
         //     icon: <ClipboardList />,
@@ -85,27 +86,32 @@ export function CoordinatorSidebar() {
         {
             icon: <ClipboardList />,
             label: "Development Rubric",
-            link: route('coordinator.PSM1.developmentRubric'),
+            link: route("coordinator.PSM1.developmentRubric"),
         },
         {
             icon: <ClipboardList />,
             label: "Research Rubric",
-            link: route('coordinator.PSM1.researchRubric'),
+            link: route("coordinator.PSM1.researchRubric"),
         },
         {
             icon: <ListChecks />,
             label: "Grade Supervision",
-            link: route('coordinator.PSM1.gradeSupervision'),
+            link: route("coordinator.PSM1.gradeSupervision"),
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM1 Panel",
-            link: route('coordinator.PSM1.gradePSM1Panel'),
+            link: route("coordinator.PSM1.gradePSM1Panel"),
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM1 Coordinator",
-            link: route('coordinator.PSM1.gradePSM1Coordinator'),
+            link: route("coordinator.PSM1.gradePSM1Coordinator"),
+        },
+        {
+            icon: <UsersRound />,
+            label: "Student Request",
+            link: route("coordinator.PSM1.sv.req"),
         },
     ];
 
@@ -113,47 +119,52 @@ export function CoordinatorSidebar() {
         {
             icon: <Users />,
             label: "List Students",
-            link:route('coordinator.PSM2.listStudents'),
+            link: route("coordinator.PSM2.listStudents"),
         },
         {
             icon: <UserCheck />,
             label: "List Panels/Supervisors",
-            link: route('coordinator.PSM2.listPanels'),
+            link: route("coordinator.PSM2.listPanels"),
         },
         {
             icon: <UserPlus />,
             label: "Assign Supervisor",
-            link: route('coordinator.PSM2.listSupervisor'),
+            link: route("coordinator.PSM2.listSupervisor"),
         },
         {
             icon: <UserPlus />,
             label: "Assign PSM2 Panel",
-            link: route('coordinator.PSM2.listPSM2Panel'),
+            link: route("coordinator.PSM2.listPSM2Panel"),
         },
         {
             icon: <FileText />,
             label: "View Result",
-            link: route('coordinator.PSM2.viewResult'),
+            link: route("coordinator.PSM2.viewResult"),
         },
         {
             icon: <ClipboardList />,
             label: "Development Rubric",
-            link: route('coordinator.PSM2.developmentRubric'),
+            link: route("coordinator.PSM2.developmentRubric"),
         },
         {
             icon: <ClipboardList />,
             label: "Research Rubric",
-            link: route('coordinator.PSM2.researchRubric'),
+            link: route("coordinator.PSM2.researchRubric"),
         },
         {
             icon: <ListChecks />,
             label: "Grade Supervision",
-            link: route('coordinator.PSM2.gradeSupervision'),
+            link: route("coordinator.PSM2.gradeSupervision"),
         },
         {
             icon: <ListChecks />,
             label: "Grade PSM2",
-            link: route('coordinator.PSM2.gradePSM2'),
+            link: route("coordinator.PSM2.gradePSM2"),
+        },
+        {
+            icon: <UsersRound />,
+            label: "Student Request",
+            link: route("coordinator.PSM2.sv.req"),
         },
     ];
 
@@ -181,7 +192,9 @@ export function CoordinatorSidebar() {
                     </MenuItem>
 
                     {menuItems.map(({ icon, label, link }, index) => {
-                        const isActive = url === new URL(link, window.location.origin).pathname;
+                        const isActive =
+                            url ===
+                            new URL(link, window.location.origin).pathname;
                         const iconColor = isActive
                             ? "text-[#6D2323] font-semibold bg-gray-100"
                             : "text-[#808080]";
@@ -206,15 +219,15 @@ export function CoordinatorSidebar() {
                         );
                     })}
 
-                        <MenuItem icon={<LogOut />}>
-                            <button 
-                                type="submit" 
-                                className="w-full text-left"
-                                onClick={handleLogout}>
-
-                                Log Out
-                            </button>
-                        </MenuItem>
+                    <MenuItem icon={<LogOut />}>
+                        <button
+                            type="submit"
+                            className="w-full text-left"
+                            onClick={handleLogout}
+                        >
+                            Log Out
+                        </button>
+                    </MenuItem>
                 </Menu>
             </Sidebar>
         </div>

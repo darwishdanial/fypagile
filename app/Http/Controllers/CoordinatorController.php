@@ -67,15 +67,49 @@ class CoordinatorController extends Controller
         return $students;
     }
 
-    public function PSM1SAssignSupervisor(Request $request)
+    public function PSM1RequestSupervisor(Request $request)
     {
         $this->authorize('assign psm1 supervisor');
 
         $studentId = $request->input('studentId');
         $supervisorId = $request->input('supervisorId');
 
-        $this->studentService->assignStudentsSupervisor("PSM1", $studentId, $supervisorId);
+        $this->studentService->requestStudentsSupervisor("PSM1", $studentId, $supervisorId);
     }
+
+    public function PSM1CancelRequestSupervisor($studentId)
+    {
+        $this->authorize('assign psm1 supervisor');
+
+        $this->studentService->cancelRequestStudentsSupervisor("PSM1", $studentId);
+    }
+
+    public function PSM2RequestSupervisor(Request $request)
+    {
+        // $this->authorize('assign psm1 supervisor');
+
+        $studentId = $request->input('studentId');
+        $supervisorId = $request->input('supervisorId');
+
+        $this->studentService->requestStudentsSupervisor("PSM2", $studentId, $supervisorId);
+    }
+
+    public function PSM2CancelRequestSupervisor($studentId)
+    {
+        // $this->authorize('assign psm1 supervisor');
+
+        $this->studentService->cancelRequestStudentsSupervisor("PSM2", $studentId);
+    }
+
+    // public function PSM1SAcceptSupervisor(Request $request)
+    // {
+    //     $this->authorize('assign psm1 supervisor');
+
+    //     $studentId = $request->input('studentId');
+    //     $supervisorId = $request->input('supervisorId');
+
+    //     $this->studentService->assignStudentsSupervisor("PSM1", $studentId, $supervisorId);
+    // }
 
     public function PSM1UnassignSupervisor($studentId)
     {
@@ -105,15 +139,15 @@ class CoordinatorController extends Controller
         return $students;
     }
 
-    public function PSM2SAssignSupervisor(Request $request)
-    {
-        $this->authorize('assign psm2 supervisor');
+    // public function PSM2SAssignSupervisor(Request $request)
+    // {
+    //     $this->authorize('assign psm2 supervisor');
 
-        $studentId = $request->input('studentId');
-        $supervisorId = $request->input('supervisorId');
+    //     $studentId = $request->input('studentId');
+    //     $supervisorId = $request->input('supervisorId');
 
-        $this->studentService->assignStudentsSupervisor("PSM2", $studentId, $supervisorId);
-    }
+    //     $this->studentService->assignStudentsSupervisor("PSM2", $studentId, $supervisorId);
+    // }
 
     public function PSM2UnassignSupervisor($studentId)
     {

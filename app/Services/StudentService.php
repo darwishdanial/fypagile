@@ -103,6 +103,7 @@ class StudentService
 
         $unassignedStudents = $model->newQuery()
             ->whereNull('supervisorId')
+            ->whereNull('svReq')
             ->where(function($query) use ($supervisorId) {
                 $query->whereNull('panel2Id')
                     ->orWhere('panel2Id', '!=', $supervisorId);
@@ -111,7 +112,7 @@ class StudentService
                 $query->whereNull('panelId')
                     ->orWhere('panelId', '!=', $supervisorId);
             })
-            ->get(['id','name','title','project_area','project_type','supervisorId'])
+            ->get(['id','name','title','project_area','project_type','supervisorId','svReq'])
             ->map(function ($student) {
                 $student->assigned = false;
                 return $student;
@@ -119,6 +120,7 @@ class StudentService
 
         $assignedStudents = $model->newQuery()
             ->where('supervisorId', $supervisorId)
+            ->orWhere('svReq', $supervisorId)
             ->where(function($query) use ($supervisorId) {
                 $query->whereNull('panel2Id')
                     ->orWhere('panel2Id', '!=', $supervisorId);
@@ -127,7 +129,7 @@ class StudentService
                 $query->whereNull('panelId')
                     ->orWhere('panelId', '!=', $supervisorId);
             })
-            ->get(['id','name','title','project_area','project_type','supervisorId'])
+            ->get(['id','name','title','project_area','project_type','supervisorId','svReq'])
             ->map(function ($student) {
                 $student->assigned = true;
                 return $student;
@@ -138,7 +140,18 @@ class StudentService
         return $students;
     }
 
-    public function assignStudentsSupervisor(string $studentType, int $studentId, int $supervisorId)
+    public function getStudentRequestSupervisor(string $studentType, ?int $svId, int $type)
+    {
+        $model = $studentType === 'PSM1' ? StudentPSM1::class : StudentPSM2::class;
+
+        $projectType = $type == 1 ? 'System Development' : 'Research Based';
+
+        return $model::where('svReq', $svId)
+                ->where('project_type', $projectType)
+                ->get();
+    }
+
+    public function requestStudentsSupervisor(string $studentType, int $studentId, int $supervisorId)
     {
         if ($studentType === 'PSM1') {
             $model = new StudentPSM1();
@@ -150,7 +163,74 @@ class StudentService
 
         return $model->newQuery()
             ->whereId($studentId)
-            ->update(['supervisorId' => $supervisorId]);
+            ->update(['svReq' => $supervisorId]);
+    }
+
+
+    public function cancelRequestStudentsSupervisor(string $studentType, int $studentId)
+    {
+        if ($studentType === 'PSM1') {
+            $model = new StudentPSM1();
+        } elseif ($studentType === 'PSM2') {
+            $model = new StudentPSM2();
+        } else {
+            return false; // or throw an exception if needed
+        }
+
+        return $model->newQuery()
+            ->whereId($studentId)
+            ->update(['svReq' => null]);
+    }
+
+
+    public function acceptStudentsSupervisor(string $studentType, int $studentId, int $supervisorId)
+    {
+        if ($studentType === 'PSM1') {
+            $model = new StudentPSM1();
+        } elseif ($studentType === 'PSM2') {
+            $model = new StudentPSM2();
+        } else {
+            return false; // or throw an exception if you prefer
+        }
+
+        try {
+            $model->newQuery()
+            ->whereId($studentId)
+            ->update([
+                'supervisorId' => $supervisorId,
+                'svReq' => null
+            ]);
+
+            return redirect()->back()->with('success', 'Student accepted!');
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to accept student.');
+        }
+    }
+
+    public function rejectStudentsSupervisor(string $studentType, int $studentId,)
+    {
+        if ($studentType === 'PSM1') {
+            $model = new StudentPSM1();
+        } elseif ($studentType === 'PSM2') {
+            $model = new StudentPSM2();
+        } else {
+            return false; // or throw an exception if you prefer
+        }
+        
+        try {
+
+            $model->newQuery()
+                ->whereId($studentId)
+                ->update([
+                'svReq' => null
+                ]);
+
+            return redirect()->back()->with('success', 'Student rejected!');
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to reject student.');
+        }
     }
 
     public function unassignStudentsSupervisor(string $studentType, int $studentId)

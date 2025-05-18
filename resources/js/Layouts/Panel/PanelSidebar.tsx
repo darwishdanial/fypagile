@@ -7,7 +7,8 @@ import {
     ListChecks,
     LogOut,
     House,
-    FileText
+    FileText,
+    UsersRound 
 } from "lucide-react";
 
 interface MenuItemType {
@@ -51,6 +52,11 @@ export function PanelSidebar() {
             label: "View Result",
             link: route('panel.PSM1.viewResult'),
         },
+        {
+            icon: <UsersRound />,
+            label: "Student Request",
+            link: route('panel.PSM1.sv.req'),
+        },
     ];
 
     const menuItemsPSM2: MenuItemType[] = [
@@ -68,6 +74,11 @@ export function PanelSidebar() {
             icon: <FileText />,
             label: "View Result",
             link: route('panel.PSM2.viewResult'),
+        },
+        {
+            icon: <UsersRound />,
+            label: "Student Request",
+            link: route('panel.PSM2.sv.req'),
         },
     ];
 

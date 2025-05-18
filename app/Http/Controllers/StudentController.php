@@ -15,6 +15,7 @@ use App\Services\ProjectLecturerMergerService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -141,9 +142,46 @@ class StudentController extends Controller
         return response()->download(storage_path("app/public/$filePath"));
     }
 
-    public function PSM1ProjectProgress($matric){
+    public function PSM1StudentRequest(){
 
-        dd($matric);
+        $id = Auth::user()->id;
+
+        $studentsDevelopment = $this->studentService->getStudentRequestSupervisor("PSM1",$id, 1);
+
+        $studentResearch = $this->studentService->getStudentRequestSupervisor("PSM1",$id, 2);
+
+        $userRole = Auth::user()->role === 1 ? 'Coordinator' : 'Panel';
+
+        if ($userRole === 'Coordinator') {
+            return Inertia::render('Coordinator/PSM1/StudentRequest', [
+            'studentsDevelopment' => $studentsDevelopment,
+            'studentResearch' => $studentResearch,
+            ]);
+        } else {
+            return Inertia::render('Panel/PSM1/StudentRequest', [
+            'studentsDevelopment' => $studentsDevelopment,
+            'studentResearch' => $studentResearch,
+            ]);
+        }
+    }
+
+    public function PSM1SAcceptSupervisor($id)
+    {
+        // $this->authorize('assign psm1 supervisor');
+
+        $studentId = $id;
+        $supervisorId = Auth::user()->id;
+
+        $this->studentService->acceptStudentsSupervisor("PSM1", $studentId, $supervisorId);
+    }
+
+    public function PSM1RejectSupervisor($id)
+    {
+        // $this->authorize('assign psm1 supervisor');
+
+        $studentId = $id;
+
+        return $this->studentService->rejectStudentsSupervisor("PSM1", $studentId);
     }
 
     //PSM2
@@ -258,6 +296,48 @@ class StudentController extends Controller
         $this->authorize('view project progress psm2 students');
         
         dd($matric);
+    }
+
+    public function PSM2StudentRequest(){
+
+        $id = Auth::user()->id;
+
+        $studentsDevelopment = $this->studentService->getStudentRequestSupervisor("PSM2",$id, 1);
+
+        $studentResearch = $this->studentService->getStudentRequestSupervisor("PSM2",$id, 2);
+
+        $userRole = Auth::user()->role === 1 ? 'Coordinator' : 'Panel';
+
+        if ($userRole === 'Coordinator') {
+            return Inertia::render('Coordinator/PSM2/StudentRequest', [
+            'studentsDevelopment' => $studentsDevelopment,
+            'studentResearch' => $studentResearch,
+            ]);
+        } else {
+            return Inertia::render('Panel/PSM2/StudentRequest', [
+            'studentsDevelopment' => $studentsDevelopment,
+            'studentResearch' => $studentResearch,
+            ]);
+        }
+    }
+
+    public function PSM2SAcceptSupervisor($id)
+    {
+        // $this->authorize('assign psm1 supervisor');
+
+        $studentId = $id;
+        $supervisorId = Auth::user()->id;
+
+        $this->studentService->acceptStudentsSupervisor("PSM2", $studentId, $supervisorId);
+    }
+
+    public function PSM2RejectSupervisor($id)
+    {
+        // $this->authorize('assign psm1 supervisor');
+
+        $studentId = $id;
+
+        return $this->studentService->rejectStudentsSupervisor("PSM2", $studentId);
     }
 
 

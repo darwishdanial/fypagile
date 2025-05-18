@@ -62,15 +62,15 @@ class User extends Authenticatable
         return $this->hasOne(Supervisor::class, 'userId');
     }
 
-    public function panel()
-    {
-        return $this->hasOne(Panel::class, 'userId');
-    }
+    // public function panel()
+    // {
+    //     return $this->hasOne(Panel::class, 'userId');
+    // }
 
-    public function coordinator()
-    {
-        return $this->hasOne(Coordinator::class, 'userId');
-    }
+    // public function coordinator()
+    // {
+    //     return $this->hasOne(Coordinator::class, 'userId');
+    // }
 
     public function score()
     {
