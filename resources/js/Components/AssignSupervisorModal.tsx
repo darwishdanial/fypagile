@@ -10,7 +10,9 @@ interface Student {
     project_area: string;
     project_type: string;
     supervisorId: number | null;
+    requested: boolean;
     assigned: boolean;
+    svReq: number | null;
 }
 
 interface AssignSupervisorModalProps {
@@ -49,7 +51,6 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
     }, [isOpen, supervisorId]);
 
     const fetchStudents = () => {
-
         const route_path =
             supervisorType === "PSM1"
                 ? "coordinator.PSM1.supervisor.studentList"
@@ -57,9 +58,7 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
 
         setLoading(true);
         axios
-            .get(
-                route(route_path, { id: supervisorId })
-            )
+            .get(route(route_path, { id: supervisorId }))
             .then((response) => {
                 setStudents(response.data);
             })
@@ -72,11 +71,10 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
     };
 
     const handleAssign = (studentId: number, supervisorId: number) => {
-
         const route_path =
             supervisorType === "PSM1"
-                ? "coordinator.PSM1.supervisor.assign"
-                : "coordinator.PSM2.supervisor.assign";
+                ? "coordinator.PSM1.supervisor.request"
+                : "coordinator.PSM2.supervisor.request";
 
         axios
             .post(
@@ -90,7 +88,7 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
                 setStudents((prevStudents) =>
                     prevStudents.map((student) =>
                         student.id === studentId
-                            ? { ...student, supervisorId, assigned: true }
+                            ? { ...student, svReq:supervisorId , requested: true }
                             : student
                     )
                 );
@@ -101,7 +99,6 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
     };
 
     const handleUnassign = (studentId: number) => {
-
         const route_path =
             supervisorType === "PSM1"
                 ? "coordinator.PSM1.supervisor.unassign"
@@ -128,12 +125,39 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
             });
     };
 
+    const handleCancelRequest = (studentId: number) => {
+        const route_path =
+            supervisorType === "PSM1"
+                ? "coordinator.PSM1.supervisor.cancelRequest"
+                : "coordinator.PSM2.supervisor.cancelRequest";
+
+        axios
+            .post(route(route_path, studentId))
+            .then(() => {
+                //fetchStudents();
+                setStudents((prevStudents) =>
+                    prevStudents.map((student) =>
+                        student.id === studentId
+                            ? {
+                                  ...student,
+                                  svReq: null,
+                                  assigned: false,
+                              }
+                            : student
+                    )
+                );
+            })
+            .catch((error) => {
+                console.error("Error unassigning supervisor:", error);
+            });
+    };
+
     if (!isOpen) return null;
 
     const filteredStudents = students.filter((student) =>
         student.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
+
     const totalPages = Math.ceil(filteredStudents.length / rowsPerPage);
     const paginatedStudents = filteredStudents.slice(
         (currentPage - 1) * rowsPerPage,
@@ -249,6 +273,19 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
                                                         >
                                                             Unassign
                                                         </button>
+                                                    ) : student.svReq ? (
+                                                        <button
+                                                            type="button"
+                                                            className="px-3 py-1 bg-gray-200 text-black rounded hover:bg-gray-300 transition"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleCancelRequest(
+                                                                    student.id
+                                                                );
+                                                            }}
+                                                        >
+                                                            Cancel Request
+                                                        </button>
                                                     ) : (
                                                         <button
                                                             type="button"
@@ -261,7 +298,7 @@ const AssignSupervisorModal: React.FC<AssignSupervisorModalProps> = ({
                                                                 );
                                                             }}
                                                         >
-                                                            Assign
+                                                            Request
                                                         </button>
                                                     )}
                                                 </td>
