@@ -480,5 +480,9 @@ class StudentService
         }
     }
 
+    public function getProjectProgress($matric){
+        dd($matric);
+    }
+
 
 }

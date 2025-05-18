@@ -294,8 +294,10 @@ class StudentController extends Controller
     public function PSM2ProjectProgress($matric){
 
         $this->authorize('view project progress psm2 students');
+
+        $this->studentService->getProjectProgress($matric);
         
-        dd($matric);
+        // dd($matric);
     }
 
     public function PSM2StudentRequest(){
