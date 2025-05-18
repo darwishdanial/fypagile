@@ -20,8 +20,6 @@ class Rubric extends Model
         'progress',
         'isEnable',
         'roleType',
-        'isDevelopment',
-        'isResearch',
         'rubricType',
     ];
 
