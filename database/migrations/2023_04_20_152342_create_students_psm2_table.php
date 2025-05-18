@@ -31,6 +31,7 @@ return new class extends Migration
             $table->foreignId('panel2Id')->nullable()->references('id')->on('users'); 
             $table->foreignId('panelId_ai')->nullable()->references('id')->on('users'); 
             $table->foreignId('panel2Id_ai')->nullable()->references('id')->on('users');
+            $table->foreignId('svReq')->nullable()->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });

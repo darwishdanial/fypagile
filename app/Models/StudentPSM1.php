@@ -27,14 +27,14 @@ class StudentPSM1 extends Model
         'project_type',
         'project_area',
         'project_area_ai',
-        'title',
         'supervisorId',
         'panelId',
         'panel2Id',
         'panelId_ai',
         'panel2Id_ai',
         'panelProposalId',
-        'panelProposal2Id'
+        'panelProposal2Id',
+        'svReq'
     ];
 
     public function score(){
