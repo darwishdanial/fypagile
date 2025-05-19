@@ -69,7 +69,7 @@ class CoordinatorController extends Controller
 
     public function PSM1RequestSupervisor(Request $request)
     {
-        $this->authorize('assign psm1 supervisor');
+        $this->authorize('request psm1 supervisor');
 
         $studentId = $request->input('studentId');
         $supervisorId = $request->input('supervisorId');
@@ -79,14 +79,14 @@ class CoordinatorController extends Controller
 
     public function PSM1CancelRequestSupervisor($studentId)
     {
-        $this->authorize('assign psm1 supervisor');
+        $this->authorize('cancel request psm1 supervisor');
 
         $this->studentService->cancelRequestStudentsSupervisor("PSM1", $studentId);
     }
 
     public function PSM2RequestSupervisor(Request $request)
     {
-        // $this->authorize('assign psm1 supervisor');
+        $this->authorize('request psm2 supervisor');
 
         $studentId = $request->input('studentId');
         $supervisorId = $request->input('supervisorId');
@@ -96,20 +96,10 @@ class CoordinatorController extends Controller
 
     public function PSM2CancelRequestSupervisor($studentId)
     {
-        // $this->authorize('assign psm1 supervisor');
+        $this->authorize('cancel request psm2 supervisor');
 
         $this->studentService->cancelRequestStudentsSupervisor("PSM2", $studentId);
     }
-
-    // public function PSM1SAcceptSupervisor(Request $request)
-    // {
-    //     $this->authorize('assign psm1 supervisor');
-
-    //     $studentId = $request->input('studentId');
-    //     $supervisorId = $request->input('supervisorId');
-
-    //     $this->studentService->assignStudentsSupervisor("PSM1", $studentId, $supervisorId);
-    // }
 
     public function PSM1UnassignSupervisor($studentId)
     {

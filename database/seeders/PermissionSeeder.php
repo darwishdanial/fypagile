@@ -75,6 +75,9 @@ class PermissionSeeder extends Seeder
             'unassign psm1 panel 2',
             'predict psm1 panel',
             'remove all psm1 panel ids',
+            'accept psm1 supervisor',
+            'request psm1 supervisor',
+            'cancel request psm1 supervisor',
             
 
             // PSM2
@@ -126,6 +129,9 @@ class PermissionSeeder extends Seeder
             'unassign psm2 panel 2',
             'predict psm2 panel',
             'remove all psm2 panel ids',
+            'accept psm2 supervisor',
+            'request psm2 supervisor',
+            'cancel request psm2 supervisor',
 
             //ML
             'view ml data',
@@ -197,6 +203,10 @@ class PermissionSeeder extends Seeder
             'unassign psm1 panel 2',
             'predict psm1 panel',
             'remove all psm1 panel ids',
+            'accept psm1 supervisor',
+            'view psm1 supervisor request',
+            'request psm1 supervisor',
+            'cancel request psm1 supervisor',
 
 
             // PSM2
@@ -247,6 +257,10 @@ class PermissionSeeder extends Seeder
             'unassign psm2 panel 2',
             'predict psm2 panel',
             'remove all psm2 panel ids',
+            'accept psm2 supervisor',
+            'view psm2 supervisor request',
+            'request psm2 supervisor',
+            'cancel request psm2 supervisor',
 
             //ML
             'view ml data',
@@ -268,6 +282,9 @@ class PermissionSeeder extends Seeder
             'view psm1 grade supervision',
             'view psm1 grade panel',
             'store psm1 score',
+            'accept psm1 supervisor',
+            'view psm1 supervisor request',
+
 
             // PSM2
             'view psm2 grade supervision table',
@@ -276,6 +293,8 @@ class PermissionSeeder extends Seeder
             'view psm2 grade supervision',
             'view psm2 grade panel',
             'store psm2 score',
+            'accept psm2 supervisor',
+            'view psm2 supervisor request',
         ];
         $panelRole->syncPermissions($panelPermissions);
 

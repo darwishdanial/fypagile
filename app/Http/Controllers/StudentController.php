@@ -144,6 +144,8 @@ class StudentController extends Controller
 
     public function PSM1StudentRequest(){
 
+        $this->authorize('view psm1 supervisor request');
+
         $id = Auth::user()->id;
 
         $studentsDevelopment = $this->studentService->getStudentRequestSupervisor("PSM1",$id, 1);
@@ -167,7 +169,7 @@ class StudentController extends Controller
 
     public function PSM1SAcceptSupervisor($id)
     {
-        // $this->authorize('assign psm1 supervisor');
+        $this->authorize('accept psm1 supervisor');
 
         $studentId = $id;
         $supervisorId = Auth::user()->id;
@@ -177,7 +179,7 @@ class StudentController extends Controller
 
     public function PSM1RejectSupervisor($id)
     {
-        // $this->authorize('assign psm1 supervisor');
+        $this->authorize('reject psm1 supervisor');
 
         $studentId = $id;
 
@@ -302,6 +304,8 @@ class StudentController extends Controller
 
     public function PSM2StudentRequest(){
 
+        $this->authorize('view psm2 supervisor request');
+
         $id = Auth::user()->id;
 
         $studentsDevelopment = $this->studentService->getStudentRequestSupervisor("PSM2",$id, 1);
@@ -325,7 +329,7 @@ class StudentController extends Controller
 
     public function PSM2SAcceptSupervisor($id)
     {
-        // $this->authorize('assign psm1 supervisor');
+        $this->authorize('accept psm2 supervisor');
 
         $studentId = $id;
         $supervisorId = Auth::user()->id;
@@ -335,7 +339,7 @@ class StudentController extends Controller
 
     public function PSM2RejectSupervisor($id)
     {
-        // $this->authorize('assign psm1 supervisor');
+        $this->authorize('reject psm2 supervisor');
 
         $studentId = $id;
 
