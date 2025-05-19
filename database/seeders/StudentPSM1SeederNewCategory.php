@@ -62,13 +62,13 @@ class StudentPSM1SeederNewCategory extends Seeder
             
             foreach ($studentData as $student) {
                 // Skip if any of the required fields are missing
-                if (empty($student['project_title']) || empty($student['project_area']) || empty($student['project_type'])) {
+                if (empty($student['title']) || empty($student['area']) || empty($student['type'])) {
                     continue;
                 }
                 
                 // Determine the category for this student using ONLY project_area
                 // $category = $this->determineCategory($student['project_area'], $categories);
-                $category = $service->matchCategory($student['project_area']);
+                $category = $service->matchCategory($student['area']);
                 
                 // Initialize counter for this category if it doesn't exist
                 if (!isset($studentsPerCategory[$category])) {
@@ -88,10 +88,10 @@ class StudentPSM1SeederNewCategory extends Seeder
                     'course' => 'SECJ',
                     'matric' =>  $faker->unique()->bothify('A##EC####'),
                     'name' => $name, 
-                    'title' => $student['project_title'],
-                    'project_area' => $student['project_area'],
+                    'title' => $student['title'],
+                    'project_area' => $student['area'],
                     'project_area_ai' => $category,
-                    'project_type' => $student['project_type'],
+                    'project_type' => $student['type'],
                     'email' => $email,
                     'phone' => $faker->phoneNumber,
                     'cohort' => '2019/2023',

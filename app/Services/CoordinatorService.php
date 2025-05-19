@@ -322,7 +322,7 @@ class CoordinatorService
                 logger("Panel ID: {$panelId}, Name: {$panelName[$panelId]}, Primary: {$primaryPanelCounts[$panelId]}, Secondary: {$secondaryPanelCounts[$panelId]}, Total: {$totalCount}");
             }
 
-            dd($results);
+            // dd($results);
 
             return back()->with('success', 'AI Panel assignment successfully.');
             

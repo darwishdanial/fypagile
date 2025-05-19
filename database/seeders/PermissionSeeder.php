@@ -78,6 +78,7 @@ class PermissionSeeder extends Seeder
             'accept psm1 supervisor',
             'request psm1 supervisor',
             'cancel request psm1 supervisor',
+            'view psm1 supervisor request',
             
 
             // PSM2
@@ -132,6 +133,7 @@ class PermissionSeeder extends Seeder
             'accept psm2 supervisor',
             'request psm2 supervisor',
             'cancel request psm2 supervisor',
+            'view psm2 supervisor request',
 
             //ML
             'view ml data',

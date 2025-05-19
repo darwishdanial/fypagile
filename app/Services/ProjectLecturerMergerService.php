@@ -79,13 +79,13 @@ class ProjectLecturerMergerService
     public function getCategories(): array
     {
         return [
-            'Mobile Application' => ['mobile', 'android', 'ios','apps'],
+            'Mobile Application' => ['mobile application','mobile', 'android', 'ios','apps'],
             'Web Development' => ['full','web-based','stack','web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
-            'Machine Learning' => ['text-mining','autonomous','speech','machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
+            'Machine Learning' => ['chatbot','ai-powered','smart','text-mining','autonomous','speech','machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
             'Security' => ['penetration','steganography','identifiable','cyber','passcode','security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
-            'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented'],
+            'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented','virtual'],
             'Game Development' => ['game', 'game development', 'gaming'],
-            'Management' => ['timetable','scheduling','project management', 'management', 'communication', 'schedule', 'booking'],
+            'Management' => ['managing','timetable','scheduling','project management', 'management', 'communication', 'schedule', 'booking'],
             'Education' => ['university','education', 'learning', 'teaching'],
             'Networking' => ['network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
             'Data Science & Analytics' => ['multi-omics','data analytics', 'data visualization', 'data science', 'predictive analysis', 'text mining'],
@@ -102,7 +102,9 @@ class ProjectLecturerMergerService
 
     public function matchCategory(string $projectArea): string 
     {
-        $projectArea = strtolower($projectArea);
+        // $projectArea = strtolower($projectArea);
+        $projectArea = strtolower(trim(preg_replace('/\s+/', ' ', $projectArea)));
+
         $categories = $this->getCategories();
         
         foreach ($categories as $category => $keywords) {
@@ -124,9 +126,9 @@ class ProjectLecturerMergerService
         $matchedCategories = [];
 
         foreach ($panelData as $panel) {
-            $id = $panel['id_project_62base'];
+            $id = $panel['project_id'];
             $panelMap[$id][] = [
-                'lecturer_name' => $panel['lecturer_name'],
+                'lecturer_name' => $panel['name'],
                 'examiner_status' => $panel['examiner_status']
             ];
         }
@@ -134,27 +136,27 @@ class ProjectLecturerMergerService
         $mergedData = [];
 
         foreach ($studentData as $project) {
-            $id = $project['id_project_62base'];
+            $id = $project['project_id'];
             $lecturers = $panelMap[$id] ?? [];
 
-            if (empty($lecturers) || empty($project['project_area'])) {
+            if (empty($lecturers) || empty($project['area'])) {
                 continue;
             }
 
             // Use matchCategory function to determine the category
-            $matchedCategory = $this->matchCategory($project['project_area']);
+            $matchedCategory = $this->matchCategory($project['area']);
 
             if (!isset($matchedCategories[$matchedCategory])) {
                 $matchedCategories[$matchedCategory] = [];
             }
-            $matchedCategories[$matchedCategory][] = $project['project_title'];
+            $matchedCategories[$matchedCategory][] = $project['title'];
 
             foreach ($lecturers as $lecturerInfo) {
                 $mergedData[] = [
                     'id_project_62base' => $id,
-                    'old_project_area' => $project['project_area'],
+                    'old_project_area' => $project['area'],
                     'project_area' => $matchedCategory,
-                    'project_type' => $project['project_type'],
+                    'project_type' => $project['type'],
                     'lecturer_name' => $lecturerInfo['lecturer_name'],
                 ];
             }

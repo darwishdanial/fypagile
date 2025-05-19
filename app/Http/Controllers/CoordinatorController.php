@@ -10,6 +10,8 @@ use App\Services\PanelService;
 use App\Services\SupervisorService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\AiDataExport;
 
 class CoordinatorController extends Controller
 {
@@ -293,6 +295,9 @@ class CoordinatorController extends Controller
 
     public function getMLData(ProjectLecturerMergerService $mergerService)
     {
+
+        // dd($mergerService->mergePanelAndProjectData());
+
         $this->authorize('view ml data');
 
         $projectArea = $mergerService->mergePanelAndProjectDataWithMapping(true);
@@ -322,7 +327,15 @@ class CoordinatorController extends Controller
     {
         $this->authorize('export ai data');
 
-        $this->coordinatorService->exportAiData();
+        
+
+        // $this->coordinatorService->exportAiData();
+
+        try {
+            return Excel::download(new AiDataExport, 'ai_data.xlsx');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function getSampleData(ProjectLecturerMergerService $mergerService)
