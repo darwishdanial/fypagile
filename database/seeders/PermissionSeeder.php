@@ -79,6 +79,7 @@ class PermissionSeeder extends Seeder
             'request psm1 supervisor',
             'cancel request psm1 supervisor',
             'view psm1 supervisor request',
+            'reject psm1 supervisor',
             
 
             // PSM2
@@ -134,6 +135,7 @@ class PermissionSeeder extends Seeder
             'request psm2 supervisor',
             'cancel request psm2 supervisor',
             'view psm2 supervisor request',
+            'reject psm2 supervisor',
 
             //ML
             'view ml data',
@@ -209,6 +211,7 @@ class PermissionSeeder extends Seeder
             'view psm1 supervisor request',
             'request psm1 supervisor',
             'cancel request psm1 supervisor',
+            'reject psm1 supervisor',
 
 
             // PSM2
@@ -263,6 +266,7 @@ class PermissionSeeder extends Seeder
             'view psm2 supervisor request',
             'request psm2 supervisor',
             'cancel request psm2 supervisor',
+            'reject psm2 supervisor',
 
             //ML
             'view ml data',
@@ -286,6 +290,7 @@ class PermissionSeeder extends Seeder
             'store psm1 score',
             'accept psm1 supervisor',
             'view psm1 supervisor request',
+            'reject psm1 supervisor',
 
 
             // PSM2
@@ -297,6 +302,8 @@ class PermissionSeeder extends Seeder
             'store psm2 score',
             'accept psm2 supervisor',
             'view psm2 supervisor request',
+            'view project progress psm2 students',
+            'reject psm2 supervisor',
         ];
         $panelRole->syncPermissions($panelPermissions);
 
