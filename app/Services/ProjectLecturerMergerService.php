@@ -80,21 +80,20 @@ class ProjectLecturerMergerService
     {
         return [
             'Mobile Application' => ['mobile application','mobile', 'android', 'ios','apps'],
-            'Web Development' => ['full','web-based','stack','web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
-            'Machine Learning' => ['chatbot','ai-powered','smart','text-mining','autonomous','speech','machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
+            'Web Development' => ['cross-platform','full','web-based','stack','web', 'html', 'css', 'javascript', 'frontend', 'backend', 'system', 'ui', 'ux', 'application development', 'app development', 'desktop application'],
+            'Machine Learning' => ['automation','chatbot','ai-powered','smart','text-mining','autonomous','speech','machine learning', 'ml', 'ai', 'artificial intelligence', 'processing', 'classification', 'recognition', 'prediction', 'intelligence', 'analytics', 'analysis'],
             'Security' => ['penetration','steganography','identifiable','cyber','passcode','security', 'network security', 'encryption', 'crime', 'fraud', 'scam', 'cryptography', 'biometric'],
-            'Augmented Reality' => ['augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented','virtual'],
-            'Game Development' => ['game', 'game development', 'gaming'],
+            'Augmented Reality' => ['real-world','twin','mapping','metaverse','augmented reality', 'ar', 'vr', 'virtual reality', 'reality', 'augmented','virtual'],
+            'Game Development' => ['sdk','multiplayer','game', 'game development', 'gaming'],
             'Management' => ['managing','timetable','scheduling','project management', 'management', 'communication', 'schedule', 'booking'],
             'Education' => ['university','education', 'learning', 'teaching'],
-            'Networking' => ['network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
+            'Networking' => ['telecom','network', 'networking', 'sdn', 'wireless mesh', 'iot', 'client server', 'embedded computing', 'internet of things', 'logistic'],
             'Data Science & Analytics' => ['multi-omics','data analytics', 'data visualization', 'data science', 'predictive analysis', 'text mining'],
-            'Health & Medical' => ['biology','donation','counseling','sports','health','fitness','wellness','antimicrobial','cancer','disease','diabetes',',health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
-            'Financial & Business' => ['fintech','financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
+            'Health & Medical' => ['sport','biology','donation','counseling','sports','health','fitness','wellness','antimicrobial','cancer','disease','diabetes',',health', 'medical', 'bioinformatics', 'breast cancer', 'lung cancer', 'pneumonia detection', 'drug discovery', 'cancer drug response', 'medical data', 'hospitality'],
+            'Financial & Business' => ['payment','rental','buy','fintech','financial', 'stock price', 'investment', 'business', 'e-commerce', 'financial tech', 'fraud detection', 'economic', 'business - investment', 'ecommerce'],
             'Human-Computer Interaction (HCI)' => ['interactive computer graphics', 'human computer interaction', 'hci', 'gesture recognition', 'graphics design', 'usability'],
             'Computer Vision' => ['computer vision', 'object detection', 'facial detection', 'image denoising', 'real-time computer graphics', 'image filtering', 'realtime computer graphics'],
             'Social & Tourism' => ['social', 'tourism', 'accommodation', 'online drivers', 'public transportation', 'travel', 'tourism planning'],
-            'Multimedia' => ['multimedia', 'multimedia and hci'],
             'UTM' => ['utm', 'multimedia and hci'],
             'Others' => [] 
         ];
@@ -149,7 +148,7 @@ class ProjectLecturerMergerService
             if (!isset($matchedCategories[$matchedCategory])) {
                 $matchedCategories[$matchedCategory] = [];
             }
-            $matchedCategories[$matchedCategory][] = $project['title'];
+            $matchedCategories[$matchedCategory][] = $project['area'];
 
             foreach ($lecturers as $lecturerInfo) {
                 $mergedData[] = [
