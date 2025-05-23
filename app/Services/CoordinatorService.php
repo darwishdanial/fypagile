@@ -131,7 +131,7 @@ class CoordinatorService
                     $areaNumber = $projectAreaMappings[$areaName]->number;
                     
                     // Convert project_type to number (0 for System Development, 1 for Research)
-                    $typeNumber = ($student->project_type === 'Research') ? 1 : 0;
+                    $typeNumber = ($student->project_type === 'Research Based') ? 1 : 0;
                     
                     // Call prediction API
                     $response = Http::timeout(5)->post('http://127.0.0.1:8001/predict-panel', [

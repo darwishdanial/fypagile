@@ -270,7 +270,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     <option value="System Development">
                                         System Development
                                     </option>
-                                    <option value="Research">Research</option>
+                                    <option value="Research Based">Research Based</option>
                                 </select>
                                 {errors.project_type && (
                                     <p className="text-red-500 col-start-2 col-span-5">
