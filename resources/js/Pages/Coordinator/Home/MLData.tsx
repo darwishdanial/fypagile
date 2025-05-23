@@ -93,7 +93,7 @@ export default function MLData() {
             {/* Main Content */}
             <main className="w-full">
                 <div className="py-6 min-w-full">
-                    <div className="max-w-7xl">
+                    <div className="w-full">
                         <div className="flex justify-between">
                             <h1 className="text-2xl font-semibold text-gray-900 ml-2">
                                 Machine Learning Data Overview
