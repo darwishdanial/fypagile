@@ -237,7 +237,13 @@ class PanelService
                 $data['password'] = Hash::make($data['password']);
             }
     
-            User::create($data);
+            $user = User::create($data);
+
+            if($data['role'] === 1) {
+                $user->assignRole('Coordinator');
+            } else {
+                $user->assignRole('Panel');
+            }
     
             return redirect()->back()->with('success', 'Panel added successfully!');
 
@@ -254,6 +260,12 @@ class PanelService
         try {
 
             $panel = User::findOrFail($id);
+
+            if($data['role'] === 1) {
+                $panel->assignRole('Coordinator');
+            } else {
+                $panel->assignRole('Panel');
+            }
 
             if (!isset($data['password']) || empty($data['password'])) {
                 unset($data['password']);
