@@ -29,22 +29,22 @@ class StudentPSM2SeederNew extends Seeder
 
             foreach ($limitedStudentData as $student) {
 
-                if (empty($student['project_title']) || empty($student['project_area']) || empty($student['project_type'])) {
+                if (empty($student['title']) || empty($student['area']) || empty($student['type'])) {
                     continue;
                 }
 
                 $name = $faker->name;
                 $email = strtolower(str_replace(' ', '.', $name)) . '@graduate.utm.my';
-                $category = $service->matchCategory($student['project_area']);
+                $category = $service->matchCategory($student['area']);
 
                 StudentPSM2::create([
                     'course' => 'SECJ',
                     'matric' =>  $faker->unique()->bothify('A##EC####'),
                     'name' => $name, 
-                    'title' => $student['project_title'],
-                    'project_area' => $student['project_area'],
+                    'title' => $student['title'],
+                    'project_area' => $student['area'],
                     'project_area_ai' => $category,
-                    'project_type' => $student['project_type'],
+                    'project_type' => $student['type'],
                     'email' => $email,
                     'phone' => $faker->phoneNumber,
                     'cohort' => '2019/2020',

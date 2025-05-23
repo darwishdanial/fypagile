@@ -30,7 +30,7 @@ class StudentPSM1SeederNewCategory extends Seeder
 
             // Define how many students to create per category
             $studentsPerCategoryLimit = [
-                'Mobile Application' => 10, //+2 -
+                'Mobile Application' => 13, //+2 -
                 'Web Development' => 15, //+2 -
                 'Machine Learning' => 25, //+2 
                 'Security' => 15, //+2 
