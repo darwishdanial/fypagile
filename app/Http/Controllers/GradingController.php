@@ -105,7 +105,7 @@ class GradingController extends Controller
 
     public function PSM1DeleteScore($id){
 
-        // $this->authorize('delete psm1 score');
+        $this->authorize('delete psm1 score');
 
         return $this->gradingService->deleteScore($id);
 
@@ -196,7 +196,7 @@ class GradingController extends Controller
 
         public function PSM2DeleteScore($id){
 
-        // $this->authorize('delete psm2 score');
+        $this->authorize('delete psm2 score');
 
         return $this->gradingService->deleteScore($id);
 

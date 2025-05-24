@@ -162,7 +162,7 @@ class ProjectLecturerMergerService
 
         // dd($mergedData);
 
-        dd($matchedCategories);
+        // dd($matchedCategories);
 
         return $mergedData;
     }
