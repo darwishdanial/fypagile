@@ -161,6 +161,11 @@ export function CoordinatorSidebar() {
             label: "Grade PSM2",
             link: route("coordinator.PSM2.gradePSM2"),
         },
+                {
+            icon: <ListChecks />,
+            label: "Grade PSM2 Coordinator",
+            link: route("coordinator.PSM2.gradePSM2Coordinator"),
+        },
         {
             icon: <UsersRound />,
             label: "Student Request",

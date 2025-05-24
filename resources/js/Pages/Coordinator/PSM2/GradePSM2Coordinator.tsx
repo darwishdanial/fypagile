@@ -39,6 +39,7 @@ interface Rubric {
     isArchivePSM1: boolean;
     isSupervisorPSM2: boolean;
     isPanelPSM2: boolean;
+    progress: string;
     criteria: Criteria[] | null;
 }
 
@@ -55,7 +56,7 @@ interface Flash {
     warning?: string[][];
 }
 
-export default function GradePSM1Coordinator() {
+export default function GradePSM2Coordinator() {
     const { props } = usePage<{
         students: Student[];
         rubrics: Rubric[];
@@ -442,7 +443,7 @@ export default function GradePSM1Coordinator() {
                 studentType={studentType}
             /> */}
 
-            <ImportStudentModal
+            {/* <ImportStudentModal
                 isOpen={isImportModalOpen}
                 onClose={() => setIsImoprtModalOpen(false)}
                 studentType={studentType}
@@ -452,7 +453,7 @@ export default function GradePSM1Coordinator() {
                 isOpen={isImportErrorModalOpen}
                 onClose={() => setIsImportErrorModalOpen(false)}
                 message={props.flash?.warning}
-            />
+            /> */}
         </div>
     );
 }
