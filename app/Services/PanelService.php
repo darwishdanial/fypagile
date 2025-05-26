@@ -289,7 +289,7 @@ class PanelService
         try {
 
             $panel = User::findOrFail($id);
-            $panel->forceDelete();
+            $panel->delete();
 
             return redirect()->back()->with('success', 'Panel deleted successfully.');
 
@@ -309,17 +309,21 @@ class PanelService
             
             if ($psmType === 'PSM1') {
                 $panel->update([
+                    'role' => 2,
                     'isArchivePSM1' => 1,
                     'isSupervisorPSM1' => 0,
                     'isPanelPSM1' => 0,
                 ]);
             } else {
                 $panel->update([
+                    'role' => 2,
                     'isArchivePSM2' => 1,
                     'isSupervisorPSM2' => 0,
                     'isPanelPSM2' => 0,
                 ]);
             }
+
+            $panel->assignRole('Panel');
 
             return redirect()->back()->with('success', 'Panel archived successfully.');
 
