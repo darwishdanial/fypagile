@@ -217,6 +217,7 @@ class PanelController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'role' => 'required|integer',
             'matricNo' => 'required|string|max:50|unique:users,matricNo,' . $id,
             'email' => 'required|max:255|unique:users,email,' . $id,
             'username' => 'required|string|max:100|unique:users,username,' . $id,
