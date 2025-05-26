@@ -496,6 +496,7 @@ export default function ListPanels() {
                                     >
                                         {panel.username}
                                     </td>
+
                                     <td
                                         className="px-4 py-2 cursor-pointer "
                                         onClick={() =>
@@ -508,7 +509,7 @@ export default function ListPanels() {
                                     >
                                         {panel.role === 1 ? (
                                             <div className="flex items-center justify-center">
-                                                {panel.isSupervisorPSM1 && (
+                                                {panel.role && (
                                                     <Check
                                                         size={20}
                                                         className="text-green-600"
@@ -589,7 +590,10 @@ export default function ListPanels() {
                                                     e.stopPropagation();
                                                     setSelectedPanel(panel);
                                                     setIsEditModalOpen(true);
-                                                    console.log("role", panel.role);
+                                                    console.log(
+                                                        "role",
+                                                        panel.role
+                                                    );
                                                 }}
                                                 title="Edit Panels"
                                             >
