@@ -221,7 +221,7 @@ class StudentController extends Controller
     {
         $this->authorize('delete psm2 students');
 
-        return $this->studentService->deleteStudent($id, "PSM1");
+        return $this->studentService->deleteStudent($id, "PSM2");
 
     }
 
