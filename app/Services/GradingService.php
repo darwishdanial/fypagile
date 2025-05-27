@@ -26,11 +26,31 @@ class GradingService
 
     public function getRubricsCoordinator(string $psmType)
     {
-        return Rubric::with('criteria')
+        $studentModel = $psmType === 'PSM1' ? StudentPSM1::class : StudentPSM2::class;
+
+        $studentsResearch = $studentModel::where('project_type', 'Research Based')->get();
+        $studentsDevelopment = $studentModel::where('project_type', 'System Development')->get();
+
+        $rubricsDevelopment = Rubric::with('criteria')
             ->where('PSMType', $psmType)
+            ->where('rubricType', 1)
             ->where('roleType', 1)
             ->where('isEnable', true)
             ->get();
+        
+        $rubricsResearch = Rubric::with('criteria')
+            ->where('PSMType', $psmType)
+            ->where('rubricType', 2)
+            ->where('roleType', 1)
+            ->where('isEnable', true)
+            ->get();
+
+        return [
+            'studentsDevelopment' => $studentsDevelopment,
+            'studentResearch' => $studentsResearch,
+            'rubricsDevelopment' => $rubricsDevelopment,
+            'rubricsResearch' => $rubricsResearch
+        ];
     }
 
     public function getAllStudents(string $psmType)

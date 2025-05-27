@@ -58,24 +58,27 @@ interface Flash {
 
 export default function GradePSM2Coordinator() {
     const { props } = usePage<{
-        students: Student[];
-        rubrics: Rubric[];
+        studentsDevelopment: Student[];
+        studentResearch: Student[];
+        rubricsDevelopment: Rubric[];
+        rubricsResearch: Rubric[];
         flash?: Flash;
         id: number;
     }>();
 
-    const students = props.students;
-    const rubrics = props.rubrics;
+    const studentsDevelopment = props.studentsDevelopment;
+    const studentResearch = props.studentResearch;
+    const rubricsDevelopment = props.rubricsDevelopment;
+    const rubricsResearch = props.rubricsResearch;
     const studentType = "PSM2";
     const panelId = props.id;
 
+    const [showStudentResearch, setStudentResearch] = useState(false);
     const [expandedRow, setExpandedRow] = useState<number | null>(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isImportErrorModalOpen, setIsImportErrorModalOpen] = useState(false);
-    const [selectedStudent, setSelectedStudent] = useState<number | null>(
-        null
-    );
+    const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
     const [isImportModalOpen, setIsImoprtModalOpen] = useState(false);
 
     // State for selected students
@@ -83,24 +86,22 @@ export default function GradePSM2Coordinator() {
     const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
     const [selectedRubric, setSelectedRubric] = useState<Rubric | null>(null);
 
-    const handleRestore = (id: number) => {
+    const progressOptions = [
+        "Progress 1",
+        "Progress 2",
+        "Final Progress",
+        "Correction",
+    ];
+
+    const [selectedProgress, setSelectedProgress] =
+        useState<string>("Progress 1");
+
+        const handleProjectProgress = (matric: string) => {
         router.post(
-            route("coordinator.PSM1.students.restore", id),
+            route("coordinator.PSM2.students.projectProgress", matric),
             {},
             { preserveScroll: true }
         );
-    };
-
-    const handleDelete = (id: number) => {
-        const isConfirmed = confirm(
-            "Are you sure you want to delete this student? This action cannot be undone."
-        );
-
-        if (isConfirmed) {
-            router.delete(route("coordinator.PSM1.students.delete", id), {
-                preserveScroll: true,
-            });
-        }
     };
 
     // State for pagination & search
@@ -108,8 +109,17 @@ export default function GradePSM2Coordinator() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
+    const filteredRubrics = (
+        showStudentResearch ? rubricsResearch : rubricsDevelopment
+    ).filter(
+        (rubric) =>
+            selectedProgress === "All" || rubric.progress === selectedProgress
+    );
+
     // Filter students based on search query
-    const filteredStudents = students.filter(
+    const filteredStudents = (
+        showStudentResearch ? studentResearch : studentsDevelopment
+    ).filter(
         (student) =>
             student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             student.matric.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -152,6 +162,11 @@ export default function GradePSM2Coordinator() {
         setSelectedStudents([]);
     }, [searchQuery]);
 
+    // Reset to first page when changing progress filter
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedProgress]);
+
     const [flashMessage, setFlashMessage] = useState<{
         type: "success" | "error";
         message: string;
@@ -179,7 +194,7 @@ export default function GradePSM2Coordinator() {
     const totalActiveStudents = filteredStudents.length;
     const selectedCount = selectedStudents.length;
 
-    const totalColumns = 5 + rubrics.length;
+    const totalColumns = 5 + filteredRubrics.length;
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
@@ -196,6 +211,59 @@ export default function GradePSM2Coordinator() {
             )}
 
             <div className="w-full">
+                <div className="flex items-center justify-between">
+                    <div className="mx-4 my-4">
+                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
+                            <button
+                                type="button"
+                                className={`p-1 px-3 transition  text-center ${
+                                    !showStudentResearch
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                        : "bg-white hover:bg-gray-100 border-r "
+                                }`}
+                                onClick={() => {
+                                    setStudentResearch(false);
+                                }}
+                            >
+                                Development
+                            </button>
+                            <button
+                                type="button"
+                                className={`p-1 px-3 transition text-center ${
+                                    showStudentResearch
+                                        ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                        : "bg-white hover:bg-gray-100"
+                                }`}
+                                onClick={() => {
+                                    setStudentResearch(true);
+                                }}
+                            >
+                                Research
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="mx-4 my-4">
+                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
+                            {progressOptions.map((progress) => (
+                                <button
+                                    key={progress}
+                                    type="button"
+                                    className={`p-1 px-3 transition text-center ${
+                                        selectedProgress === progress
+                                            ? "bg-blue-400 hover:bg-blue-500 transition text-white"
+                                            : "bg-white hover:bg-gray-100"
+                                    }`}
+                                    onClick={() =>
+                                        setSelectedProgress(progress)
+                                    }
+                                >
+                                    {progress}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
                 {/* Search Input */}
                 <div className="flex justify-between mx-4 mt-3">
                     <div className="flex">
@@ -245,7 +313,7 @@ export default function GradePSM2Coordinator() {
                             <th className="px-4 py-2 text-left border-b border-gray-300">
                                 Name
                             </th>
-                            {rubrics.map((rubric) => (
+                            {filteredRubrics.map((rubric) => (
                                 <th
                                     key={rubric.id}
                                     className="px-4 py-2 border-b border-gray-300"
@@ -315,7 +383,7 @@ export default function GradePSM2Coordinator() {
                                     >
                                         {student.name}
                                     </td>
-                                    {rubrics.map((rubric) => (
+                                    {filteredRubrics.map((rubric) => (
                                         <td
                                             key={`${student.id}-${rubric.id}`}
                                             className="px-4 py-2"
@@ -326,7 +394,9 @@ export default function GradePSM2Coordinator() {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     // Handle rubric editing (you can add your logic here)
-                                                    setSelectedStudent(student.id);
+                                                    setSelectedStudent(
+                                                        student.id
+                                                    );
                                                     setSelectedRubric(rubric);
                                                     setIsGradeModalOpen(true);
                                                     console.log(
@@ -375,9 +445,20 @@ export default function GradePSM2Coordinator() {
                                                     </strong>{" "}
                                                     {student.cohort} <br />
                                                     <strong>
-                                                        Session:
-                                                    </strong>{" "}
-                                                    {student.sessionpsm} <br />
+                                                        Project Progress:
+                                                    </strong>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleProjectProgress(
+                                                                student.matric
+                                                            );
+                                                        }}
+                                                        className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                                                    >
+                                                        click here
+                                                    </a>
                                                 </div>
                                             </div>
                                         </td>
@@ -429,7 +510,7 @@ export default function GradePSM2Coordinator() {
                 rubric={selectedRubric}
                 psmType="PSM2"
                 studentId={selectedStudent}
-                userType = {1}
+                userType={1}
                 panelId={panelId}
             />
 
@@ -443,7 +524,7 @@ export default function GradePSM2Coordinator() {
                 studentType={studentType}
             /> */}
 
-            {/* <ImportStudentModal
+            <ImportStudentModal
                 isOpen={isImportModalOpen}
                 onClose={() => setIsImoprtModalOpen(false)}
                 studentType={studentType}
@@ -453,7 +534,7 @@ export default function GradePSM2Coordinator() {
                 isOpen={isImportErrorModalOpen}
                 onClose={() => setIsImportErrorModalOpen(false)}
                 message={props.flash?.warning}
-            /> */}
+            />
         </div>
     );
 }

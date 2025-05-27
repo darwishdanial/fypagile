@@ -83,13 +83,10 @@ class GradingController extends Controller
 
         $id = Auth::user()->id;
 
-        $students = StudentPSM1::all();
-
-        $rubrics = $this->gradingService->getRubricsCoordinator('PSM1');
+        $gradeData = $this->gradingService->getRubricsCoordinator('PSM1');
 
         return Inertia::render('Coordinator/PSM1/GradePSM1Coordinator',[
-            'students' => $students,
-            'rubrics' => $rubrics,
+            ...$gradeData,
             'id' => $id
         ]);
     }
@@ -173,13 +170,10 @@ class GradingController extends Controller
 
         $id = Auth::user()->id;
 
-        $students = StudentPSM2::all();
-
-        $rubrics = $this->gradingService->getRubricsCoordinator('PSM2');
+        $gradeData = $this->gradingService->getRubricsCoordinator('PSM2');
 
         return Inertia::render('Coordinator/PSM2/GradePSM2Coordinator',[
-            'students' => $students,
-            'rubrics' => $rubrics,
+             ...$gradeData,
             'id' => $id
         ]);
     }
