@@ -310,7 +310,7 @@ export default function StudentRequest() {
                                 {expandedRow === student.id && (
                                     <tr className="bg-gray-50 border-b border-gray-300">
                                         <td
-                                            colSpan={4}
+                                            colSpan={5}
                                             className="px-4 py-2 text-left"
                                         >
                                             <div className="grid grid-cols-7 gap-4">
