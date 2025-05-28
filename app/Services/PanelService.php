@@ -342,9 +342,17 @@ class PanelService
             $panel = User::findOrFail($id);
         
             if ($psmType === 'PSM1') {
-                $panel->update(['isArchivePSM1' => 0]);
+                $panel->update([
+                    'isArchivePSM1' => 0,
+                    'isSupervisorPSM1' => 1,
+                    'isPanelPSM1' => 1,
+                ]);
             } else {
-                $panel->update(['isArchivePSM2' => 0]);
+                $panel->update([
+                    'isArchivePSM2' => 0,
+                    'isSupervisorPSM2' => 1,
+                    'isPanelPSM2' => 1,
+                ]);
             }
     
             return back()->with('success', 'Panel restore successfully.');
