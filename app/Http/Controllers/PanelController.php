@@ -43,6 +43,7 @@ class PanelController extends Controller
         return Inertia::render('Coordinator/PSM1/ListPanels', [
             'panels' => $panelActive,
             'archivedPanels' => $panelArchive,
+            'currenrtUser' => Auth::user()->id,
         ]);
     }
 
@@ -158,6 +159,7 @@ class PanelController extends Controller
         return Inertia::render('Coordinator/PSM2/ListPanels', [
             'panels' => $panelActive,
             'archivedPanels' => $panelArchive,
+            'currenrtUser' => Auth::user()->id,
         ]);
     }
 

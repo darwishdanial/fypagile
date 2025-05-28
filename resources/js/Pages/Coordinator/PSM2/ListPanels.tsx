@@ -45,10 +45,12 @@ export default function ListPanels() {
         panels: Panel[];
         archivedPanels: Panel[];
         flash?: Flash;
+        currenrtUser: number;
     }>();
 
     const panels = props.panels ?? [];
     const archivedPanels = props.archivedPanels ?? [];
+    const auth = props.currenrtUser;
     const panelType = "PSM2";
 
     const [showArchived, setShowArchived] = useState(false);
@@ -608,6 +610,7 @@ export default function ListPanels() {
                                                                 panel.id
                                                             );
                                                         }}
+                                                        disabled={panel.id === auth}
                                                         title="Archive Panels"
                                                     >
                                                         <Archive
