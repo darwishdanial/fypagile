@@ -97,6 +97,7 @@ class StudentPSM1SeederNewCategory extends Seeder
                     'cohort' => '2019/2023',
                     'sessionpsm' => '2022/2023',
                     'supervisorId' => null,
+                    'sagile_link' => 'https://sagile.software/',
                 ]);
                 
                 // Increment the count for this category

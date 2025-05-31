@@ -50,6 +50,8 @@ class StudentPSM2SeederNew extends Seeder
                     'cohort' => '2019/2020',
                     'sessionpsm' => '2022/2023',
                     'supervisorId' => null,
+                    'sagile_link' => 'https://sagile.software/',
+                    'github_link' => 'https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools',
                 ]);
             }
 
