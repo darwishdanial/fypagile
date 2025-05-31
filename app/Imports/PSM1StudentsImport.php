@@ -46,6 +46,7 @@ class PSM1StudentsImport implements ToModel, WithValidation, SkipsOnFailure, Wit
             'cohort'        => $row['cohort'],
             'phone'         => $row['phone'],
             'email'         => $row['email'],
+            'sagile_link'         => $row['sagile_link'],
         ]);
     }
 
@@ -57,11 +58,12 @@ class PSM1StudentsImport implements ToModel, WithValidation, SkipsOnFailure, Wit
             'course'        => 'required|string|max:255',
             'title'         => 'required|string|max:255',
             'project_area'  => 'required|string|max:255',
-            'project_type'  => ['required', Rule::in(['System Development', 'Research'])],
+            'project_type'  => ['required', Rule::in(['System Development', 'Research Based'])],
             'sessionpsm'    => 'required|string|max:50',
             'cohort'        => 'required|string|max:50',
             'phone'         => 'required|string|max:20',
             'email'         => 'required|unique:students_psm1,email|max:255',
+            'sagile_link'   => 'required|string',
         ];
     }
 
@@ -107,6 +109,9 @@ class PSM1StudentsImport implements ToModel, WithValidation, SkipsOnFailure, Wit
             'email.required' => 'Email is required.',
             'email.unique' => 'Email already exists.',
             'email.max' => 'Email cannot exceed 255 characters.',
+
+            'sagile_link.required' => 'SAgile link is required.',
+            'sagile_link.string' => 'SAgile link must be a valid string.',
         ];        
     }
 

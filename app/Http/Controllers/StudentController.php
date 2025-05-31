@@ -35,6 +35,8 @@ class StudentController extends Controller
         $students = $this->studentService->getStudents("PSM1");
         $archivedStudents = $this->studentService->getStudentsArchive("PSM1");
 
+        // dd($students[0]);
+
         return Inertia::render('Coordinator/PSM1/ListStudents',[
             'students' => $students,
             'archivedStudents' => $archivedStudents
@@ -77,10 +79,11 @@ class StudentController extends Controller
             'cohort' => 'required|string|max:50',
             'phone' => 'required|string|max:20',
             'email' => 'required|email|unique:students_psm1,email|max:255',
-            'project_type' => ['required', Rule::in(['System Development', 'Research'])],
+            'project_type' => ['required', Rule::in(['System Development', 'Research Based'])],
             'project_area' => 'required|string|max:255',
             'title' => 'required|string|max:255',
             'sessionpsm' => 'required|string|max:50',
+            'sagile_link' => 'required|string',
         ]);
 
         $project_area_ai = $service->matchCategory($validated['project_area']);
@@ -103,10 +106,11 @@ class StudentController extends Controller
             'cohort' => 'required|string|max:50',
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255|unique:students_psm1,email,' . $id,
-            'project_type' => ['required', Rule::in(['System Development', 'Research'])],
+            'project_type' => ['required', Rule::in(['System Development', 'Research Based'])],
             'project_area' => 'required|string|max:255',
             'title' => 'required|string|max:255',
             'sessionpsm' => 'required|string|max:50',
+            'sagile_link' => 'required|string',
         ]);
 
         return $this->studentService->updateStudent( $request->all(),$id, "PSM1");
@@ -129,11 +133,11 @@ class StudentController extends Controller
 
     }
 
-    public function getStudentSample(){
+    public function getStudentSamplePSM1(){
 
         // $this->studentService->getStudentSample();
 
-        $filePath = 'import_student_sample_data.xlsx'; // Update to CSV if needed
+        $filePath = 'import_student_sample_data_PSM1.xlsx'; // Update to CSV if needed
         
         if (!Storage::disk('public')->exists($filePath)) {
             return redirect()->back()->with('error', 'Error cannot find the file');
@@ -238,10 +242,12 @@ class StudentController extends Controller
             'cohort' => 'required|string|max:50',
             'phone' => 'required|string|max:20',
             'email' => 'required|email|unique:students_psm1,email|max:255',
-            'project_type' => ['required', Rule::in(['System Development', 'Research'])],
+            'project_type' => ['required', Rule::in(['System Development', 'Research Based'])],
             'project_area' => 'required|string|max:255',
             'title' => 'required|string|max:255',
             'sessionpsm' => 'required|string|max:50',
+            'sagile_link' => 'required|string',
+            'github_link' => 'required|string',
         ]);
 
         $project_area_ai = $service->matchCategory($validated['project_area']);
@@ -267,10 +273,12 @@ class StudentController extends Controller
             'cohort' => 'required|string|max:50',
             'phone' => 'required|string|max:20',
             'email' => 'required|max:255|unique:students_psm1,email,' . $id,
-            'project_type' => ['required', Rule::in(['System Development', 'Research'])],
+            'project_type' => ['required', Rule::in(['System Development', 'Research Based'])],
             'project_area' => 'required|string|max:255',
             'title' => 'required|string|max:255',
             'sessionpsm' => 'required|string|max:50',
+            'sagile_link' => 'required|string',
+            'github_link' => 'required|string',
         ]);
 
         return $this->studentService->updateStudent( $request->all(),$id, "PSM2");
@@ -293,13 +301,17 @@ class StudentController extends Controller
 
     }
 
-    public function PSM2ProjectProgress($matric){
+    public function getStudentSamplePSM2(){
 
-        $this->authorize('view project progress psm2 students');
+        // $this->studentService->getStudentSample();
 
-        $this->studentService->getProjectProgress($matric);
+        $filePath = 'import_student_sample_data_PSM2.xlsx'; // Update to CSV if needed
         
-        // dd($matric);
+        if (!Storage::disk('public')->exists($filePath)) {
+            return redirect()->back()->with('error', 'Error cannot find the file');
+        }
+    
+        return response()->download(storage_path("app/public/$filePath"));
     }
 
     public function PSM2StudentRequest(){

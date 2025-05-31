@@ -34,7 +34,8 @@ class StudentPSM1 extends Model
         'panel2Id_ai',
         'panelProposalId',
         'panelProposal2Id',
-        'svReq'
+        'svReq',
+        'sagile_link',
     ];
 
     public function score(){

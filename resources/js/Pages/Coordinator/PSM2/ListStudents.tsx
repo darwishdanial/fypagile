@@ -29,6 +29,8 @@ interface Student {
     sv_name?: string; // Supervisor Name
     panel_name?: string; // Panel 1 Name
     panel2_name?: string; // Panel 2 Name
+    sagile_link: string;
+    github_link: string;
 }
 
 interface Flash {
@@ -71,12 +73,18 @@ export default function ListStudents() {
         );
     };
 
-    const handleProjectProgress = (matric: string) => {
-        router.post(
-            route("coordinator.PSM2.students.projectProgress", matric),
-            {},
-            { preserveScroll: true }
-        );
+    // const handleProjectProgress = (sagile_link: string) => {
+    //     router.post(
+    //         route("coordinator.PSM2.students.projectProgress", sagile_link),
+    //         {},
+    //         { preserveScroll: true }
+    //     );
+    // };
+
+    const openLink = (link: string) => {
+        if (link) {
+            window.open(link, '_blank');
+        }
     };
 
     // Handle bulk archive of selected students
@@ -651,6 +659,21 @@ export default function ListStudents() {
                                                     {student.panel2_name ||
                                                         "N/A"}{" "}
                                                     <br />
+                                                    <strong>
+                                                        Github:
+                                                    </strong>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            openLink(
+                                                                student.github_link
+                                                            );
+                                                        }}
+                                                        className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                                                    >
+                                                        click here
+                                                    </a>
                                                 </div>
                                                 <div className="col-span-3">
                                                     <strong>Email:</strong>{" "}
@@ -666,8 +689,8 @@ export default function ListStudents() {
                                                         href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            handleProjectProgress(
-                                                                student.matric
+                                                            openLink(
+                                                                student.sagile_link
                                                             );
                                                         }}
                                                         className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"

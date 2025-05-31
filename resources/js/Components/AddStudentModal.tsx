@@ -37,6 +37,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
         project_area: "",
         title: "",
         sessionpsm: "",
+        sagile_link: "",
+        github_link: "",
     });
 
     const [processing, setIsProcessing] = useState(false);
@@ -89,6 +91,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     project_area: "",
                     title: "",
                     sessionpsm: "",
+                    sagile_link: "",
+                    github_link: "",
                 });
             },
         });
@@ -270,7 +274,9 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     <option value="System Development">
                                         System Development
                                     </option>
-                                    <option value="Research Based">Research Based</option>
+                                    <option value="Research Based">
+                                        Research Based
+                                    </option>
                                 </select>
                                 {errors.project_type && (
                                     <p className="text-red-500 col-start-2 col-span-5">
@@ -338,6 +344,48 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                     </p>
                                 )}
                             </div>
+
+                            <div className="grid grid-cols-5 mb-4 items-center">
+                                <label className="col-span-1 font-medium">
+                                    SAgile link:
+                                </label>
+                                <input
+                                    title="SAgile link"
+                                    type="text"
+                                    name="sagile_link"
+                                    value={data.sagile_link}
+                                    onChange={handleChange}
+                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    required
+                                />
+                                {errors.sagile_link && (
+                                    <p className="text-red-500 col-start-2 col-span-5">
+                                        {errors.sagile_link}
+                                    </p>
+                                )}
+                            </div>
+
+                            {studentType === "PSM2" && (
+                                <div className="grid grid-cols-5 mb-4 items-center">
+                                    <label className="col-span-1 font-medium">
+                                        GitHub link:
+                                    </label>
+                                    <input
+                                        title="GitHub link"
+                                        type="text"
+                                        name="github_link"
+                                        value={data.github_link}
+                                        onChange={handleChange}
+                                        className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                        required
+                                    />
+                                    {errors.github_link && (
+                                        <p className="text-red-500 col-start-2 col-span-5">
+                                            {errors.github_link}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </form>
                 </div>

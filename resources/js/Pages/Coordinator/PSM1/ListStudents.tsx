@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { usePage, router } from "@inertiajs/react";
-import { Pencil, Archive, ArchiveRestore, Trash, FileDown, CirclePlus } from "lucide-react";
+import {
+    Pencil,
+    Archive,
+    ArchiveRestore,
+    Trash,
+    FileDown,
+    CirclePlus,
+} from "lucide-react";
 import { route } from "ziggy-js";
 import AddStudentModal from "../../../Components/AddStudentModal";
 import EditStudentModal from "../../../Components/EditStudentModal";
@@ -24,6 +31,7 @@ interface Student {
     panel_name?: string; // Panel 1 Name
     panel2_name?: string; // Panel 2 Name
     panel_proposal_name?: string; // Proposal Panel Name
+    sagile_link: string;
 }
 
 interface Flash {
@@ -68,23 +76,31 @@ export default function ListStudents() {
         );
     };
 
+    const openLink = (link: string) => {
+        if (link) {
+            window.open(link, '_blank');
+        }
+    };
+
     // Handle bulk archive of selected students
     const handleBulkArchive = () => {
         if (selectedStudents.length === 0) return;
-        
-        const isConfirmed = confirm(`Are you sure you want to archive ${selectedStudents.length} selected students?`);
-        
+
+        const isConfirmed = confirm(
+            `Are you sure you want to archive ${selectedStudents.length} selected students?`
+        );
+
         if (isConfirmed) {
             router.post(
                 route("coordinator.PSM1.students.bulkArchive"),
                 { ids: selectedStudents },
-                { 
+                {
                     preserveScroll: true,
                     onSuccess: () => {
                         setSelectedStudents([]);
                         setSelectAll(false);
                         setSelectAllPages(false);
-                    }
+                    },
                 }
             );
         }
@@ -99,7 +115,9 @@ export default function ListStudents() {
     };
 
     const handleDelete = (id: number) => {
-        const isConfirmed = confirm("Are you sure you want to delete this student? This action cannot be undone.");
+        const isConfirmed = confirm(
+            "Are you sure you want to delete this student? This action cannot be undone."
+        );
 
         if (isConfirmed) {
             router.delete(route("coordinator.PSM1.students.delete", id), {
@@ -113,7 +131,7 @@ export default function ListStudents() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const showType = (showTest ? "True" : "False");
+    const showType = showTest ? "True" : "False";
 
     // Filter students based on search query
     const filteredStudents = (
@@ -150,16 +168,20 @@ export default function ListStudents() {
     const handleSelectAllOnPage = () => {
         if (selectAll) {
             // If currently all selected on page, deselect them
-            const currentPageIds = paginatedStudents.map(student => student.id);
-            setSelectedStudents(prev => 
-                prev.filter(id => !currentPageIds.includes(id))
+            const currentPageIds = paginatedStudents.map(
+                (student) => student.id
+            );
+            setSelectedStudents((prev) =>
+                prev.filter((id) => !currentPageIds.includes(id))
             );
         } else {
             // Select all on current page (preserving other selections)
-            const currentPageIds = paginatedStudents.map(student => student.id);
-            setSelectedStudents(prev => {
+            const currentPageIds = paginatedStudents.map(
+                (student) => student.id
+            );
+            setSelectedStudents((prev) => {
                 const newSelection = [...prev];
-                currentPageIds.forEach(id => {
+                currentPageIds.forEach((id) => {
                     if (!newSelection.includes(id)) {
                         newSelection.push(id);
                     }
@@ -178,7 +200,7 @@ export default function ListStudents() {
             setSelectAll(false);
         } else {
             // Select all across all pages
-            const allIds = filteredStudents.map(student => student.id);
+            const allIds = filteredStudents.map((student) => student.id);
             setSelectedStudents(allIds);
             setSelectAllPages(true);
             setSelectAll(true);
@@ -187,9 +209,9 @@ export default function ListStudents() {
 
     // Handle individual row selection
     const handleSelectRow = (id: number) => {
-        setSelectedStudents(prev => {
+        setSelectedStudents((prev) => {
             if (prev.includes(id)) {
-                return prev.filter(studentId => studentId !== id);
+                return prev.filter((studentId) => studentId !== id);
             } else {
                 return [...prev, id];
             }
@@ -199,8 +221,8 @@ export default function ListStudents() {
     // Update selectAll state based on current page selections
     useEffect(() => {
         if (paginatedStudents.length > 0) {
-            const allCurrentPageSelected = paginatedStudents.every(
-                student => selectedStudents.includes(student.id)
+            const allCurrentPageSelected = paginatedStudents.every((student) =>
+                selectedStudents.includes(student.id)
             );
             setSelectAll(allCurrentPageSelected);
         } else {
@@ -267,7 +289,9 @@ export default function ListStudents() {
                                         ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100 border-r "
                                 }`}
-                                onClick={() => {setShowArchived(false), setShowTest(false)}}
+                                onClick={() => {
+                                    setShowArchived(false), setShowTest(false);
+                                }}
                             >
                                 Active
                             </button>
@@ -278,7 +302,9 @@ export default function ListStudents() {
                                         ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100"
                                 }`}
-                                onClick={() => {setShowArchived(true), setShowTest(true)}}
+                                onClick={() => {
+                                    setShowArchived(true), setShowTest(true);
+                                }}
                             >
                                 Archived
                             </button>
@@ -295,7 +321,7 @@ export default function ListStudents() {
                                 title="Archive Selected Panels"
                             >
                                 <div className="flex">
-                                    <Archive className="mr-2"/> 
+                                    <Archive className="mr-2" />
                                     Archive Selected ({selectedStudents.length})
                                 </div>
                             </button>
@@ -306,8 +332,8 @@ export default function ListStudents() {
                             onClick={() => setIsAddModalOpen(true)}
                             title="Add Student"
                         >
-                           <div className="flex">
-                                <CirclePlus className="mr-2"/> 
+                            <div className="flex">
+                                <CirclePlus className="mr-2" />
                                 Add Students
                             </div>
                         </button>
@@ -318,7 +344,7 @@ export default function ListStudents() {
                             title="Import Students"
                         >
                             <div className="flex">
-                                <FileDown className="mr-2"/> 
+                                <FileDown className="mr-2" />
                                 Import Students
                             </div>
                         </button>
@@ -344,8 +370,6 @@ export default function ListStudents() {
                                 <option value={50}>50</option>
                             </select>
                         </label>
-
-                        
                     </div>
 
                     <input
@@ -365,14 +389,21 @@ export default function ListStudents() {
                     <div className="flex items-center mx-4">
                         <button
                             type="button"
-                            className={`text-sm underline ${selectAllPages ? 'text-red-600' : 'text-blue-600'} mr-2`}
+                            className={`text-sm underline ${
+                                selectAllPages
+                                    ? "text-red-600"
+                                    : "text-blue-600"
+                            } mr-2`}
                             onClick={handleSelectAllPages}
                         >
-                            {selectAllPages ? 'Deselect All Students' : 'Select All Students'}
+                            {selectAllPages
+                                ? "Deselect All Students"
+                                : "Select All Students"}
                         </button>
                         {selectedStudents.length > 0 && (
                             <span className="text-sm text-gray-600">
-                                {selectedStudents.length} of {totalActiveStudents} students selected
+                                {selectedStudents.length} of{" "}
+                                {totalActiveStudents} students selected
                             </span>
                         )}
                     </div>
@@ -420,52 +451,101 @@ export default function ListStudents() {
                         {paginatedStudents.map((student, index) => (
                             <React.Fragment key={student.id}>
                                 <tr
-                                    className={`text-center bg-white hover:bg-gray-100 border-b border-gray-300 ${selectedStudents.includes(student.id) ? 'bg-blue-50' : ''}`}
+                                    className={`text-center bg-white hover:bg-gray-100 border-b border-gray-300 ${
+                                        selectedStudents.includes(student.id)
+                                            ? "bg-blue-50"
+                                            : ""
+                                    }`}
                                 >
                                     {!showArchived && (
-                                        <td className="px-4 py-2" onClick={(e) => e.stopPropagation()}>
+                                        <td
+                                            className="px-4 py-2"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
                                             <input
                                                 title="select this student"
                                                 type="checkbox"
-                                                checked={selectedStudents.includes(student.id)}
-                                                onChange={() => handleSelectRow(student.id)}
+                                                checked={selectedStudents.includes(
+                                                    student.id
+                                                )}
+                                                onChange={() =>
+                                                    handleSelectRow(student.id)
+                                                }
                                                 className="h-4 w-4 cursor-pointer"
                                             />
                                         </td>
                                     )}
-                                    <td 
+                                    <td
                                         className="px-4 py-2 cursor-pointer"
-                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                        onClick={() =>
+                                            setExpandedRow(
+                                                expandedRow === student.id
+                                                    ? null
+                                                    : student.id
+                                            )
+                                        }
                                     >
-                                        {index + 1 + (currentPage - 1) * rowsPerPage}
+                                        {index +
+                                            1 +
+                                            (currentPage - 1) * rowsPerPage}
                                     </td>
-                                    <td 
-                                        className="px-4 py-2 cursor-pointer" 
-                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                    <td
+                                        className="px-4 py-2 cursor-pointer"
+                                        onClick={() =>
+                                            setExpandedRow(
+                                                expandedRow === student.id
+                                                    ? null
+                                                    : student.id
+                                            )
+                                        }
                                     >
                                         {student.course}
                                     </td>
-                                    <td 
+                                    <td
                                         className="px-4 py-2 cursor-pointer"
-                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                        onClick={() =>
+                                            setExpandedRow(
+                                                expandedRow === student.id
+                                                    ? null
+                                                    : student.id
+                                            )
+                                        }
                                     >
                                         {student.matric}
                                     </td>
-                                    <td 
+                                    <td
                                         className="px-4 py-2 text-left cursor-pointer"
-                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                        onClick={() =>
+                                            setExpandedRow(
+                                                expandedRow === student.id
+                                                    ? null
+                                                    : student.id
+                                            )
+                                        }
                                     >
                                         {student.name}
                                     </td>
-                                    <td 
+                                    <td
                                         className="px-4 py-2 text-left cursor-pointer"
-                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                        onClick={() =>
+                                            setExpandedRow(
+                                                expandedRow === student.id
+                                                    ? null
+                                                    : student.id
+                                            )
+                                        }
                                     >
                                         {student.title}
                                     </td>
-                                    <td 
+                                    <td
                                         className="px-4 py-2 cursor-pointer"
-                                        onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                                        onClick={() =>
+                                            setExpandedRow(
+                                                expandedRow === student.id
+                                                    ? null
+                                                    : student.id
+                                            )
+                                        }
                                     >
                                         {student.sessionpsm}
                                     </td>
@@ -546,29 +626,77 @@ export default function ListStudents() {
                                     </td>
                                 </tr>
                                 {expandedRow === student.id && (
-                                <tr className="bg-gray-50 border-b border-gray-300">
-                                    <td colSpan={showArchived ? 7 : 8} className="px-4 py-2 text-left">
-                                        <div className="grid grid-cols-7 gap-4">
-                                            <div className="col-span-2">
-                                                <strong>Project Type:</strong> {student.project_type} <br />
-                                                <strong>Project Area:</strong> {student.project_area} <br />
-                                                <strong>Supervisor:</strong> {student.sv_name || "N/A"} <br />
+                                    <tr className="bg-gray-50 border-b border-gray-300">
+                                        <td
+                                            colSpan={showArchived ? 7 : 8}
+                                            className="px-4 py-2 text-left"
+                                        >
+                                            <div className="grid grid-cols-7 gap-4">
+                                                <div className="col-span-2">
+                                                    <strong>
+                                                        Project Type:
+                                                    </strong>{" "}
+                                                    {student.project_type}{" "}
+                                                    <br />
+                                                    <strong>
+                                                        Project Area:
+                                                    </strong>{" "}
+                                                    {student.project_area}{" "}
+                                                    <br />
+                                                    <strong>
+                                                        Supervisor:
+                                                    </strong>{" "}
+                                                    {student.sv_name || "N/A"}{" "}
+                                                    <br />
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <strong>
+                                                        Panel Proposal:
+                                                    </strong>{" "}
+                                                    {student.panel_proposal_name ||
+                                                        "N/A"}{" "}
+                                                    <br />
+                                                    <strong>
+                                                        Panel 1:
+                                                    </strong>{" "}
+                                                    {student.panel_name ||
+                                                        "N/A"}{" "}
+                                                    <br />
+                                                    <strong>
+                                                        Panel 2:
+                                                    </strong>{" "}
+                                                    {student.panel2_name ||
+                                                        "N/A"}{" "}
+                                                    <br />
+                                                </div>
+                                                <div className="col-span-3">
+                                                    <strong>Email:</strong>{" "}
+                                                    {student.email} <br />
+                                                    <strong>
+                                                        Cohort:
+                                                    </strong>{" "}
+                                                    {student.cohort} <br />
+                                                    <strong>
+                                                        Project Progress:
+                                                    </strong>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            openLink(
+                                                                student.sagile_link
+                                                            );
+                                                        }}
+                                                        className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                                                    >
+                                                        click here
+                                                    </a>
+                                                    <br />
+                                                </div>
                                             </div>
-                                            <div className="col-span-2">
-                                                <strong>Panel Proposal:</strong> {student.panel_proposal_name || "N/A"} <br />
-                                                <strong>Panel 1:</strong> {student.panel_name || "N/A"} <br />
-                                                <strong>Panel 2:</strong> {student.panel2_name || "N/A"} <br />
-                                            </div>
-                                            <div className="col-span-3">
-                                                <strong>Email:</strong> {student.email} <br />
-                                                <strong>Cohort:</strong> {student.cohort} <br />
-                                                <br />
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )}
-
+                                        </td>
+                                    </tr>
+                                )}
                             </React.Fragment>
                         ))}
                     </tbody>
@@ -603,7 +731,7 @@ export default function ListStudents() {
             <AddStudentModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
-                studentType = {studentType}
+                studentType={studentType}
             />
 
             <EditStudentModal
@@ -613,21 +741,20 @@ export default function ListStudents() {
                     setSelectedStudent(null);
                 }}
                 student={selectedStudent}
-                studentType = {studentType}
+                studentType={studentType}
             />
 
             <ImportStudentModal
                 isOpen={isImportModalOpen}
                 onClose={() => setIsImoprtModalOpen(false)}
-                studentType = {studentType}
+                studentType={studentType}
             />
 
-            <ImportErrorModal 
-                isOpen={isImportErrorModalOpen} 
-                onClose={() => setIsImportErrorModalOpen(false)} 
+            <ImportErrorModal
+                isOpen={isImportErrorModalOpen}
+                onClose={() => setIsImportErrorModalOpen(false)}
                 message={props.flash?.warning}
             />
-
         </div>
     );
 }

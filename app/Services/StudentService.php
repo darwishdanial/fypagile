@@ -26,27 +26,37 @@ class StudentService
             return collect(); // Invalid student type
         }
 
+        $selectColumns = [
+            "$table.id",
+            "$table.name", 
+            "$table.course",
+            "$table.matric",
+            "$table.title",
+            "$table.project_area",
+            "$table.project_area_ai",
+            "$table.project_type", 
+            "$table.sessionpsm",
+            "$table.cohort",
+            "$table.phone",
+            "$table.email",
+            'sv.name as sv_name',
+            'panel_users.name as panel_name',
+            'panel2_users.name as panel2_name'
+        ];
+
+        // Add sagile_link for PSM1 and both sagile_link and github_link for PSM2
+        if ($studentType === 'PSM1') {
+            $selectColumns[] = "$table.sagile_link";
+        } else {
+            $selectColumns[] = "$table.sagile_link";
+            $selectColumns[] = "$table.github_link";
+        }
+
         $students = $model
             ->leftJoin('users as sv', "$table.supervisorId", '=', 'sv.id')
             ->leftJoin('users as panel_users', "$table.panelId", '=', 'panel_users.id')
             ->leftJoin('users as panel2_users', "$table.panel2Id", '=', 'panel2_users.id')
-            ->select(
-                "$table.id",
-                "$table.name",
-                "$table.course",
-                "$table.matric",
-                "$table.title",
-                "$table.project_area",
-                "$table.project_area_ai",
-                "$table.project_type",
-                "$table.sessionpsm",
-                "$table.cohort",
-                "$table.phone",
-                "$table.email",
-                'sv.name as sv_name',
-                'panel_users.name as panel_name',
-                'panel2_users.name as panel2_name'
-            )
+            ->select($selectColumns)
             ->get();
 
         return $students;
@@ -479,10 +489,5 @@ class StudentService
             return redirect()->back()->with('error', 'Error archiving students');
         }
     }
-
-    public function getProjectProgress($matric){
-        dd($matric);
-    }
-
 
 }

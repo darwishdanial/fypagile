@@ -15,20 +15,22 @@ interface Student {
     cohort?: string;
     phone?: string;
     email?: string;
+    sagile_link?: string;
+    github_link?: string;
 }
 
 interface EditStudentModalProps {
     isOpen: boolean;
     onClose: () => void;
     student: Student | null;
-    studentType: string
+    studentType: string;
 }
 
 const EditStudentModal: React.FC<EditStudentModalProps> = ({
     isOpen,
     onClose,
     student,
-    studentType
+    studentType,
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -53,6 +55,8 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
         project_area: student?.project_area || "",
         title: student?.title || "",
         sessionpsm: student?.sessionpsm || "",
+        sagile_link: student?.sagile_link || "",
+        github_link: student?.github_link || "",
     });
 
     const [processing, setIsProcessing] = useState(false);
@@ -77,6 +81,8 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
                 project_area: student.project_area || "",
                 title: student.title || "",
                 sessionpsm: student.sessionpsm || "",
+                sagile_link: student?.sagile_link || "",
+                github_link: student?.github_link || "",
             });
         }
     }, [student, setData]);
@@ -101,25 +107,21 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
                 ? "coordinator.PSM1.students.update"
                 : "coordinator.PSM2.students.update";
 
-        router.put(
-            route(route_path, student.id),
-            data,
-            {
-                onStart: () => {
-                    setIsProcessing(true);
-                },
-                onFinish: () => {
-                    setIsProcessing(false);
-                },
+        router.put(route(route_path, student.id), data, {
+            onStart: () => {
+                setIsProcessing(true);
+            },
+            onFinish: () => {
+                setIsProcessing(false);
+            },
 
-                onError: (errors) => {
-                    console.log(errors);
-                },
-                onSuccess: () => {
-                    onClose();
-                },
-            }
-        );
+            onError: (errors) => {
+                console.log(errors);
+            },
+            onSuccess: () => {
+                onClose();
+            },
+        });
     };
 
     if (!isOpen || !student) return null;
@@ -299,7 +301,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
                                     <option value="System Development">
                                         System Development
                                     </option>
-                                    <option value="Research">Research</option>
+                                    <option value="Research Based">Research Based</option>
                                 </select>
                                 {errors.project_type && (
                                     <p className="text-red-500 col-start-2 col-span-5">
@@ -367,6 +369,48 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
                                     </p>
                                 )}
                             </div>
+
+                            <div className="grid grid-cols-5 mb-4 items-center">
+                                <label className="col-span-1 font-medium">
+                                    SAgile link:
+                                </label>
+                                <input
+                                    title="SAgile link"
+                                    type="text"
+                                    name="sagile_link"
+                                    value={data.sagile_link}
+                                    onChange={handleChange}
+                                    className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                    required
+                                />
+                                {errors.sagile_link && (
+                                    <p className="text-red-500 col-start-2 col-span-5">
+                                        {errors.sagile_link}
+                                    </p>
+                                )}
+                            </div>
+
+                            {studentType === "PSM2" && (
+                                <div className="grid grid-cols-5 mb-4 items-center">
+                                    <label className="col-span-1 font-medium">
+                                        GitHub link:
+                                    </label>
+                                    <input
+                                        title="GitHub link"
+                                        type="text"
+                                        name="github_link"
+                                        value={data.github_link}
+                                        onChange={handleChange}
+                                        className="col-span-4 border border-gray-300 rounded p-2 w-full"
+                                        required
+                                    />
+                                    {errors.github_link && (
+                                        <p className="text-red-500 col-start-2 col-span-5">
+                                            {errors.github_link}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </form>
                 </div>
