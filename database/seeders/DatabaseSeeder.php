@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             // StudentPSM2SeederTemp::class,
             // StudentPSM1SeederNew::class,
             StudentPSM1SeederNewCategory::class,
-            StudentPSM2SeederNew::class,
+            StudentPSM2SeederNewCategory::class,
             PanelHistorySeeder::class,
             AiDataSeeder::class,
         ]);
