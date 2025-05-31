@@ -32,6 +32,8 @@ return new class extends Migration
             $table->foreignId('panelId_ai')->nullable()->references('id')->on('users'); 
             $table->foreignId('panel2Id_ai')->nullable()->references('id')->on('users');
             $table->foreignId('svReq')->nullable()->references('id')->on('users');
+            $table->string("sagile_link");
+            $table->string("github_link");
             $table->timestamps();
             $table->softDeletes();
         });

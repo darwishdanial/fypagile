@@ -109,7 +109,11 @@ const ImportStudentModal: React.FC<ImportStudentModalProps> = ({
 
                         <div className="text-center mt-2">
                             <a
-                                href={route("coordinator.PSM1.students.sample")}
+                                href={route(
+                                    studentType === "PSM1"
+                                        ? "coordinator.PSM1.students.sample"
+                                        : "coordinator.PSM2.students.sample"
+                                )}
                                 className="text-blue-600 hover:underline"
                                 download
                             >

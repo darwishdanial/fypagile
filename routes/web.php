@@ -74,7 +74,7 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/students/bulk-archive', [StudentController::class, 'PSM1BulkArchiveStudent'])->name('students.bulkArchive');
 
-        Route::get('/students/sample',[StudentController::class, 'getStudentSample'] )->name('students.sample');
+        Route::get('/students/sample',[StudentController::class, 'getStudentSamplePSM1'] )->name('students.sample');
 
         //PANEL MANAGEMENT
 
@@ -195,6 +195,8 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::post('/students/bulk-archive', [StudentController::class, 'PSM2BulkArchive'])->name('students.bulkArchive');
 
+        Route::get('/students/sample',[StudentController::class, 'getStudentSamplePSM2'] )->name('students.sample');
+
         //PANEL MANAGEMENT
 
         Route::get('/list-panels', [PanelController::class, 'PSM2ListPanels'])->name('listPanels');
@@ -215,8 +217,6 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/remove-ai-suggestions', [CoordinatorController::class, 'removeAllPanelIdsFromPSM2'])->name('panel.removeAi');
         
-        Route::post('/students/{matric}/project-progress/', [StudentController::class, 'PSM2ProjectProgress'])->name('students.projectProgress');
-
         //SUPERVISOR ASSIGNMENT
 
         Route::get('/list-supervisor', [CoordinatorController::class, 'PSM2ListSupervisor'])->name('listSupervisor');
