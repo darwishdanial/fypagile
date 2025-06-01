@@ -26,6 +26,7 @@ interface Student {
     cohort: string;
     phone: string;
     email: string;
+    sagile_link: string;
 }
 
 interface Rubric {
@@ -96,7 +97,12 @@ export default function GradePSM1() {
 
     const [selectedProgress, setSelectedProgress] =
         useState<string>("Proposal");
-
+    
+        const openLink = (link: string) => {
+        if (link) {
+            window.open(link, "_blank");
+        }
+    };
 
     // State for pagination & search
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -438,6 +444,21 @@ export default function GradePSM1() {
                                                         Cohort:
                                                     </strong>{" "}
                                                     {student.cohort} <br />
+                                                    <strong>
+                                                        Project Progress:
+                                                    </strong>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            openLink(
+                                                                student.sagile_link
+                                                            );
+                                                        }}
+                                                        className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                                                    >
+                                                        click here
+                                                    </a>
         
                                                 </div>
                                             </div>
