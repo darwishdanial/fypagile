@@ -26,6 +26,8 @@ interface Student {
     cohort: string;
     phone: string;
     email: string;
+    sagile_link: string;
+    github_link: string;
 }
 
 interface Rubric {
@@ -98,12 +100,10 @@ export default function GradeSupervision() {
     const [selectedProgress, setSelectedProgress] =
         useState<string>("Progress 1");
 
-    const handleProjectProgress = (matric: string) => {
-        router.post(
-            route("coordinator.PSM2.students.projectProgress", matric),
-            {},
-            { preserveScroll: true }
-        );
+    const openLink = (link: string) => {
+        if (link) {
+            window.open(link, '_blank');
+        }
     };
 
     // State for pagination & search
@@ -439,6 +439,21 @@ export default function GradeSupervision() {
                                                         Project Title:
                                                     </strong>{" "}
                                                     {student.title} <br />
+                                                    <strong>
+                                                        Github:
+                                                    </strong>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            openLink(
+                                                                student.github_link
+                                                            );
+                                                        }}
+                                                        className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                                                    >
+                                                        click here
+                                                    </a>
                                                 </div>
 
                                                 <div className="col-span-3">
@@ -455,8 +470,8 @@ export default function GradeSupervision() {
                                                         href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            handleProjectProgress(
-                                                                student.matric
+                                                            openLink(
+                                                                student.sagile_link
                                                             );
                                                         }}
                                                         className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
