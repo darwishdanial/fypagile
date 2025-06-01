@@ -26,6 +26,8 @@ interface Student {
     cohort: string;
     phone: string;
     email: string;
+    sagile_link: string;
+    github_link: string;
 }
 
 interface Rubric {
@@ -102,6 +104,12 @@ export default function GradePSM2Coordinator() {
             {},
             { preserveScroll: true }
         );
+    };
+
+    const openLink = (link: string) => {
+        if (link) {
+            window.open(link, "_blank");
+        }
     };
 
     // State for pagination & search
@@ -435,6 +443,19 @@ export default function GradePSM2Coordinator() {
                                                         Project Title:
                                                     </strong>{" "}
                                                     {student.title} <br />
+                                                    <strong>Github:</strong>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            openLink(
+                                                                student.github_link
+                                                            );
+                                                        }}
+                                                        className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                                                    >
+                                                        click here
+                                                    </a>
                                                 </div>
 
                                                 <div className="col-span-3">
@@ -444,15 +465,15 @@ export default function GradePSM2Coordinator() {
                                                         Cohort:
                                                     </strong>{" "}
                                                     {student.cohort} <br />
-                                                    <strong>
+                                                     <strong>
                                                         Project Progress:
                                                     </strong>
                                                     <a
                                                         href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            handleProjectProgress(
-                                                                student.matric
+                                                            openLink(
+                                                                student.sagile_link
                                                             );
                                                         }}
                                                         className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"

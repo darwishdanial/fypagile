@@ -26,6 +26,7 @@ interface Student {
     cohort: string;
     phone: string;
     email: string;
+    sagile_link: string;
 }
 
 interface Rubric {
@@ -97,23 +98,9 @@ export default function GradePSM1Coordinator() {
     const [selectedProgress, setSelectedProgress] =
         useState<string>("Proposal");
 
-    const handleRestore = (id: number) => {
-        router.post(
-            route("coordinator.PSM1.students.restore", id),
-            {},
-            { preserveScroll: true }
-        );
-    };
-
-    const handleDelete = (id: number) => {
-        const isConfirmed = confirm(
-            "Are you sure you want to delete this student? This action cannot be undone."
-        );
-
-        if (isConfirmed) {
-            router.delete(route("coordinator.PSM1.students.delete", id), {
-                preserveScroll: true,
-            });
+    const openLink = (link: string) => {
+        if (link) {
+            window.open(link, '_blank');
         }
     };
 
@@ -457,6 +444,21 @@ export default function GradePSM1Coordinator() {
                                                         Cohort:
                                                     </strong>{" "}
                                                     {student.cohort} <br />
+                                                    <strong>
+                                                        Project Progress:
+                                                    </strong>
+                                                    <a
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            openLink(
+                                                                student.sagile_link
+                                                            );
+                                                        }}
+                                                        className="pl-2 text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                                                    >
+                                                        click here
+                                                    </a>
 
                                                 </div>
                                             </div>
