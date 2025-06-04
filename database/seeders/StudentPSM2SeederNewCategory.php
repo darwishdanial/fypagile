@@ -20,6 +20,7 @@ class StudentPSM2SeederNewCategory extends Seeder
             $service = new ProjectLecturerMergerService();
             $studentData = $service->fetchStudentData();
             $faker = Faker::create('ms_MY');
+            $faker->seed(1235);
             
             // Get categories
             // $categories = $this->getCategories();
