@@ -81,13 +81,17 @@ class CoordinatorService
             // Get project area mappings from the database
             $projectAreaMappings = DB::table('project_area_mappings')->get()->keyBy('name');
     
-            $panels = DB::table('users')->select('id', 'name','isArchivePSM1','isArchivePSM2')->get();
+            $panels = DB::table('users')->select('id', 'name','isArchivePSM1','isArchivePSM2', 'isPanelPSM1','isPanelPSM2')->get();
     
             $allPanels = $panels->pluck('id')->map(fn($id) => $id)->toArray(); //start from 0 to same as $potentialPanels
             $panelName = $panels->pluck('name', 'id')->toArray(); 
     
             $totalStudents = $students->count();
-            $totalPanels = count($allPanels);
+
+            $totalPanels = $panels->filter(fn($panel) => 
+                ($studentType === 'PSM1' && $panel->isPanelPSM1 == 1) || 
+                ($studentType === 'PSM2' && $panel->isPanelPSM2 == 1)
+            )->count();
             
             // Calculate balanced quotas for primary and secondary panel assignments
             $maxStudentsPerPanel = floor($totalStudents / $totalPanels) * 2;
@@ -146,10 +150,26 @@ class CoordinatorService
     
                         // First pass: assign primary panel
                         foreach($sorted as $panelId => $score) {
+
+                            if ($student->panelId !== null) {
+                                logger("Student already has a primary panel assigned. Skipping...");
+                                break;
+                            }
+
                             $panel = $panels->firstWhere('id', $panelId);
     
                             if (!$panel) {
                                 logger("Panel ID {$panelId} not found in panel list. Skipping...");
+                                continue;
+                            }
+
+                            if ($panel->isPanelPSM1 == 0 && $studentType === "PSM1") {
+                                logger("Panel ID {$panelId} is not a PSM1 panel. Skipping...");
+                                continue;
+                            }
+
+                            if ($panel->isPanelPSM2 == 0 && $studentType === "PSM2") {
+                                logger("Panel ID {$panelId} is not a PSM1 panel. Skipping...");
                                 continue;
                             }
     
@@ -181,7 +201,20 @@ class CoordinatorService
                         if (!$primaryPanel) {
                             $availablePanels = [];
                             foreach ($allPanels as $panelId) {
+
+                                if ($student->panelId !== null) {
+                                    break;
+                                }
+
                                 $panel = $panels->firstWhere('id', $panelId);
+
+                                if ($panel->isPanelPSM1 == 0 && $studentType === "PSM1") {
+                                    continue;
+                                }
+
+                                if ($panel->isPanelPSM2 == 0 && $studentType === "PSM2") {
+                                    continue;
+                                }
                                 
                                 if ($student->supervisorId === $panelId) {
                                     continue;
@@ -215,12 +248,28 @@ class CoordinatorService
     
                         // Second pass: assign secondary panel
                         foreach($sorted as $panelId => $score) {
+
+                            if ($student->panel2Id !== null) {
+                                logger("Student already has a secondary panel assigned. Skipping...");
+                                break;
+                            }
+
                             // Skip if it's the same as primary panel or supervisor
                             if ($panelId === $primaryPanel || $panelId === $student->supervisorId) {
                                 continue;
                             }
                             
                             $panel = $panels->firstWhere('id', $panelId);
+
+                            if ($panel->isPanelPSM1 == 0 && $studentType === "PSM1") {
+                                logger("Panel ID {$panelId} is not a PSM1 panel. Skipping...");
+                                continue;
+                            }
+
+                            if ($panel->isPanelPSM2 == 0 && $studentType === "PSM2") {
+                                logger("Panel ID {$panelId} is not a PSM1 panel. Skipping...");
+                                continue;
+                            }
     
                             if (!$panel) {
                                 continue;
@@ -248,11 +297,25 @@ class CoordinatorService
                         if (!$secondaryPanel && $primaryPanel) {
                             $availablePanels = [];
                             foreach ($allPanels as $panelId) {
+
+                                if ($student->panel2Id !== null) {
+                                    break;
+                                }
+
                                 if ($panelId === $primaryPanel || $panelId === $student->supervisorId) {
                                     continue;
                                 }
                                 
                                 $panel = $panels->firstWhere('id', $panelId);
+
+                                
+                                if ($panel->isPanelPSM1 == 0 && $studentType === "PSM1") {
+                                    continue;
+                                }
+
+                                if ($panel->isPanelPSM2 == 0 && $studentType === "PSM2") {
+                                    continue;
+                                }
                                 
                                 if (($studentType === "PSM1" && $panel->isArchivePSM1 == 1) || 
                                     ($studentType === "PSM2" && $panel->isArchivePSM2 == 1)) {
