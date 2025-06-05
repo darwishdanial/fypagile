@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\DB;
 use App\Models\StudentPSM1;
 use App\Models\StudentPSM2;
+use App\Models\PanelHistory;
 use Exception;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
@@ -289,7 +290,16 @@ class PanelService
         try {
 
             $panel = User::findOrFail($id);
-            $panel->delete();
+            
+            // Check if there are related panel history records
+            $hasPanelHistory = PanelHistory::where('panel_id', $id)->exists();
+
+            if ($hasPanelHistory) {
+                $panel->delete();
+            }else{
+                // Force delete the panel
+                $panel->forceDelete();
+            }
 
             return redirect()->back()->with('success', 'Panel deleted successfully.');
 
