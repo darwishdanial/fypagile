@@ -46,7 +46,7 @@ class PSM1StudentsImport implements ToModel, WithValidation, SkipsOnFailure, Wit
             'cohort'        => $row['cohort'],
             'phone'         => $row['phone'],
             'email'         => $row['email'],
-            'sagile_link'         => $row['sagile_link'],
+            'sagile_link'   => $row['sagile_link'],
         ]);
     }
 
