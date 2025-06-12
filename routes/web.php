@@ -12,6 +12,7 @@ use App\Http\Middleware\EnsureCoordinator;
 use App\Http\Middleware\EnsurePanel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -346,3 +347,4 @@ Route::middleware(EnsurePanel::class)
     });
 });
 
+URL::forceScheme('https');
