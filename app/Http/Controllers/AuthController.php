@@ -61,7 +61,7 @@ class AuthController extends Controller
 
         try{
             $this->authService->validate_login($request);
-            return redirect('dashboard');
+            return redirect()->route('dashboard');
         }catch(\Exception $e){
             return redirect()->route('login');
         }
