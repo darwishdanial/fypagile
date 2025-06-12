@@ -347,4 +347,3 @@ Route::middleware(EnsurePanel::class)
     });
 });
 
-URL::forceScheme('https');
