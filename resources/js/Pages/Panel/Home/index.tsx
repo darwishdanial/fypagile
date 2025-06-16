@@ -36,7 +36,7 @@ export default function Index({ userName, studentsPSM1, studentsPSM2, panelsPSM1
             const timer = setTimeout(() => setFlashMessage(null), 3000); // Hide after 3s
             return () => clearTimeout(timer);
         }
-    }, [props.flash]); // Run effect when flash message changes
+    }, [props.flash]); 
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col space-y-3">
