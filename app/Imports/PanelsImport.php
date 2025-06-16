@@ -42,7 +42,7 @@ class PanelsImport implements ToModel, WithValidation, SkipsOnFailure, WithHeadi
         'is_coordinator'     => 'required|string|in:yes,no',
         'username'           => 'required|string|max:100|unique:users,username',
         'email'              => 'required|email|max:255|unique:users,email',
-        'password'           => 'required|string',
+        'password'           => 'required',
         'is_supervisor_psm1' => 'nullable|string|in:yes,no',
         'is_panel_psm1'      => 'nullable|string|in:yes,no',
         'is_supervisor_psm2' => 'nullable|string|in:yes,no',
@@ -75,7 +75,6 @@ class PanelsImport implements ToModel, WithValidation, SkipsOnFailure, WithHeadi
             'email.unique' => 'Email already exists.',
 
             'password.required' => 'Password is required.',
-            'password.string' => 'Password must be a valid string.',
 
             'is_coordinator.required' => 'is_coordinator is required.',
 

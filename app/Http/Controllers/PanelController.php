@@ -83,7 +83,7 @@ class PanelController extends Controller
             'matricNo' => 'required|string|unique:users,matricNo|max:50',
             'email' => 'required|unique:users,email|max:255',
             'username' => 'required|string|unique:users,username|max:100',
-            'password' => 'required|string|max:255',
+            'password' => 'required|max:255',
             'isSupervisorPSM1' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
             'isArchivePSM1' => 'required|boolean',
@@ -107,7 +107,7 @@ class PanelController extends Controller
             'username' => 'required|string|max:100|unique:users,username,' . $id,
             'isSupervisorPSM1' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
-            'password' => 'nullable|string|max:255',
+            'password' => 'nullable|max:255',
         ]);
 
         return $this->panelService->updatePanel($id, $validated);
@@ -200,7 +200,7 @@ class PanelController extends Controller
             'matricNo' => 'required|string|unique:users,matricNo|max:50',
             'email' => 'required|unique:users,email|max:255',
             'username' => 'required|string|unique:users,username|max:100',
-            'password' => 'required|string|max:255',
+            'password' => 'required|max:255',
             'isSupervisorPSM1' => 'required|boolean',
             'isPanelPSM1' => 'required|boolean',
             'isArchivePSM1' => 'required|boolean',
@@ -225,7 +225,7 @@ class PanelController extends Controller
             'username' => 'required|string|max:100|unique:users,username,' . $id,
             'isSupervisorPSM2' => 'required|boolean',
             'isPanelPSM2' => 'required|boolean',
-            'password' => 'nullable|string|max:255',
+            'password' => 'nullable|max:255',
         ]);
 
         return $this->panelService->updatePanel($id, $validated);
