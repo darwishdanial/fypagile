@@ -202,9 +202,9 @@ class CoordinatorService
                             $availablePanels = [];
                             foreach ($allPanels as $panelId) {
 
-                                if ($student->panelId !== null) {
-                                    break;
-                                }
+                                // if ($student->panelId !== null) {
+                                //     break;
+                                // }
 
                                 $panel = $panels->firstWhere('id', $panelId);
 
@@ -298,9 +298,9 @@ class CoordinatorService
                             $availablePanels = [];
                             foreach ($allPanels as $panelId) {
 
-                                if ($student->panel2Id !== null) {
-                                    break;
-                                }
+                                // if ($student->panel2Id !== null) {
+                                //     break;
+                                // }
 
                                 if ($panelId === $primaryPanel || $panelId === $student->supervisorId) {
                                     continue;
