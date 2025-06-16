@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useForm, usePage  } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface Flash {
     error?: string;
@@ -16,13 +17,17 @@ export default function LoginPage() {
         flash: Flash;
     }>();
 
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         post("/validate_login"); // Send data to backend
     };
 
-    const [flashMessage, setFlashMessage] = useState<{ type: "success" | "error"; message: string } | null>(null);
+    const [flashMessage, setFlashMessage] = useState<{
+        type: "success" | "error";
+        message: string;
+    } | null>(null);
 
     useEffect(() => {
         if (props.flash?.success) {
@@ -40,13 +45,18 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
-
             {flashMessage && (
-                <div className={`fixed bottom-5 right-5 px-4 py-3 rounded shadow-lg text-white ${flashMessage.type === "success" ? "bg-green-600" : "bg-red-600"}`}>
+                <div
+                    className={`fixed bottom-5 right-5 px-4 py-3 rounded shadow-lg text-white ${
+                        flashMessage.type === "success"
+                            ? "bg-green-600"
+                            : "bg-red-600"
+                    }`}
+                >
                     {flashMessage.message}
                 </div>
             )}
-            
+
             <div className="flex w-[900px] p-10">
                 {/* Left Section - Logo & Text */}
                 <div className="w-1/2 flex flex-col justify-center items-end mr-10">
@@ -66,7 +76,6 @@ export default function LoginPage() {
 
                 {/* Right Section - Login Form */}
                 <div className="w-1/2 flex flex-col justify-center  bg-white p-2 rounded-sm shadow-md border border-gray-200">
-
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
                             <input
@@ -80,36 +89,58 @@ export default function LoginPage() {
                                 className="w-full px-4 py-2 bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000]"
                             />
                             {errors.username && (
-                                <p className="text-red-500  mb-4">{errors.username}</p>
+                                <p className="text-red-500  mb-4">
+                                    {errors.username}
+                                </p>
                             )}
                         </div>
 
-                        <div className="mb-4">
+                        <div className="mb-4 relative">
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 value={data.password}
                                 onChange={(e) =>
                                     setData("password", e.target.value)
                                 }
                                 placeholder="Password"
-                                className="w-full px-4 py-2  bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000]"
+                                className="w-full px-4 py-2  bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000] pr-12"
                             />
-                                                    {errors.password && (
-                                <p className="text-red-500 ">{errors.password}</p>
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword((prev) => !prev)}
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 p-1 focus:outline-none"
+                                tabIndex={-1}
+                                aria-label={
+                                    showPassword
+                                        ? "Hide password"
+                                        : "Show password"
+                                }
+                            >
+                                {showPassword ? (
+                                    <EyeOff size={20} />
+                                ) : (
+                                    <Eye size={20} />
+                                )}
+                            </button>
+                            {errors.password && (
+                                <p className="text-red-500 ">
+                                    {errors.password}
+                                </p>
                             )}
                         </div>
-    
+
                         <button
                             type="submit"
                             disabled={processing}
                             className={`w-full bg-[#730000] text-white py-2 border !rounded-sm hover:bg-[#5a0000] transition font-semibold ${
-                                processing ? "opacity-50 cursor-not-allowed" : ""
+                                processing
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : ""
                             }`}
                         >
                             {processing ? "Logging in..." : "Log In"}
                         </button>
-
                     </form>
                 </div>
             </div>
