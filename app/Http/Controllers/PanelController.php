@@ -28,7 +28,7 @@ class PanelController extends Controller
 
         $dashboardData = $this->panelService->getPanelDashboardData();
 
-        return Inertia::render('Panel/Home/Index', $dashboardData);
+        return Inertia::render('Panel/Home/index', $dashboardData);
     }
 
     // PSM1
