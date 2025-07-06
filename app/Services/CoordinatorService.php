@@ -92,11 +92,10 @@ class CoordinatorService
                 ($studentType === 'PSM1' && $panel->isPanelPSM1 == 1) || 
                 ($studentType === 'PSM2' && $panel->isPanelPSM2 == 1)
             )->count();
-            
-            // Calculate balanced quotas for primary and secondary panel assignments
-            $maxStudentsPerPanel = floor($totalStudents / $totalPanels) * 2;
-            $maxStudentsPerPrimaryPanel = floor($maxStudentsPerPanel / 2);
-            $maxStudentsPerSecondaryPanel = floor($maxStudentsPerPanel / 2);
+
+            $maxStudentsPerPanel = ($totalPanels*2 > $totalStudents) ? ceil($totalStudents / $totalPanels) * 2 : floor($totalStudents / $totalPanels) * 2;
+            $maxStudentsPerPrimaryPanel = ceil($maxStudentsPerPanel / 2);
+            $maxStudentsPerSecondaryPanel = ceil($maxStudentsPerPanel / 2);
     
             logger("Total students: {$totalStudents}");
             logger("Total panels: {$totalPanels}");
@@ -134,7 +133,6 @@ class CoordinatorService
     
                     $areaNumber = $projectAreaMappings[$areaName]->number;
                     
-                    // Convert project_type to number (0 for System Development, 1 for Research)
                     $typeNumber = ($student->project_type === 'Research Based') ? 1 : 0;
                     
                     // Call prediction API
