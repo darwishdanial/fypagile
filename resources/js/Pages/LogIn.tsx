@@ -18,6 +18,15 @@ export default function LoginPage() {
     }>();
 
     const [showPassword, setShowPassword] = useState(false);
+    // State to trigger logo slide-in after image loads
+    const [logoVisible, setLogoVisible] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
+
+    useEffect(() => {
+        if (imageLoaded) {
+            setLogoVisible(true);
+        }
+    }, [imageLoaded]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -59,11 +68,20 @@ export default function LoginPage() {
 
             <div className="flex w-[900px] p-10">
                 {/* Left Section - Logo & Text */}
-                <div className="w-1/2 flex flex-col justify-center items-end mr-10">
+                <div
+                    className={`w-1/2 flex flex-col justify-center items-end mr-10 transition-all duration-700 transform
+                        ${
+                            logoVisible
+                                ? "translate-x-0 opacity-100"
+                                : "-translate-x-32 opacity-0"
+                        }
+                    `}
+                >
                     <img
                         src="/images/utm-logo.png" // Change to actual image path
                         alt="UTM Logo"
                         className="w-517"
+                        onLoad={() => setImageLoaded(true)}
                     />
                     <p className="text-2xl font-bold mt-2 italic leading-none mb-0">
                         <span className="text-[#A31D1D]">FYP</span> Management
@@ -82,9 +100,9 @@ export default function LoginPage() {
                                 type="text"
                                 name="username"
                                 value={data.username}
-                                onChange={(e) =>
-                                    setData("username", e.target.value)
-                                }
+                                onChange={(e) => {
+                                    setData("username", e.target.value);
+                                }}
                                 placeholder="Username"
                                 className="w-full px-4 py-2 bg-gray-100 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#730000]"
                             />
