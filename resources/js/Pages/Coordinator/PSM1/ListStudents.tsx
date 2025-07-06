@@ -651,12 +651,6 @@ export default function ListStudents() {
                                                 </div>
                                                 <div className="col-span-2">
                                                     <strong>
-                                                        Panel Proposal:
-                                                    </strong>{" "}
-                                                    {student.panel_proposal_name ||
-                                                        "N/A"}{" "}
-                                                    <br />
-                                                    <strong>
                                                         Panel 1:
                                                     </strong>{" "}
                                                     {student.panel_name ||
