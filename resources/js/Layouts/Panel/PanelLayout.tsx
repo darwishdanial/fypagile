@@ -8,11 +8,18 @@ export function PanelLayout({ children }) {
     const { url } = usePage();
     const { get } = useForm();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const currentSubpage = getCurrentSubpage(url);
 
     const handleLogout = (e: React.FormEvent) => {
         e.preventDefault();
         get("/logout");
     };
+
+    function getCurrentSubpage(url: string) {
+        // Matches /Coordinator/PSM1/something or /Coordinator/PSM2/something
+        const match = url.match(/\/Panel\/PSM[12]\/([^/?#]+)/i);
+        return match ? match[1] : "grade-supervision";
+    }
 
     return (
         <>
@@ -56,7 +63,7 @@ export function PanelLayout({ children }) {
                                         } hover:bg-gray-100 p-2`}
                                     >
                                         <Link
-                                            href={route("panel.PSM1.gradeSupervision")}
+                                            href={`/Panel/PSM1/${currentSubpage}`}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p>PSM1</p>
@@ -70,7 +77,7 @@ export function PanelLayout({ children }) {
                                         } hover:bg-gray-100 p-2`}
                                     >
                                         <Link
-                                            href={route("panel.PSM2.gradeSupervision")}
+                                            href={`/Panel/PSM2/${currentSubpage}`}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p>PSM2</p>

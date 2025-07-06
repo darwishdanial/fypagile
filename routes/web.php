@@ -119,7 +119,7 @@ Route::middleware( EnsureCoordinator::class)
 
         //PANEL ASSIGNMENT
 
-        Route::get('/list-PSM1-panel', [CoordinatorController::class, 'PSM1listAssignPanel'])->name('listPSM1Panel');
+        Route::get('/list-panel', [CoordinatorController::class, 'PSM1listAssignPanel'])->name('listPSM1Panel');
 
         Route::get('/list-student-panel-PSM1', [CoordinatorController::class, 'PSM1PanelStudentList'])->name('panel.studentList');
 
@@ -164,9 +164,9 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/grade-supervision', [GradingController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-PSM1-panel', [GradingController::class, 'PSM1GradePanel'])->name('gradePSM1Panel');
+        Route::get('/grade-panel', [GradingController::class, 'PSM1GradePanel'])->name('gradePSM1Panel');
 
-        Route::get('/grade-PSM1-coordinator', [GradingController::class, 'PSM1GradeCoordinator'])->name('gradePSM1Coordinator');
+        Route::get('/grade-coordinator', [GradingController::class, 'PSM1GradeCoordinator'])->name('gradePSM1Coordinator');
 
         Route::post('/store-score', [GradingController::class, 'PSM1StoreScore'])->name('score.store');
         
@@ -240,7 +240,7 @@ Route::middleware( EnsureCoordinator::class)
 
         //PANEL PSM2 ASSIGNMENT
 
-        Route::get('/list-PSM2-panel', [CoordinatorController::class, 'PSM2ListPanel'])->name('listPSM2Panel');
+        Route::get('/list-panel', [CoordinatorController::class, 'PSM2ListPanel'])->name('listPSM2Panel');
         
         Route::get('/list-student-panel-PSM2', [CoordinatorController::class, 'PSM2PanelStudentList'])->name('panel.studentList');
 
@@ -280,9 +280,9 @@ Route::middleware( EnsureCoordinator::class)
 
         Route::get('/grade-supervision', [GradingController::class, 'PSM2GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-PSM2', [GradingController::class, 'PSM2GradePanel'])->name('gradePSM2');
+        Route::get('/grade-panel', [GradingController::class, 'PSM2GradePanel'])->name('gradePSM2');
 
-        Route::get('/grade-PSM2-coordinator', [GradingController::class, 'PSM2GradeCoordinator'])->name('gradePSM2Coordinator');
+        Route::get('/grade-coordinator', [GradingController::class, 'PSM2GradeCoordinator'])->name('gradePSM2Coordinator');
 
         Route::post('/store-score', [GradingController::class, 'PSM2StoreScore'])->name('score.store');
         
@@ -306,7 +306,7 @@ Route::middleware(EnsurePanel::class)
 
         Route::get('/grade-supervision', [GradingController::class, 'PSM1GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-PSM1', [GradingController::class, 'PSM1GradePanel'])->name('gradePSM1');
+        Route::get('/grade-panel', [GradingController::class, 'PSM1GradePanel'])->name('gradePSM1');
 
         Route::post('/store-score', [GradingController::class, 'PSM1StoreScore'])->name('score.store');
 
@@ -328,7 +328,7 @@ Route::middleware(EnsurePanel::class)
 
         Route::get('/grade-supervision', [GradingController::class, 'PSM2GradeSupervision'])->name('gradeSupervision');
 
-        Route::get('/grade-PSM2', [GradingController::class, 'PSM2GradePanel'])->name('gradePSM2');
+        Route::get('/grade-panel', [GradingController::class, 'PSM2GradePanel'])->name('gradePSM2');
 
         Route::post('/store-score', [GradingController::class, 'PSM2StoreScore'])->name('score.store');
 

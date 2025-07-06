@@ -8,11 +8,18 @@ export function CoordinatorLayout({ children }) {
     const { url } = usePage();
     const { get } = useForm();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const currentSubpage = getCurrentSubpage(url);
 
     const handleLogout = (e: React.FormEvent) => {
         e.preventDefault();
         get("/logout");
     };
+
+    function getCurrentSubpage(url: string) {
+        // Matches /Coordinator/PSM1/something or /Coordinator/PSM2/something
+        const match = url.match(/\/Coordinator\/PSM[12]\/([^/?#]+)/i);
+        return match ? match[1] : "list-students";
+    }
 
     return (
         <>
@@ -56,7 +63,7 @@ export function CoordinatorLayout({ children }) {
                                         } hover:bg-gray-100 p-2`}
                                     >
                                         <Link
-                                            href="/Coordinator/PSM1/list-students"
+                                            href={`/Coordinator/PSM1/${currentSubpage}`}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p>PSM1</p>
@@ -70,7 +77,7 @@ export function CoordinatorLayout({ children }) {
                                         } hover:bg-gray-100 p-2`}
                                     >
                                         <Link
-                                            href="/Coordinator/PSM2/list-students"
+                                            href={`/Coordinator/PSM2/${currentSubpage}`}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p>PSM2</p>
