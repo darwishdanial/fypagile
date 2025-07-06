@@ -403,13 +403,13 @@ class PanelService
 
     public function getPanelSample()
     {
-        $filePath = 'import_panels_sample_data.xlsx';
-        
-        if (!Storage::disk('public')->exists($filePath)) {
-            return false;
+        $path = public_path('import_panels_sample_data.xlsx');
+
+        if (!file_exists($path)) {
+            return redirect()->back()->with('error', 'File not found.');
         }
-    
-        return storage_path("app/public/$filePath");
+
+        return $path;
     }
 
     public function importPanels($file)

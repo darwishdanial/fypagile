@@ -311,18 +311,26 @@ class StudentController extends Controller
         return $this->studentService->bulkArchiveStudents($request->ids, "PSM2");
 
     }
+    //     public function getStudentSamplePSM2(){
+
+    //     $filePath = 'import_student_sample_data_PSM2.xlsx'; // Update to CSV if needed
+        
+    //     if (!Storage::disk('public')->exists($filePath)) {
+    //         return redirect()->back()->with('error', 'Error cannot find the file');
+    //     }
+    
+    //     return response()->download(storage_path("app/public/$filePath"));
+    // }
 
     public function getStudentSamplePSM2(){
 
-        // $this->studentService->getStudentSample();
+        $path = public_path('import_student_sample_data_PSM2.xlsx');
 
-        $filePath = 'import_student_sample_data_PSM2.xlsx'; // Update to CSV if needed
-        
-        if (!Storage::disk('public')->exists($filePath)) {
-            return redirect()->back()->with('error', 'Error cannot find the file');
+        if (!file_exists($path)) {
+            return redirect()->back()->with('error', 'File not found.');
         }
-    
-        return response()->download(storage_path("app/public/$filePath"));
+
+        return response()->download($path);
     }
 
     public function PSM2StudentRequest(){
