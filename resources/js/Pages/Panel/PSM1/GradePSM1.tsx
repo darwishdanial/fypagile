@@ -87,18 +87,11 @@ export default function GradePSM1() {
     const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
     const [selectedRubric, setSelectedRubric] = useState<Rubric | null>(null);
 
-    const progressOptions = [
-        "Proposal",
-        "Progress 1",
-        "Progress 2",
-        "Final Progress",
-        "Correction",
-    ];
+    // Remove progressOptions and selectedProgress state
+    // const progressOptions = [...];
+    // const [selectedProgress, setSelectedProgress] = useState<string>("Proposal");
 
-    const [selectedProgress, setSelectedProgress] =
-        useState<string>("Proposal");
-    
-        const openLink = (link: string) => {
+    const openLink = (link: string) => {
         if (link) {
             window.open(link, "_blank");
         }
@@ -109,11 +102,13 @@ export default function GradePSM1() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
+    // Remove progress filter from filteredRubrics
     const filteredRubrics = (
         showStudentResearch ? rubricsResearch : rubricsDevelopment
     ).filter(
         (rubric) =>
-            selectedProgress === "All" || rubric.progress === selectedProgress
+            // selectedProgress === "All" || rubric.progress === selectedProgress
+            true
     );
 
     // Filter students based on search query
@@ -162,10 +157,10 @@ export default function GradePSM1() {
         setSelectedStudents([]);
     }, [searchQuery]);
 
-    // Reset to first page when changing progress filter
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [selectedProgress]);
+    // Remove progress filter effect
+    // useEffect(() => {
+    //     setCurrentPage(1);
+    // }, [selectedProgress]);
 
     const [flashMessage, setFlashMessage] = useState<{
         type: "success" | "error";
@@ -240,27 +235,6 @@ export default function GradePSM1() {
                             >
                                 Research
                             </button>
-                        </div>
-                    </div>
-
-                    <div className="mx-4 my-4">
-                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
-                            {progressOptions.map((progress) => (
-                                <button
-                                    key={progress}
-                                    type="button"
-                                    className={`p-1 px-3 transition text-center ${
-                                        selectedProgress === progress
-                                            ? "bg-blue-400 hover:bg-blue-500 transition text-white"
-                                            : "bg-white hover:bg-gray-100"
-                                    }`}
-                                    onClick={() =>
-                                        setSelectedProgress(progress)
-                                    }
-                                >
-                                    {progress}
-                                </button>
-                            ))}
                         </div>
                     </div>
                 </div>
@@ -459,7 +433,6 @@ export default function GradePSM1() {
                                                     >
                                                         click here
                                                     </a>
-        
                                                 </div>
                                             </div>
                                         </td>

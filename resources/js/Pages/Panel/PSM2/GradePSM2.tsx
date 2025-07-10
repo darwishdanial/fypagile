@@ -88,33 +88,14 @@ export default function GradePSM1() {
     const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
     const [selectedRubric, setSelectedRubric] = useState<Rubric | null>(null);
 
-    const progressOptions = [
-        "Progress 1",
-        "Progress 2",
-        "Final Progress",
-        "Correction",
-    ];
-
-    const [selectedProgress, setSelectedProgress] =
-        useState<string>("Progress 1");
-
-    const openLink = (link: string) => {
-        if (link) {
-            window.open(link, "_blank");
-        }
-    };
-
-    // State for pagination & search
+    // Add missing state for search and pagination
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredRubrics = (
-        showStudentResearch ? rubricsResearch : rubricsDevelopment
-    ).filter(
-        (rubric) =>
-            selectedProgress === "All" || rubric.progress === selectedProgress
-    );
+    const filteredRubrics = showStudentResearch
+        ? rubricsResearch
+        : rubricsDevelopment;
     // Filter students based on search query
 
     const filteredStudents = (
@@ -162,11 +143,6 @@ export default function GradePSM1() {
         setSelectedStudents([]);
     }, [searchQuery]);
 
-    // Reset to first page when changing progress filter
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [selectedProgress]);
-
     const [flashMessage, setFlashMessage] = useState<{
         type: "success" | "error";
         message: string;
@@ -195,6 +171,13 @@ export default function GradePSM1() {
     const selectedCount = selectedStudents.length;
 
     const totalColumns = 5 + filteredRubrics.length;
+
+    // Add openLink function for opening links in a new tab
+    const openLink = (link: string) => {
+        if (link) {
+            window.open(link, "_blank");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center w-full pb-6">
@@ -240,27 +223,6 @@ export default function GradePSM1() {
                             >
                                 Research
                             </button>
-                        </div>
-                    </div>
-
-                    <div className="mx-4 my-4">
-                        <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
-                            {progressOptions.map((progress) => (
-                                <button
-                                    key={progress}
-                                    type="button"
-                                    className={`p-1 px-3 transition text-center ${
-                                        selectedProgress === progress
-                                            ? "bg-blue-400 hover:bg-blue-500 transition text-white"
-                                            : "bg-white hover:bg-gray-100"
-                                    }`}
-                                    onClick={() =>
-                                        setSelectedProgress(progress)
-                                    }
-                                >
-                                    {progress}
-                                </button>
-                            ))}
                         </div>
                     </div>
                 </div>
