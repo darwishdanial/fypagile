@@ -40,7 +40,9 @@ Route::middleware( EnsureCoordinator::class)
     ->as('coordinator.')
     ->group(function () {
 
-    Route::get('/Home', [CoordinatorController::class, 'index'])->name('home');
+    // Route::get('/Home', [CoordinatorController::class, 'index'])->name('home');
+
+    Route::get('/Home', [CoordinatorController::class, 'Dashboard'])->name('dashboard');
 
     Route::get('/Home/panel-history', [CoordinatorController::class, 'getPanelHistory'])->name('panel.history');
 

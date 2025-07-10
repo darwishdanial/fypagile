@@ -49,7 +49,7 @@ export function CoordinatorLayout({ children }) {
                                         } hover:bg-gray-100 p-2`}
                                     >
                                         <Link
-                                            href={route("coordinator.home")}
+                                            href={route("coordinator.dashboard")}
                                             style={{ textDecoration: "none" }}
                                         >
                                             <p>H</p>

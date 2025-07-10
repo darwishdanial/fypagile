@@ -35,10 +35,15 @@ export function CoordinatorSidebar() {
     };
 
     const menuItemsHome: MenuItemType[] = [
+        // {
+        //     icon: <House />,
+        //     label: "Dashobard",
+        //     link: route("coordinator.home"),
+        // },
         {
             icon: <House />,
-            label: "Dashobard",
-            link: route("coordinator.home"),
+            label: "Dashboard",
+            link: route("coordinator.dashboard"),
         },
         {
             icon: <History />,

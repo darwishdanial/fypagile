@@ -48,6 +48,130 @@ class CoordinatorController extends Controller
         ]);
     }
 
+    // public function PSM1dashboard()
+    // {
+    //     // $this->authorize('view psm1 dashboard');
+
+    //     // Get all PSM1 students
+    //     $studentsPSM1 = $this->studentService->getStudents("PSM1");
+    //     $totalStudents = $studentsPSM1->count();
+
+    //     // Number of development students (assuming 'project_type' field)
+    //     $developmentStudents = $studentsPSM1->where('project_type', 'System Development')->count();
+
+    //     // Number of research students (assuming 'project_type' field)
+    //     $researchStudents = $studentsPSM1->where('project_type', 'Research Based')->count();
+
+    //     // Number of active PSM1 panels
+    //     $activePanels = $this->panelService->getPanelPSM1()->count();
+
+    //     $activeSupervisors = $this->supervisorService->getSupervisorPSM1()->count();
+
+    //     // Students assigned to panel (assuming 'panel_name' and 'panel2_name' fields)
+    //     $assignedToPanel = $studentsPSM1->whereNotNull('panel_name')
+    //                                     ->whereNotNull('panel2_name')
+    //                                     ->count();
+
+    //     $panelAssignedPercentage = $totalStudents > 0 ? round(($assignedToPanel / $totalStudents) * 100, 2) : 0;
+
+    //     // Students assigned to supervisor (assuming 'sv_name' field)
+    //     $assignedToSupervisor = $studentsPSM1->whereNotNull('sv_name')->count();
+    //     $supervisorAssignedPercentage = $totalStudents > 0 ? round(($assignedToSupervisor / $totalStudents) * 100, 2) : 0;
+
+    //     // Count students for each project_area_ai
+    //     $projectAreaAICounts = $studentsPSM1->groupBy('project_area_ai')->map(function($group) {
+    //         return $group->count();
+    //     });
+
+    //     return Inertia::render('Coordinator/Home/DashboardPSM1', [
+    //         'totalStudents' => $totalStudents,
+    //         'developmentStudents' => $developmentStudents,
+    //         'researchStudents' => $researchStudents,
+    //         'activePanels' => $activePanels,
+    //         'activeSupervisors' => $activeSupervisors,
+
+    //         'panelAssignedNumber' => $assignedToPanel,
+    //         'panelAssignedTotal' => $totalStudents,
+    //         'panelAssignedPercentage' => $panelAssignedPercentage,
+
+    //         'supervisorAssignedNumber' => $assignedToSupervisor,
+    //         'supervisorAssignedTotal' => $totalStudents,
+    //         'supervisorAssignedPercentage' => $supervisorAssignedPercentage,
+
+    //         'projectAreaAICounts' => $projectAreaAICounts,
+    //     ]);
+    // }
+
+    public function Dashboard()
+    {
+        // $this->authorize('view psm1 dashboard');
+
+        // --- PSM1 Data ---
+        $studentsPSM1 = $this->studentService->getStudents("PSM1");
+        $totalStudentsPSM1 = $studentsPSM1->count();
+        $developmentStudentsPSM1 = $studentsPSM1->where('project_type', 'System Development')->count();
+        $researchStudentsPSM1 = $studentsPSM1->where('project_type', 'Research Based')->count();
+        $activePanelsPSM1 = $this->panelService->getPanelPSM1()->count();
+        $activeSupervisorsPSM1 = $this->supervisorService->getSupervisorPSM1()->count();
+        $assignedToPanelPSM1 = $studentsPSM1->whereNotNull('panel_name')
+                                            ->whereNotNull('panel2_name')
+                                            ->count();
+        $panelAssignedPercentagePSM1 = $totalStudentsPSM1 > 0 ? round(($assignedToPanelPSM1 / $totalStudentsPSM1) * 100, 2) : 0;
+        $assignedToSupervisorPSM1 = $studentsPSM1->whereNotNull('sv_name')->count();
+        $supervisorAssignedPercentagePSM1 = $totalStudentsPSM1 > 0 ? round(($assignedToSupervisorPSM1 / $totalStudentsPSM1) * 100, 2) : 0;
+        $projectAreaAICountsPSM1 = $studentsPSM1->groupBy('project_area_ai')->map(function($group) {
+            return $group->count();
+        });
+
+        // --- PSM2 Data ---
+        $studentsPSM2 = $this->studentService->getStudents("PSM2");
+        $totalStudentsPSM2 = $studentsPSM2->count();
+        $developmentStudentsPSM2 = $studentsPSM2->where('project_type', 'System Development')->count();
+        $researchStudentsPSM2 = $studentsPSM2->where('project_type', 'Research Based')->count();
+        $activePanelsPSM2 = $this->panelService->getPanelPSM2()->count();
+        $activeSupervisorsPSM2 = $this->supervisorService->getSupervisorPSM2()->count();
+        $assignedToPanelPSM2 = $studentsPSM2->whereNotNull('panel_name')
+                                            ->whereNotNull('panel2_name')
+                                            ->count();
+        $panelAssignedPercentagePSM2 = $totalStudentsPSM2 > 0 ? round(($assignedToPanelPSM2 / $totalStudentsPSM2) * 100, 2) : 0;
+        $assignedToSupervisorPSM2 = $studentsPSM2->whereNotNull('sv_name')->count();
+        $supervisorAssignedPercentagePSM2 = $totalStudentsPSM2 > 0 ? round(($assignedToSupervisorPSM2 / $totalStudentsPSM2) * 100, 2) : 0;
+        $projectAreaAICountsPSM2 = $studentsPSM2->groupBy('project_area_ai')->map(function($group) {
+            return $group->count();
+        });
+
+        return Inertia::render('Coordinator/Home/Dashboard', [
+            'psm1' => [
+                'totalStudents' => $totalStudentsPSM1,
+                'developmentStudents' => $developmentStudentsPSM1,
+                'researchStudents' => $researchStudentsPSM1,
+                'activePanels' => $activePanelsPSM1,
+                'activeSupervisors' => $activeSupervisorsPSM1,
+                'panelAssignedNumber' => $assignedToPanelPSM1,
+                'panelAssignedTotal' => $totalStudentsPSM1,
+                'panelAssignedPercentage' => $panelAssignedPercentagePSM1,
+                'supervisorAssignedNumber' => $assignedToSupervisorPSM1,
+                'supervisorAssignedTotal' => $totalStudentsPSM1,
+                'supervisorAssignedPercentage' => $supervisorAssignedPercentagePSM1,
+                'projectAreaAICounts' => $projectAreaAICountsPSM1,
+            ],
+            'psm2' => [
+                'totalStudents' => $totalStudentsPSM2,
+                'developmentStudents' => $developmentStudentsPSM2,
+                'researchStudents' => $researchStudentsPSM2,
+                'activePanels' => $activePanelsPSM2,
+                'activeSupervisors' => $activeSupervisorsPSM2,
+                'panelAssignedNumber' => $assignedToPanelPSM2,
+                'panelAssignedTotal' => $totalStudentsPSM2,
+                'panelAssignedPercentage' => $panelAssignedPercentagePSM2,
+                'supervisorAssignedNumber' => $assignedToSupervisorPSM2,
+                'supervisorAssignedTotal' => $totalStudentsPSM2,
+                'supervisorAssignedPercentage' => $supervisorAssignedPercentagePSM2,
+                'projectAreaAICounts' => $projectAreaAICountsPSM2,
+                ],
+        ]);
+    }
+
     // Supervisor Assign - PSM1
     public function PSM1ListSupervisor()
     {

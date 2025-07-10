@@ -75,7 +75,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             if ($user->role == 1) {
-                return redirect()->route('coordinator.home')->with('success', 'Logged in as Coordinator');
+                return redirect()->route('coordinator.dashboard')->with('success', 'Logged in as Coordinator');
             } elseif ($user->role == 2) {
                 return redirect()->route('panel.home')->with('success', 'Logged in as Panel');
             }

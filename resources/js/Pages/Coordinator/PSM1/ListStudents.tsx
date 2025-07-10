@@ -284,7 +284,7 @@ export default function ListStudents() {
                         <div className="flex border border-blue-400 rounded overflow-hidden font-semibold">
                             <button
                                 type="button"
-                                className={`p-1 px-3 transition  text-center ${
+                                className={`p-1 px-3 transition text-center ${
                                     !showArchived
                                         ? "bg-blue-400 hover:bg-blue-500 transition text-white"
                                         : "bg-white hover:bg-gray-100 border-r "
