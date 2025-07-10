@@ -191,9 +191,11 @@ export default function DevelopmentRubric() {
         showArchived
             ? props.rubricsDevelopmentArchive
             : props.rubricsDevelopmentActive
-    ).filter((rubric) =>
-        rubric.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    )
+        .filter((rubric) =>
+            rubric.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .sort((a, b) => a.roleType - b.roleType); // Sort by roleType ascending
 
     const totalPages = Math.ceil(filteredRubrics.length / rowsPerPage);
 
@@ -285,7 +287,7 @@ export default function DevelopmentRubric() {
                         </label>
 
                         {/* Total Weight Display */}
-                        <div className="ml-2 mt-2">
+                        {/* <div className="ml-2 mt-2">
                             <span className="ml-2 text-sm text-gray-600">
                                 Current total weight:{" "}
                                 {calculateCurrentRubricWeight(paginatedRubrics)}
@@ -298,7 +300,7 @@ export default function DevelopmentRubric() {
                                     </span>
                                 )}
                             </span>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Search Input */}
