@@ -287,7 +287,7 @@ export default function ResearchRubric() {
                         </label>
 
                         {/* Total Weight Display */}
-                        {/* <div className="ml-2 mt-2">
+                        <div className="ml-2 mt-2">
                             <span className="ml-2 text-sm text-gray-600">
                                 Current total weight:{" "}
                                 {calculateCurrentRubricWeight(paginatedRubrics)}
@@ -300,7 +300,7 @@ export default function ResearchRubric() {
                                     </span>
                                 )}
                             </span>
-                        </div> */}
+                        </div>
                     </div>
 
                     {/* Search Input */}
