@@ -172,8 +172,12 @@ export default function ViewResult() {
         let totalScore = 0;
         let hasAnyScores = false;
 
-        // For each rubric, get the average score and add to total
-        currentRubric.forEach((rubric) => {
+        const applicableRubrics = student.project_type === "Research Based" 
+        ? rubricResearch 
+        : rubricDevelopment;
+
+        // Calculate scores using the appropriate rubric set
+        applicableRubrics.forEach((rubric) => {
             const averageScore = calculateRubricAverage(student, rubric.id);
             if (averageScore > 0) {
                 totalScore += averageScore;
