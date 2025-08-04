@@ -198,9 +198,10 @@ export default function ViewResult() {
         let totalScore = 0;
         let hasAnyScores = false;
 
-        const applicableRubrics = student.project_type === "Research Based" 
-        ? rubricResearch 
-        : rubricDevelopment;
+        const applicableRubrics =
+            student.project_type === "Research Based"
+                ? rubricResearch
+                : rubricDevelopment;
 
         // Calculate scores using the appropriate rubric set
         applicableRubrics.forEach((rubric) => {
