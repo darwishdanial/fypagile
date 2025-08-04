@@ -136,7 +136,7 @@ class CoordinatorService
                     $typeNumber = ($student->project_type === 'Research Based') ? 1 : 0;
                     
                     // Call prediction API
-                    $response = Http::timeout(5)->post('https://panel-ai-usda2.ondigitalocean.app/predict-panel', [
+                    $response = Http::timeout(5)->post('http://127.0.0.1:8001/predict-panel', [
                         'project_area' => $areaNumber,
                         'project_type' => $typeNumber,
                     ]);
