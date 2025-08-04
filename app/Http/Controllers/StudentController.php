@@ -31,11 +31,9 @@ class StudentController extends Controller
     public function PSM1ListStudents()
     {
         $this->authorize('view psm1 list students table');
-       
+        
         $students = $this->studentService->getStudents("PSM1");
         $archivedStudents = $this->studentService->getStudentsArchive("PSM1");
-
-        // dd($students[0]);
 
         return Inertia::render('Coordinator/PSM1/ListStudents',[
             'students' => $students,

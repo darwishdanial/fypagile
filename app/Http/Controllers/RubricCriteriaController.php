@@ -166,7 +166,7 @@ class RubricCriteriaController extends Controller
         // role = 3 = supervisor
 
         $this->authorize('store psm1 evaluation rubric');
-       
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'PSMType' => 'required|string|max:255',

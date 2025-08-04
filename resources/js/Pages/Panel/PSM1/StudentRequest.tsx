@@ -45,7 +45,6 @@ export default function StudentRequest() {
     // State for selected students
     const [selectedStudents, setSelectedStudents] = useState<number[]>([]);
 
-
     // State for pagination & search
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
@@ -116,12 +115,14 @@ export default function StudentRequest() {
         }
     }, [props.flash]); // Run effect when flash message changes
 
-
-    const handleStatusUpdate = (studentId: number, status: 'accepted' | 'rejected') => {
+    const handleStatusUpdate = (
+        studentId: number,
+        status: "accepted" | "rejected"
+    ) => {
         const route_path =
             status === "accepted"
-            ? "panel.PSM1.sv.accept"
-            : "panel.PSM1.sv.reject";
+                ? "panel.PSM1.sv.accept"
+                : "panel.PSM1.sv.reject";
         router.post(route(route_path, studentId));
     };
 
@@ -291,21 +292,29 @@ export default function StudentRequest() {
                                             <button
                                                 type="button"
                                                 className="px-3 py-1 bg-green-400 text-white text-sm rounded hover:bg-green-500 transition"
-                                                onClick={() => handleStatusUpdate(student.id, 'accepted')}
+                                                onClick={() =>
+                                                    handleStatusUpdate(
+                                                        student.id,
+                                                        "accepted"
+                                                    )
+                                                }
                                             >
                                                 Accept
                                             </button>
                                             <button
                                                 type="button"
                                                 className="px-3 py-1 bg-red-400 text-white text-sm rounded hover:bg-red-500 transition"
-                                                onClick={() => handleStatusUpdate(student.id, 'rejected')}
+                                                onClick={() =>
+                                                    handleStatusUpdate(
+                                                        student.id,
+                                                        "rejected"
+                                                    )
+                                                }
                                             >
                                                 Reject
                                             </button>
                                         </div>
-            
                                     </td>
-                                    
                                 </tr>
                                 {expandedRow === student.id && (
                                     <tr className="bg-gray-50 border-b border-gray-300">
@@ -338,7 +347,6 @@ export default function StudentRequest() {
                                                         Cohort:
                                                     </strong>{" "}
                                                     {student.cohort} <br />
-        
                                                 </div>
                                             </div>
                                         </td>
@@ -374,7 +382,6 @@ export default function StudentRequest() {
                     </button>
                 </div>
             </div>
-
         </div>
     );
 }

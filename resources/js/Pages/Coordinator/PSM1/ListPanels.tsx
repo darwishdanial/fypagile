@@ -615,7 +615,9 @@ export default function ListPanels() {
                                                                 panel.id
                                                             );
                                                         }}
-                                                        disabled={panel.id === auth}
+                                                        disabled={
+                                                            panel.id === auth
+                                                        }
                                                         title="Archive Panels"
                                                     >
                                                         <Archive

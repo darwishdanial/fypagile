@@ -90,7 +90,7 @@ class GradingController extends Controller
             'id' => $id
         ]);
     }
-    
+
     public function PSM1StoreScore(Request $request){
 
         $this->authorize('store psm1 score');

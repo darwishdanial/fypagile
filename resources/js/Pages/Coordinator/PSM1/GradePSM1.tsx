@@ -171,7 +171,7 @@ export default function GradePSM1() {
 
     const totalColumns = 5 + filteredRubrics.length;
 
-        const openLink = (link: string) => {
+    const openLink = (link: string) => {
         if (link) {
             window.open(link, "_blank");
         }

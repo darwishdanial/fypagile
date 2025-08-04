@@ -78,7 +78,7 @@ export default function ListStudents() {
 
     const openLink = (link: string) => {
         if (link) {
-            window.open(link, '_blank');
+            window.open(link, "_blank");
         }
     };
 
@@ -650,9 +650,7 @@ export default function ListStudents() {
                                                     <br />
                                                 </div>
                                                 <div className="col-span-2">
-                                                    <strong>
-                                                        Panel 1:
-                                                    </strong>{" "}
+                                                    <strong>Panel 1:</strong>{" "}
                                                     {student.panel_name ||
                                                         "N/A"}{" "}
                                                     <br />
